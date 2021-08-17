@@ -7,7 +7,6 @@ CSOURCES = \
 				test_files/test_matrix.c \
 				test_files/test_main.c \
 				test_files/debug_print.c \
-				test_files/lfsr.c \
 				uart.c \
 				retarget.c \
 				sparse_functions/Source/sparse_mat_mul_core_1x_s8.c \

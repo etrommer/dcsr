@@ -24,7 +24,6 @@ cpu0.DBGLVL=0                                         # (int   , init-time) defa
 cpu0.DCACHESZ=15                                      # (int   , init-time) default = '0xf'    : Whether the D-cache is included and, if included, the size of it. Bit 0: 0=No D-cache included, 1=D-cache included. Bits [4:1]: 0x0=4KB D-cache, 0x1=8KB D-cache, 0x3=16KB D-cache, 0x7=32KB D-cache, 0x15=64KB D-cache
 cpu0.DTGUBLKSZ=8                                      # (int   , init-time) default = '0x8'    : DTCM gate unit block size. Size=pow(2, DTGUBLKSZ + 5) bytes
 cpu0.ECOREVNUM=0                                      # (int   , init-time) default = '0x0'    : ECO Revision number
-cpu0.ERRDEVID.NUM=56                                  # (int   , init-time) default = '0x38'   : RAS: Number of implemented error record indexes, 0 to 56.
 cpu0.ETM=1                                            # (bool  , init-time) default = '1'      : Support for ETM trace. false : No ETM trace included, true: ETM trace included
 cpu0.FPU=1                                            # (bool  , init-time) default = '1'      : Set whether the model has VFP support
 cpu0.ICACHESZ=15                                      # (int   , init-time) default = '0xf'    : Whether the I-cache is included and, if included, the size of it. Bit 0: 0=No I-cache included, 1=I-cache included. Bits [4:1]: 0x0=4KB I-cache, 0x1=8KB I-cache, 0x3=16KB I-cache, 0x7=32KB I-cache, 0x15=64KB I-cache
@@ -89,7 +88,6 @@ cpu0.ras_cei_pin=2                                    # (int   , init-time) defa
 cpu0.ras_cei_support=1                                # (bool  , init-time) default = '1'      : RAS: Whether Critical Error Interrupt is supported
 cpu0.ras_eri_pin=1                                    # (int   , init-time) default = '0x1'    : RAS: Error recovery interrupt pin.
 cpu0.ras_eri_support=1                                # (bool  , init-time) default = '1'      : RAS: Whether Error Recovery Interrupt is supported
-cpu0.ras_error_record=72057594037927935               # (int   , init-time) default = '0xffffffffffffff' : 56 bit value that specifies which nodes out of 0-55 are implemented (ERRDEVID is derived from this parameter)
 cpu0.ras_fhi_pin=0                                    # (int   , init-time) default = '0x0'    : RAS: Fault handling interrupt pin.
 cpu0.ras_fhi_support=1                                # (bool  , init-time) default = '1'      : RAS: Whether Fault Handling Interrupt is supported
 cpu0.scheduler_mode=0                                 # (int   , init-time) default = '0x0'    : Control the interleaving of instructions in this processor (0=default long quantum, 1=low latency mode, short quantum and signal checking, 2=lock-breaking mode, long quantum with additional context switches near load-exclusive instructions, 3=ISSCompare)
