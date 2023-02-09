@@ -35,18 +35,15 @@ class UniqueOptions(object):
             return self._tab.Get(flatbuffers.number_types.Int8Flags, o + self._tab.Pos)
         return 2
 
-def Start(builder): builder.StartObject(1)
-def UniqueOptionsStart(builder):
-    """This method is deprecated. Please switch to Start."""
-    return Start(builder)
-def AddIdxOutType(builder, idxOutType): builder.PrependInt8Slot(0, idxOutType, 2)
-def UniqueOptionsAddIdxOutType(builder, idxOutType):
-    """This method is deprecated. Please switch to AddIdxOutType."""
-    return AddIdxOutType(builder, idxOutType)
-def End(builder): return builder.EndObject()
-def UniqueOptionsEnd(builder):
-    """This method is deprecated. Please switch to End."""
-    return End(builder)
+def UniqueOptionsStart(builder): builder.StartObject(1)
+def Start(builder):
+    return UniqueOptionsStart(builder)
+def UniqueOptionsAddIdxOutType(builder, idxOutType): builder.PrependInt8Slot(0, idxOutType, 2)
+def AddIdxOutType(builder, idxOutType):
+    return UniqueOptionsAddIdxOutType(builder, idxOutType)
+def UniqueOptionsEnd(builder): return builder.EndObject()
+def End(builder):
+    return UniqueOptionsEnd(builder)
 
 class UniqueOptionsT(object):
 
@@ -59,6 +56,11 @@ class UniqueOptionsT(object):
         uniqueOptions = UniqueOptions()
         uniqueOptions.Init(buf, pos)
         return cls.InitFromObj(uniqueOptions)
+
+    @classmethod
+    def InitFromPackedBuf(cls, buf, pos=0):
+        n = flatbuffers.encode.Get(flatbuffers.packer.uoffset, buf, pos)
+        return cls.InitFromBuf(buf, pos+n)
 
     @classmethod
     def InitFromObj(cls, uniqueOptions):
@@ -74,7 +76,7 @@ class UniqueOptionsT(object):
 
     # UniqueOptionsT
     def Pack(self, builder):
-        Start(builder)
-        AddIdxOutType(builder, self.idxOutType)
-        uniqueOptions = End(builder)
+        UniqueOptionsStart(builder)
+        UniqueOptionsAddIdxOutType(builder, self.idxOutType)
+        uniqueOptions = UniqueOptionsEnd(builder)
         return uniqueOptions

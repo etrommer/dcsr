@@ -28,14 +28,12 @@ class ExpandDimsOptions(object):
     def Init(self, buf, pos):
         self._tab = flatbuffers.table.Table(buf, pos)
 
-def Start(builder): builder.StartObject(0)
-def ExpandDimsOptionsStart(builder):
-    """This method is deprecated. Please switch to Start."""
-    return Start(builder)
-def End(builder): return builder.EndObject()
-def ExpandDimsOptionsEnd(builder):
-    """This method is deprecated. Please switch to End."""
-    return End(builder)
+def ExpandDimsOptionsStart(builder): builder.StartObject(0)
+def Start(builder):
+    return ExpandDimsOptionsStart(builder)
+def ExpandDimsOptionsEnd(builder): return builder.EndObject()
+def End(builder):
+    return ExpandDimsOptionsEnd(builder)
 
 class ExpandDimsOptionsT(object):
 
@@ -50,6 +48,11 @@ class ExpandDimsOptionsT(object):
         return cls.InitFromObj(expandDimsOptions)
 
     @classmethod
+    def InitFromPackedBuf(cls, buf, pos=0):
+        n = flatbuffers.encode.Get(flatbuffers.packer.uoffset, buf, pos)
+        return cls.InitFromBuf(buf, pos+n)
+
+    @classmethod
     def InitFromObj(cls, expandDimsOptions):
         x = ExpandDimsOptionsT()
         x._UnPack(expandDimsOptions)
@@ -62,6 +65,6 @@ class ExpandDimsOptionsT(object):
 
     # ExpandDimsOptionsT
     def Pack(self, builder):
-        Start(builder)
-        expandDimsOptions = End(builder)
+        ExpandDimsOptionsStart(builder)
+        expandDimsOptions = ExpandDimsOptionsEnd(builder)
         return expandDimsOptions

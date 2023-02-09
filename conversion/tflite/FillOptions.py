@@ -28,14 +28,12 @@ class FillOptions(object):
     def Init(self, buf, pos):
         self._tab = flatbuffers.table.Table(buf, pos)
 
-def Start(builder): builder.StartObject(0)
-def FillOptionsStart(builder):
-    """This method is deprecated. Please switch to Start."""
-    return Start(builder)
-def End(builder): return builder.EndObject()
-def FillOptionsEnd(builder):
-    """This method is deprecated. Please switch to End."""
-    return End(builder)
+def FillOptionsStart(builder): builder.StartObject(0)
+def Start(builder):
+    return FillOptionsStart(builder)
+def FillOptionsEnd(builder): return builder.EndObject()
+def End(builder):
+    return FillOptionsEnd(builder)
 
 class FillOptionsT(object):
 
@@ -50,6 +48,11 @@ class FillOptionsT(object):
         return cls.InitFromObj(fillOptions)
 
     @classmethod
+    def InitFromPackedBuf(cls, buf, pos=0):
+        n = flatbuffers.encode.Get(flatbuffers.packer.uoffset, buf, pos)
+        return cls.InitFromBuf(buf, pos+n)
+
+    @classmethod
     def InitFromObj(cls, fillOptions):
         x = FillOptionsT()
         x._UnPack(fillOptions)
@@ -62,6 +65,6 @@ class FillOptionsT(object):
 
     # FillOptionsT
     def Pack(self, builder):
-        Start(builder)
-        fillOptions = End(builder)
+        FillOptionsStart(builder)
+        fillOptions = FillOptionsEnd(builder)
         return fillOptions

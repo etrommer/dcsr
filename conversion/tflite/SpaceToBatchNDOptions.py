@@ -28,14 +28,12 @@ class SpaceToBatchNDOptions(object):
     def Init(self, buf, pos):
         self._tab = flatbuffers.table.Table(buf, pos)
 
-def Start(builder): builder.StartObject(0)
-def SpaceToBatchNDOptionsStart(builder):
-    """This method is deprecated. Please switch to Start."""
-    return Start(builder)
-def End(builder): return builder.EndObject()
-def SpaceToBatchNDOptionsEnd(builder):
-    """This method is deprecated. Please switch to End."""
-    return End(builder)
+def SpaceToBatchNDOptionsStart(builder): builder.StartObject(0)
+def Start(builder):
+    return SpaceToBatchNDOptionsStart(builder)
+def SpaceToBatchNDOptionsEnd(builder): return builder.EndObject()
+def End(builder):
+    return SpaceToBatchNDOptionsEnd(builder)
 
 class SpaceToBatchNDOptionsT(object):
 
@@ -45,23 +43,28 @@ class SpaceToBatchNDOptionsT(object):
 
     @classmethod
     def InitFromBuf(cls, buf, pos):
-        spaceToBatchNDOptions = SpaceToBatchNDOptions()
-        spaceToBatchNDOptions.Init(buf, pos)
-        return cls.InitFromObj(spaceToBatchNDOptions)
+        spaceToBatchNdoptions = SpaceToBatchNDOptions()
+        spaceToBatchNdoptions.Init(buf, pos)
+        return cls.InitFromObj(spaceToBatchNdoptions)
 
     @classmethod
-    def InitFromObj(cls, spaceToBatchNDOptions):
+    def InitFromPackedBuf(cls, buf, pos=0):
+        n = flatbuffers.encode.Get(flatbuffers.packer.uoffset, buf, pos)
+        return cls.InitFromBuf(buf, pos+n)
+
+    @classmethod
+    def InitFromObj(cls, spaceToBatchNdoptions):
         x = SpaceToBatchNDOptionsT()
-        x._UnPack(spaceToBatchNDOptions)
+        x._UnPack(spaceToBatchNdoptions)
         return x
 
     # SpaceToBatchNDOptionsT
-    def _UnPack(self, spaceToBatchNDOptions):
-        if spaceToBatchNDOptions is None:
+    def _UnPack(self, spaceToBatchNdoptions):
+        if spaceToBatchNdoptions is None:
             return
 
     # SpaceToBatchNDOptionsT
     def Pack(self, builder):
-        Start(builder)
-        spaceToBatchNDOptions = End(builder)
-        return spaceToBatchNDOptions
+        SpaceToBatchNDOptionsStart(builder)
+        spaceToBatchNdoptions = SpaceToBatchNDOptionsEnd(builder)
+        return spaceToBatchNdoptions

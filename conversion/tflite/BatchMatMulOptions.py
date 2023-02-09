@@ -49,26 +49,21 @@ class BatchMatMulOptions(object):
             return bool(self._tab.Get(flatbuffers.number_types.BoolFlags, o + self._tab.Pos))
         return False
 
-def Start(builder): builder.StartObject(3)
-def BatchMatMulOptionsStart(builder):
-    """This method is deprecated. Please switch to Start."""
-    return Start(builder)
-def AddAdjX(builder, adjX): builder.PrependBoolSlot(0, adjX, 0)
-def BatchMatMulOptionsAddAdjX(builder, adjX):
-    """This method is deprecated. Please switch to AddAdjX."""
-    return AddAdjX(builder, adjX)
-def AddAdjY(builder, adjY): builder.PrependBoolSlot(1, adjY, 0)
-def BatchMatMulOptionsAddAdjY(builder, adjY):
-    """This method is deprecated. Please switch to AddAdjY."""
-    return AddAdjY(builder, adjY)
-def AddAsymmetricQuantizeInputs(builder, asymmetricQuantizeInputs): builder.PrependBoolSlot(2, asymmetricQuantizeInputs, 0)
-def BatchMatMulOptionsAddAsymmetricQuantizeInputs(builder, asymmetricQuantizeInputs):
-    """This method is deprecated. Please switch to AddAsymmetricQuantizeInputs."""
-    return AddAsymmetricQuantizeInputs(builder, asymmetricQuantizeInputs)
-def End(builder): return builder.EndObject()
-def BatchMatMulOptionsEnd(builder):
-    """This method is deprecated. Please switch to End."""
-    return End(builder)
+def BatchMatMulOptionsStart(builder): builder.StartObject(3)
+def Start(builder):
+    return BatchMatMulOptionsStart(builder)
+def BatchMatMulOptionsAddAdjX(builder, adjX): builder.PrependBoolSlot(0, adjX, 0)
+def AddAdjX(builder, adjX):
+    return BatchMatMulOptionsAddAdjX(builder, adjX)
+def BatchMatMulOptionsAddAdjY(builder, adjY): builder.PrependBoolSlot(1, adjY, 0)
+def AddAdjY(builder, adjY):
+    return BatchMatMulOptionsAddAdjY(builder, adjY)
+def BatchMatMulOptionsAddAsymmetricQuantizeInputs(builder, asymmetricQuantizeInputs): builder.PrependBoolSlot(2, asymmetricQuantizeInputs, 0)
+def AddAsymmetricQuantizeInputs(builder, asymmetricQuantizeInputs):
+    return BatchMatMulOptionsAddAsymmetricQuantizeInputs(builder, asymmetricQuantizeInputs)
+def BatchMatMulOptionsEnd(builder): return builder.EndObject()
+def End(builder):
+    return BatchMatMulOptionsEnd(builder)
 
 class BatchMatMulOptionsT(object):
 
@@ -83,6 +78,11 @@ class BatchMatMulOptionsT(object):
         batchMatMulOptions = BatchMatMulOptions()
         batchMatMulOptions.Init(buf, pos)
         return cls.InitFromObj(batchMatMulOptions)
+
+    @classmethod
+    def InitFromPackedBuf(cls, buf, pos=0):
+        n = flatbuffers.encode.Get(flatbuffers.packer.uoffset, buf, pos)
+        return cls.InitFromBuf(buf, pos+n)
 
     @classmethod
     def InitFromObj(cls, batchMatMulOptions):
@@ -100,9 +100,9 @@ class BatchMatMulOptionsT(object):
 
     # BatchMatMulOptionsT
     def Pack(self, builder):
-        Start(builder)
-        AddAdjX(builder, self.adjX)
-        AddAdjY(builder, self.adjY)
-        AddAsymmetricQuantizeInputs(builder, self.asymmetricQuantizeInputs)
-        batchMatMulOptions = End(builder)
+        BatchMatMulOptionsStart(builder)
+        BatchMatMulOptionsAddAdjX(builder, self.adjX)
+        BatchMatMulOptionsAddAdjY(builder, self.adjY)
+        BatchMatMulOptionsAddAsymmetricQuantizeInputs(builder, self.asymmetricQuantizeInputs)
+        batchMatMulOptions = BatchMatMulOptionsEnd(builder)
         return batchMatMulOptions

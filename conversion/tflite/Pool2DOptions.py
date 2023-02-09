@@ -70,38 +70,30 @@ class Pool2DOptions(object):
             return self._tab.Get(flatbuffers.number_types.Int8Flags, o + self._tab.Pos)
         return 0
 
-def Start(builder): builder.StartObject(6)
-def Pool2DOptionsStart(builder):
-    """This method is deprecated. Please switch to Start."""
-    return Start(builder)
-def AddPadding(builder, padding): builder.PrependInt8Slot(0, padding, 0)
-def Pool2DOptionsAddPadding(builder, padding):
-    """This method is deprecated. Please switch to AddPadding."""
-    return AddPadding(builder, padding)
-def AddStrideW(builder, strideW): builder.PrependInt32Slot(1, strideW, 0)
-def Pool2DOptionsAddStrideW(builder, strideW):
-    """This method is deprecated. Please switch to AddStrideW."""
-    return AddStrideW(builder, strideW)
-def AddStrideH(builder, strideH): builder.PrependInt32Slot(2, strideH, 0)
-def Pool2DOptionsAddStrideH(builder, strideH):
-    """This method is deprecated. Please switch to AddStrideH."""
-    return AddStrideH(builder, strideH)
-def AddFilterWidth(builder, filterWidth): builder.PrependInt32Slot(3, filterWidth, 0)
-def Pool2DOptionsAddFilterWidth(builder, filterWidth):
-    """This method is deprecated. Please switch to AddFilterWidth."""
-    return AddFilterWidth(builder, filterWidth)
-def AddFilterHeight(builder, filterHeight): builder.PrependInt32Slot(4, filterHeight, 0)
-def Pool2DOptionsAddFilterHeight(builder, filterHeight):
-    """This method is deprecated. Please switch to AddFilterHeight."""
-    return AddFilterHeight(builder, filterHeight)
-def AddFusedActivationFunction(builder, fusedActivationFunction): builder.PrependInt8Slot(5, fusedActivationFunction, 0)
-def Pool2DOptionsAddFusedActivationFunction(builder, fusedActivationFunction):
-    """This method is deprecated. Please switch to AddFusedActivationFunction."""
-    return AddFusedActivationFunction(builder, fusedActivationFunction)
-def End(builder): return builder.EndObject()
-def Pool2DOptionsEnd(builder):
-    """This method is deprecated. Please switch to End."""
-    return End(builder)
+def Pool2DOptionsStart(builder): builder.StartObject(6)
+def Start(builder):
+    return Pool2DOptionsStart(builder)
+def Pool2DOptionsAddPadding(builder, padding): builder.PrependInt8Slot(0, padding, 0)
+def AddPadding(builder, padding):
+    return Pool2DOptionsAddPadding(builder, padding)
+def Pool2DOptionsAddStrideW(builder, strideW): builder.PrependInt32Slot(1, strideW, 0)
+def AddStrideW(builder, strideW):
+    return Pool2DOptionsAddStrideW(builder, strideW)
+def Pool2DOptionsAddStrideH(builder, strideH): builder.PrependInt32Slot(2, strideH, 0)
+def AddStrideH(builder, strideH):
+    return Pool2DOptionsAddStrideH(builder, strideH)
+def Pool2DOptionsAddFilterWidth(builder, filterWidth): builder.PrependInt32Slot(3, filterWidth, 0)
+def AddFilterWidth(builder, filterWidth):
+    return Pool2DOptionsAddFilterWidth(builder, filterWidth)
+def Pool2DOptionsAddFilterHeight(builder, filterHeight): builder.PrependInt32Slot(4, filterHeight, 0)
+def AddFilterHeight(builder, filterHeight):
+    return Pool2DOptionsAddFilterHeight(builder, filterHeight)
+def Pool2DOptionsAddFusedActivationFunction(builder, fusedActivationFunction): builder.PrependInt8Slot(5, fusedActivationFunction, 0)
+def AddFusedActivationFunction(builder, fusedActivationFunction):
+    return Pool2DOptionsAddFusedActivationFunction(builder, fusedActivationFunction)
+def Pool2DOptionsEnd(builder): return builder.EndObject()
+def End(builder):
+    return Pool2DOptionsEnd(builder)
 
 class Pool2DOptionsT(object):
 
@@ -116,35 +108,40 @@ class Pool2DOptionsT(object):
 
     @classmethod
     def InitFromBuf(cls, buf, pos):
-        pool2DOptions = Pool2DOptions()
-        pool2DOptions.Init(buf, pos)
-        return cls.InitFromObj(pool2DOptions)
+        pool2Doptions = Pool2DOptions()
+        pool2Doptions.Init(buf, pos)
+        return cls.InitFromObj(pool2Doptions)
 
     @classmethod
-    def InitFromObj(cls, pool2DOptions):
+    def InitFromPackedBuf(cls, buf, pos=0):
+        n = flatbuffers.encode.Get(flatbuffers.packer.uoffset, buf, pos)
+        return cls.InitFromBuf(buf, pos+n)
+
+    @classmethod
+    def InitFromObj(cls, pool2Doptions):
         x = Pool2DOptionsT()
-        x._UnPack(pool2DOptions)
+        x._UnPack(pool2Doptions)
         return x
 
     # Pool2DOptionsT
-    def _UnPack(self, pool2DOptions):
-        if pool2DOptions is None:
+    def _UnPack(self, pool2Doptions):
+        if pool2Doptions is None:
             return
-        self.padding = pool2DOptions.Padding()
-        self.strideW = pool2DOptions.StrideW()
-        self.strideH = pool2DOptions.StrideH()
-        self.filterWidth = pool2DOptions.FilterWidth()
-        self.filterHeight = pool2DOptions.FilterHeight()
-        self.fusedActivationFunction = pool2DOptions.FusedActivationFunction()
+        self.padding = pool2Doptions.Padding()
+        self.strideW = pool2Doptions.StrideW()
+        self.strideH = pool2Doptions.StrideH()
+        self.filterWidth = pool2Doptions.FilterWidth()
+        self.filterHeight = pool2Doptions.FilterHeight()
+        self.fusedActivationFunction = pool2Doptions.FusedActivationFunction()
 
     # Pool2DOptionsT
     def Pack(self, builder):
-        Start(builder)
-        AddPadding(builder, self.padding)
-        AddStrideW(builder, self.strideW)
-        AddStrideH(builder, self.strideH)
-        AddFilterWidth(builder, self.filterWidth)
-        AddFilterHeight(builder, self.filterHeight)
-        AddFusedActivationFunction(builder, self.fusedActivationFunction)
-        pool2DOptions = End(builder)
-        return pool2DOptions
+        Pool2DOptionsStart(builder)
+        Pool2DOptionsAddPadding(builder, self.padding)
+        Pool2DOptionsAddStrideW(builder, self.strideW)
+        Pool2DOptionsAddStrideH(builder, self.strideH)
+        Pool2DOptionsAddFilterWidth(builder, self.filterWidth)
+        Pool2DOptionsAddFilterHeight(builder, self.filterHeight)
+        Pool2DOptionsAddFusedActivationFunction(builder, self.fusedActivationFunction)
+        pool2Doptions = Pool2DOptionsEnd(builder)
+        return pool2Doptions

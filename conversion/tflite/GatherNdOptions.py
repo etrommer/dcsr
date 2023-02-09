@@ -28,14 +28,12 @@ class GatherNdOptions(object):
     def Init(self, buf, pos):
         self._tab = flatbuffers.table.Table(buf, pos)
 
-def Start(builder): builder.StartObject(0)
-def GatherNdOptionsStart(builder):
-    """This method is deprecated. Please switch to Start."""
-    return Start(builder)
-def End(builder): return builder.EndObject()
-def GatherNdOptionsEnd(builder):
-    """This method is deprecated. Please switch to End."""
-    return End(builder)
+def GatherNdOptionsStart(builder): builder.StartObject(0)
+def Start(builder):
+    return GatherNdOptionsStart(builder)
+def GatherNdOptionsEnd(builder): return builder.EndObject()
+def End(builder):
+    return GatherNdOptionsEnd(builder)
 
 class GatherNdOptionsT(object):
 
@@ -50,6 +48,11 @@ class GatherNdOptionsT(object):
         return cls.InitFromObj(gatherNdOptions)
 
     @classmethod
+    def InitFromPackedBuf(cls, buf, pos=0):
+        n = flatbuffers.encode.Get(flatbuffers.packer.uoffset, buf, pos)
+        return cls.InitFromBuf(buf, pos+n)
+
+    @classmethod
     def InitFromObj(cls, gatherNdOptions):
         x = GatherNdOptionsT()
         x._UnPack(gatherNdOptions)
@@ -62,6 +65,6 @@ class GatherNdOptionsT(object):
 
     # GatherNdOptionsT
     def Pack(self, builder):
-        Start(builder)
-        gatherNdOptions = End(builder)
+        GatherNdOptionsStart(builder)
+        gatherNdOptions = GatherNdOptionsEnd(builder)
         return gatherNdOptions

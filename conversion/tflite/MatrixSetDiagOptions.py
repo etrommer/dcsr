@@ -28,14 +28,12 @@ class MatrixSetDiagOptions(object):
     def Init(self, buf, pos):
         self._tab = flatbuffers.table.Table(buf, pos)
 
-def Start(builder): builder.StartObject(0)
-def MatrixSetDiagOptionsStart(builder):
-    """This method is deprecated. Please switch to Start."""
-    return Start(builder)
-def End(builder): return builder.EndObject()
-def MatrixSetDiagOptionsEnd(builder):
-    """This method is deprecated. Please switch to End."""
-    return End(builder)
+def MatrixSetDiagOptionsStart(builder): builder.StartObject(0)
+def Start(builder):
+    return MatrixSetDiagOptionsStart(builder)
+def MatrixSetDiagOptionsEnd(builder): return builder.EndObject()
+def End(builder):
+    return MatrixSetDiagOptionsEnd(builder)
 
 class MatrixSetDiagOptionsT(object):
 
@@ -50,6 +48,11 @@ class MatrixSetDiagOptionsT(object):
         return cls.InitFromObj(matrixSetDiagOptions)
 
     @classmethod
+    def InitFromPackedBuf(cls, buf, pos=0):
+        n = flatbuffers.encode.Get(flatbuffers.packer.uoffset, buf, pos)
+        return cls.InitFromBuf(buf, pos+n)
+
+    @classmethod
     def InitFromObj(cls, matrixSetDiagOptions):
         x = MatrixSetDiagOptionsT()
         x._UnPack(matrixSetDiagOptions)
@@ -62,6 +65,6 @@ class MatrixSetDiagOptionsT(object):
 
     # MatrixSetDiagOptionsT
     def Pack(self, builder):
-        Start(builder)
-        matrixSetDiagOptions = End(builder)
+        MatrixSetDiagOptionsStart(builder)
+        matrixSetDiagOptions = MatrixSetDiagOptionsEnd(builder)
         return matrixSetDiagOptions

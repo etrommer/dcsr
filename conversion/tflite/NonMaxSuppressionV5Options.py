@@ -28,14 +28,12 @@ class NonMaxSuppressionV5Options(object):
     def Init(self, buf, pos):
         self._tab = flatbuffers.table.Table(buf, pos)
 
-def Start(builder): builder.StartObject(0)
-def NonMaxSuppressionV5OptionsStart(builder):
-    """This method is deprecated. Please switch to Start."""
-    return Start(builder)
-def End(builder): return builder.EndObject()
-def NonMaxSuppressionV5OptionsEnd(builder):
-    """This method is deprecated. Please switch to End."""
-    return End(builder)
+def NonMaxSuppressionV5OptionsStart(builder): builder.StartObject(0)
+def Start(builder):
+    return NonMaxSuppressionV5OptionsStart(builder)
+def NonMaxSuppressionV5OptionsEnd(builder): return builder.EndObject()
+def End(builder):
+    return NonMaxSuppressionV5OptionsEnd(builder)
 
 class NonMaxSuppressionV5OptionsT(object):
 
@@ -50,6 +48,11 @@ class NonMaxSuppressionV5OptionsT(object):
         return cls.InitFromObj(nonMaxSuppressionV5Options)
 
     @classmethod
+    def InitFromPackedBuf(cls, buf, pos=0):
+        n = flatbuffers.encode.Get(flatbuffers.packer.uoffset, buf, pos)
+        return cls.InitFromBuf(buf, pos+n)
+
+    @classmethod
     def InitFromObj(cls, nonMaxSuppressionV5Options):
         x = NonMaxSuppressionV5OptionsT()
         x._UnPack(nonMaxSuppressionV5Options)
@@ -62,6 +65,6 @@ class NonMaxSuppressionV5OptionsT(object):
 
     # NonMaxSuppressionV5OptionsT
     def Pack(self, builder):
-        Start(builder)
-        nonMaxSuppressionV5Options = End(builder)
+        NonMaxSuppressionV5OptionsStart(builder)
+        nonMaxSuppressionV5Options = NonMaxSuppressionV5OptionsEnd(builder)
         return nonMaxSuppressionV5Options

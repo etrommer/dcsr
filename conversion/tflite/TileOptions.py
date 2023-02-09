@@ -28,14 +28,12 @@ class TileOptions(object):
     def Init(self, buf, pos):
         self._tab = flatbuffers.table.Table(buf, pos)
 
-def Start(builder): builder.StartObject(0)
-def TileOptionsStart(builder):
-    """This method is deprecated. Please switch to Start."""
-    return Start(builder)
-def End(builder): return builder.EndObject()
-def TileOptionsEnd(builder):
-    """This method is deprecated. Please switch to End."""
-    return End(builder)
+def TileOptionsStart(builder): builder.StartObject(0)
+def Start(builder):
+    return TileOptionsStart(builder)
+def TileOptionsEnd(builder): return builder.EndObject()
+def End(builder):
+    return TileOptionsEnd(builder)
 
 class TileOptionsT(object):
 
@@ -50,6 +48,11 @@ class TileOptionsT(object):
         return cls.InitFromObj(tileOptions)
 
     @classmethod
+    def InitFromPackedBuf(cls, buf, pos=0):
+        n = flatbuffers.encode.Get(flatbuffers.packer.uoffset, buf, pos)
+        return cls.InitFromBuf(buf, pos+n)
+
+    @classmethod
     def InitFromObj(cls, tileOptions):
         x = TileOptionsT()
         x._UnPack(tileOptions)
@@ -62,6 +65,6 @@ class TileOptionsT(object):
 
     # TileOptionsT
     def Pack(self, builder):
-        Start(builder)
-        tileOptions = End(builder)
+        TileOptionsStart(builder)
+        tileOptions = TileOptionsEnd(builder)
         return tileOptions

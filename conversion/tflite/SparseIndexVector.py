@@ -8,7 +8,6 @@ class SparseIndexVector(object):
     Uint16Vector = 2
     Uint8Vector = 3
 
-
 def SparseIndexVectorCreator(unionType, table):
     from flatbuffers.table import Table
     if not isinstance(table, Table):

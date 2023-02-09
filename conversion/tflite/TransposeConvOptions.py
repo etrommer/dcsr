@@ -49,26 +49,21 @@ class TransposeConvOptions(object):
             return self._tab.Get(flatbuffers.number_types.Int32Flags, o + self._tab.Pos)
         return 0
 
-def Start(builder): builder.StartObject(3)
-def TransposeConvOptionsStart(builder):
-    """This method is deprecated. Please switch to Start."""
-    return Start(builder)
-def AddPadding(builder, padding): builder.PrependInt8Slot(0, padding, 0)
-def TransposeConvOptionsAddPadding(builder, padding):
-    """This method is deprecated. Please switch to AddPadding."""
-    return AddPadding(builder, padding)
-def AddStrideW(builder, strideW): builder.PrependInt32Slot(1, strideW, 0)
-def TransposeConvOptionsAddStrideW(builder, strideW):
-    """This method is deprecated. Please switch to AddStrideW."""
-    return AddStrideW(builder, strideW)
-def AddStrideH(builder, strideH): builder.PrependInt32Slot(2, strideH, 0)
-def TransposeConvOptionsAddStrideH(builder, strideH):
-    """This method is deprecated. Please switch to AddStrideH."""
-    return AddStrideH(builder, strideH)
-def End(builder): return builder.EndObject()
-def TransposeConvOptionsEnd(builder):
-    """This method is deprecated. Please switch to End."""
-    return End(builder)
+def TransposeConvOptionsStart(builder): builder.StartObject(3)
+def Start(builder):
+    return TransposeConvOptionsStart(builder)
+def TransposeConvOptionsAddPadding(builder, padding): builder.PrependInt8Slot(0, padding, 0)
+def AddPadding(builder, padding):
+    return TransposeConvOptionsAddPadding(builder, padding)
+def TransposeConvOptionsAddStrideW(builder, strideW): builder.PrependInt32Slot(1, strideW, 0)
+def AddStrideW(builder, strideW):
+    return TransposeConvOptionsAddStrideW(builder, strideW)
+def TransposeConvOptionsAddStrideH(builder, strideH): builder.PrependInt32Slot(2, strideH, 0)
+def AddStrideH(builder, strideH):
+    return TransposeConvOptionsAddStrideH(builder, strideH)
+def TransposeConvOptionsEnd(builder): return builder.EndObject()
+def End(builder):
+    return TransposeConvOptionsEnd(builder)
 
 class TransposeConvOptionsT(object):
 
@@ -83,6 +78,11 @@ class TransposeConvOptionsT(object):
         transposeConvOptions = TransposeConvOptions()
         transposeConvOptions.Init(buf, pos)
         return cls.InitFromObj(transposeConvOptions)
+
+    @classmethod
+    def InitFromPackedBuf(cls, buf, pos=0):
+        n = flatbuffers.encode.Get(flatbuffers.packer.uoffset, buf, pos)
+        return cls.InitFromBuf(buf, pos+n)
 
     @classmethod
     def InitFromObj(cls, transposeConvOptions):
@@ -100,9 +100,9 @@ class TransposeConvOptionsT(object):
 
     # TransposeConvOptionsT
     def Pack(self, builder):
-        Start(builder)
-        AddPadding(builder, self.padding)
-        AddStrideW(builder, self.strideW)
-        AddStrideH(builder, self.strideH)
-        transposeConvOptions = End(builder)
+        TransposeConvOptionsStart(builder)
+        TransposeConvOptionsAddPadding(builder, self.padding)
+        TransposeConvOptionsAddStrideW(builder, self.strideW)
+        TransposeConvOptionsAddStrideH(builder, self.strideH)
+        transposeConvOptions = TransposeConvOptionsEnd(builder)
         return transposeConvOptions

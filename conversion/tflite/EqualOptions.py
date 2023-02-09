@@ -28,14 +28,12 @@ class EqualOptions(object):
     def Init(self, buf, pos):
         self._tab = flatbuffers.table.Table(buf, pos)
 
-def Start(builder): builder.StartObject(0)
-def EqualOptionsStart(builder):
-    """This method is deprecated. Please switch to Start."""
-    return Start(builder)
-def End(builder): return builder.EndObject()
-def EqualOptionsEnd(builder):
-    """This method is deprecated. Please switch to End."""
-    return End(builder)
+def EqualOptionsStart(builder): builder.StartObject(0)
+def Start(builder):
+    return EqualOptionsStart(builder)
+def EqualOptionsEnd(builder): return builder.EndObject()
+def End(builder):
+    return EqualOptionsEnd(builder)
 
 class EqualOptionsT(object):
 
@@ -50,6 +48,11 @@ class EqualOptionsT(object):
         return cls.InitFromObj(equalOptions)
 
     @classmethod
+    def InitFromPackedBuf(cls, buf, pos=0):
+        n = flatbuffers.encode.Get(flatbuffers.packer.uoffset, buf, pos)
+        return cls.InitFromBuf(buf, pos+n)
+
+    @classmethod
     def InitFromObj(cls, equalOptions):
         x = EqualOptionsT()
         x._UnPack(equalOptions)
@@ -62,6 +65,6 @@ class EqualOptionsT(object):
 
     # EqualOptionsT
     def Pack(self, builder):
-        Start(builder)
-        equalOptions = End(builder)
+        EqualOptionsStart(builder)
+        equalOptions = EqualOptionsEnd(builder)
         return equalOptions

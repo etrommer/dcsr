@@ -42,22 +42,18 @@ class Metadata(object):
             return self._tab.Get(flatbuffers.number_types.Uint32Flags, o + self._tab.Pos)
         return 0
 
-def Start(builder): builder.StartObject(2)
-def MetadataStart(builder):
-    """This method is deprecated. Please switch to Start."""
-    return Start(builder)
-def AddName(builder, name): builder.PrependUOffsetTRelativeSlot(0, flatbuffers.number_types.UOffsetTFlags.py_type(name), 0)
-def MetadataAddName(builder, name):
-    """This method is deprecated. Please switch to AddName."""
-    return AddName(builder, name)
-def AddBuffer(builder, buffer): builder.PrependUint32Slot(1, buffer, 0)
-def MetadataAddBuffer(builder, buffer):
-    """This method is deprecated. Please switch to AddBuffer."""
-    return AddBuffer(builder, buffer)
-def End(builder): return builder.EndObject()
-def MetadataEnd(builder):
-    """This method is deprecated. Please switch to End."""
-    return End(builder)
+def MetadataStart(builder): builder.StartObject(2)
+def Start(builder):
+    return MetadataStart(builder)
+def MetadataAddName(builder, name): builder.PrependUOffsetTRelativeSlot(0, flatbuffers.number_types.UOffsetTFlags.py_type(name), 0)
+def AddName(builder, name):
+    return MetadataAddName(builder, name)
+def MetadataAddBuffer(builder, buffer): builder.PrependUint32Slot(1, buffer, 0)
+def AddBuffer(builder, buffer):
+    return MetadataAddBuffer(builder, buffer)
+def MetadataEnd(builder): return builder.EndObject()
+def End(builder):
+    return MetadataEnd(builder)
 
 class MetadataT(object):
 
@@ -71,6 +67,11 @@ class MetadataT(object):
         metadata = Metadata()
         metadata.Init(buf, pos)
         return cls.InitFromObj(metadata)
+
+    @classmethod
+    def InitFromPackedBuf(cls, buf, pos=0):
+        n = flatbuffers.encode.Get(flatbuffers.packer.uoffset, buf, pos)
+        return cls.InitFromBuf(buf, pos+n)
 
     @classmethod
     def InitFromObj(cls, metadata):
@@ -89,9 +90,9 @@ class MetadataT(object):
     def Pack(self, builder):
         if self.name is not None:
             name = builder.CreateString(self.name)
-        Start(builder)
+        MetadataStart(builder)
         if self.name is not None:
-            AddName(builder, name)
-        AddBuffer(builder, self.buffer)
-        metadata = End(builder)
+            MetadataAddName(builder, name)
+        MetadataAddBuffer(builder, self.buffer)
+        metadata = MetadataEnd(builder)
         return metadata

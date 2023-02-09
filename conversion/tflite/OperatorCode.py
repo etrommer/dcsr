@@ -56,30 +56,24 @@ class OperatorCode(object):
             return self._tab.Get(flatbuffers.number_types.Int32Flags, o + self._tab.Pos)
         return 0
 
-def Start(builder): builder.StartObject(4)
-def OperatorCodeStart(builder):
-    """This method is deprecated. Please switch to Start."""
-    return Start(builder)
-def AddDeprecatedBuiltinCode(builder, deprecatedBuiltinCode): builder.PrependInt8Slot(0, deprecatedBuiltinCode, 0)
-def OperatorCodeAddDeprecatedBuiltinCode(builder, deprecatedBuiltinCode):
-    """This method is deprecated. Please switch to AddDeprecatedBuiltinCode."""
-    return AddDeprecatedBuiltinCode(builder, deprecatedBuiltinCode)
-def AddCustomCode(builder, customCode): builder.PrependUOffsetTRelativeSlot(1, flatbuffers.number_types.UOffsetTFlags.py_type(customCode), 0)
-def OperatorCodeAddCustomCode(builder, customCode):
-    """This method is deprecated. Please switch to AddCustomCode."""
-    return AddCustomCode(builder, customCode)
-def AddVersion(builder, version): builder.PrependInt32Slot(2, version, 1)
-def OperatorCodeAddVersion(builder, version):
-    """This method is deprecated. Please switch to AddVersion."""
-    return AddVersion(builder, version)
-def AddBuiltinCode(builder, builtinCode): builder.PrependInt32Slot(3, builtinCode, 0)
-def OperatorCodeAddBuiltinCode(builder, builtinCode):
-    """This method is deprecated. Please switch to AddBuiltinCode."""
-    return AddBuiltinCode(builder, builtinCode)
-def End(builder): return builder.EndObject()
-def OperatorCodeEnd(builder):
-    """This method is deprecated. Please switch to End."""
-    return End(builder)
+def OperatorCodeStart(builder): builder.StartObject(4)
+def Start(builder):
+    return OperatorCodeStart(builder)
+def OperatorCodeAddDeprecatedBuiltinCode(builder, deprecatedBuiltinCode): builder.PrependInt8Slot(0, deprecatedBuiltinCode, 0)
+def AddDeprecatedBuiltinCode(builder, deprecatedBuiltinCode):
+    return OperatorCodeAddDeprecatedBuiltinCode(builder, deprecatedBuiltinCode)
+def OperatorCodeAddCustomCode(builder, customCode): builder.PrependUOffsetTRelativeSlot(1, flatbuffers.number_types.UOffsetTFlags.py_type(customCode), 0)
+def AddCustomCode(builder, customCode):
+    return OperatorCodeAddCustomCode(builder, customCode)
+def OperatorCodeAddVersion(builder, version): builder.PrependInt32Slot(2, version, 1)
+def AddVersion(builder, version):
+    return OperatorCodeAddVersion(builder, version)
+def OperatorCodeAddBuiltinCode(builder, builtinCode): builder.PrependInt32Slot(3, builtinCode, 0)
+def AddBuiltinCode(builder, builtinCode):
+    return OperatorCodeAddBuiltinCode(builder, builtinCode)
+def OperatorCodeEnd(builder): return builder.EndObject()
+def End(builder):
+    return OperatorCodeEnd(builder)
 
 class OperatorCodeT(object):
 
@@ -95,6 +89,11 @@ class OperatorCodeT(object):
         operatorCode = OperatorCode()
         operatorCode.Init(buf, pos)
         return cls.InitFromObj(operatorCode)
+
+    @classmethod
+    def InitFromPackedBuf(cls, buf, pos=0):
+        n = flatbuffers.encode.Get(flatbuffers.packer.uoffset, buf, pos)
+        return cls.InitFromBuf(buf, pos+n)
 
     @classmethod
     def InitFromObj(cls, operatorCode):
@@ -115,11 +114,11 @@ class OperatorCodeT(object):
     def Pack(self, builder):
         if self.customCode is not None:
             customCode = builder.CreateString(self.customCode)
-        Start(builder)
-        AddDeprecatedBuiltinCode(builder, self.deprecatedBuiltinCode)
+        OperatorCodeStart(builder)
+        OperatorCodeAddDeprecatedBuiltinCode(builder, self.deprecatedBuiltinCode)
         if self.customCode is not None:
-            AddCustomCode(builder, customCode)
-        AddVersion(builder, self.version)
-        AddBuiltinCode(builder, self.builtinCode)
-        operatorCode = End(builder)
+            OperatorCodeAddCustomCode(builder, customCode)
+        OperatorCodeAddVersion(builder, self.version)
+        OperatorCodeAddBuiltinCode(builder, self.builtinCode)
+        operatorCode = OperatorCodeEnd(builder)
         return operatorCode

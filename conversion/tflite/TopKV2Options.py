@@ -28,14 +28,12 @@ class TopKV2Options(object):
     def Init(self, buf, pos):
         self._tab = flatbuffers.table.Table(buf, pos)
 
-def Start(builder): builder.StartObject(0)
-def TopKV2OptionsStart(builder):
-    """This method is deprecated. Please switch to Start."""
-    return Start(builder)
-def End(builder): return builder.EndObject()
-def TopKV2OptionsEnd(builder):
-    """This method is deprecated. Please switch to End."""
-    return End(builder)
+def TopKV2OptionsStart(builder): builder.StartObject(0)
+def Start(builder):
+    return TopKV2OptionsStart(builder)
+def TopKV2OptionsEnd(builder): return builder.EndObject()
+def End(builder):
+    return TopKV2OptionsEnd(builder)
 
 class TopKV2OptionsT(object):
 
@@ -45,23 +43,28 @@ class TopKV2OptionsT(object):
 
     @classmethod
     def InitFromBuf(cls, buf, pos):
-        topKV2Options = TopKV2Options()
-        topKV2Options.Init(buf, pos)
-        return cls.InitFromObj(topKV2Options)
+        topKv2Options = TopKV2Options()
+        topKv2Options.Init(buf, pos)
+        return cls.InitFromObj(topKv2Options)
 
     @classmethod
-    def InitFromObj(cls, topKV2Options):
+    def InitFromPackedBuf(cls, buf, pos=0):
+        n = flatbuffers.encode.Get(flatbuffers.packer.uoffset, buf, pos)
+        return cls.InitFromBuf(buf, pos+n)
+
+    @classmethod
+    def InitFromObj(cls, topKv2Options):
         x = TopKV2OptionsT()
-        x._UnPack(topKV2Options)
+        x._UnPack(topKv2Options)
         return x
 
     # TopKV2OptionsT
-    def _UnPack(self, topKV2Options):
-        if topKV2Options is None:
+    def _UnPack(self, topKv2Options):
+        if topKv2Options is None:
             return
 
     # TopKV2OptionsT
     def Pack(self, builder):
-        Start(builder)
-        topKV2Options = End(builder)
-        return topKV2Options
+        TopKV2OptionsStart(builder)
+        topKv2Options = TopKV2OptionsEnd(builder)
+        return topKv2Options

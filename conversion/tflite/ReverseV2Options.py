@@ -28,14 +28,12 @@ class ReverseV2Options(object):
     def Init(self, buf, pos):
         self._tab = flatbuffers.table.Table(buf, pos)
 
-def Start(builder): builder.StartObject(0)
-def ReverseV2OptionsStart(builder):
-    """This method is deprecated. Please switch to Start."""
-    return Start(builder)
-def End(builder): return builder.EndObject()
-def ReverseV2OptionsEnd(builder):
-    """This method is deprecated. Please switch to End."""
-    return End(builder)
+def ReverseV2OptionsStart(builder): builder.StartObject(0)
+def Start(builder):
+    return ReverseV2OptionsStart(builder)
+def ReverseV2OptionsEnd(builder): return builder.EndObject()
+def End(builder):
+    return ReverseV2OptionsEnd(builder)
 
 class ReverseV2OptionsT(object):
 
@@ -50,6 +48,11 @@ class ReverseV2OptionsT(object):
         return cls.InitFromObj(reverseV2Options)
 
     @classmethod
+    def InitFromPackedBuf(cls, buf, pos=0):
+        n = flatbuffers.encode.Get(flatbuffers.packer.uoffset, buf, pos)
+        return cls.InitFromBuf(buf, pos+n)
+
+    @classmethod
     def InitFromObj(cls, reverseV2Options):
         x = ReverseV2OptionsT()
         x._UnPack(reverseV2Options)
@@ -62,6 +65,6 @@ class ReverseV2OptionsT(object):
 
     # ReverseV2OptionsT
     def Pack(self, builder):
-        Start(builder)
-        reverseV2Options = End(builder)
+        ReverseV2OptionsStart(builder)
+        reverseV2Options = ReverseV2OptionsEnd(builder)
         return reverseV2Options

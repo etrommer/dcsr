@@ -28,14 +28,12 @@ class WhereOptions(object):
     def Init(self, buf, pos):
         self._tab = flatbuffers.table.Table(buf, pos)
 
-def Start(builder): builder.StartObject(0)
-def WhereOptionsStart(builder):
-    """This method is deprecated. Please switch to Start."""
-    return Start(builder)
-def End(builder): return builder.EndObject()
-def WhereOptionsEnd(builder):
-    """This method is deprecated. Please switch to End."""
-    return End(builder)
+def WhereOptionsStart(builder): builder.StartObject(0)
+def Start(builder):
+    return WhereOptionsStart(builder)
+def WhereOptionsEnd(builder): return builder.EndObject()
+def End(builder):
+    return WhereOptionsEnd(builder)
 
 class WhereOptionsT(object):
 
@@ -50,6 +48,11 @@ class WhereOptionsT(object):
         return cls.InitFromObj(whereOptions)
 
     @classmethod
+    def InitFromPackedBuf(cls, buf, pos=0):
+        n = flatbuffers.encode.Get(flatbuffers.packer.uoffset, buf, pos)
+        return cls.InitFromBuf(buf, pos+n)
+
+    @classmethod
     def InitFromObj(cls, whereOptions):
         x = WhereOptionsT()
         x._UnPack(whereOptions)
@@ -62,6 +65,6 @@ class WhereOptionsT(object):
 
     # WhereOptionsT
     def Pack(self, builder):
-        Start(builder)
-        whereOptions = End(builder)
+        WhereOptionsStart(builder)
+        whereOptions = WhereOptionsEnd(builder)
         return whereOptions

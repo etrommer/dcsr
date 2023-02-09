@@ -35,18 +35,15 @@ class CallOnceOptions(object):
             return self._tab.Get(flatbuffers.number_types.Int32Flags, o + self._tab.Pos)
         return 0
 
-def Start(builder): builder.StartObject(1)
-def CallOnceOptionsStart(builder):
-    """This method is deprecated. Please switch to Start."""
-    return Start(builder)
-def AddInitSubgraphIndex(builder, initSubgraphIndex): builder.PrependInt32Slot(0, initSubgraphIndex, 0)
-def CallOnceOptionsAddInitSubgraphIndex(builder, initSubgraphIndex):
-    """This method is deprecated. Please switch to AddInitSubgraphIndex."""
-    return AddInitSubgraphIndex(builder, initSubgraphIndex)
-def End(builder): return builder.EndObject()
-def CallOnceOptionsEnd(builder):
-    """This method is deprecated. Please switch to End."""
-    return End(builder)
+def CallOnceOptionsStart(builder): builder.StartObject(1)
+def Start(builder):
+    return CallOnceOptionsStart(builder)
+def CallOnceOptionsAddInitSubgraphIndex(builder, initSubgraphIndex): builder.PrependInt32Slot(0, initSubgraphIndex, 0)
+def AddInitSubgraphIndex(builder, initSubgraphIndex):
+    return CallOnceOptionsAddInitSubgraphIndex(builder, initSubgraphIndex)
+def CallOnceOptionsEnd(builder): return builder.EndObject()
+def End(builder):
+    return CallOnceOptionsEnd(builder)
 
 class CallOnceOptionsT(object):
 
@@ -59,6 +56,11 @@ class CallOnceOptionsT(object):
         callOnceOptions = CallOnceOptions()
         callOnceOptions.Init(buf, pos)
         return cls.InitFromObj(callOnceOptions)
+
+    @classmethod
+    def InitFromPackedBuf(cls, buf, pos=0):
+        n = flatbuffers.encode.Get(flatbuffers.packer.uoffset, buf, pos)
+        return cls.InitFromBuf(buf, pos+n)
 
     @classmethod
     def InitFromObj(cls, callOnceOptions):
@@ -74,7 +76,7 @@ class CallOnceOptionsT(object):
 
     # CallOnceOptionsT
     def Pack(self, builder):
-        Start(builder)
-        AddInitSubgraphIndex(builder, self.initSubgraphIndex)
-        callOnceOptions = End(builder)
+        CallOnceOptionsStart(builder)
+        CallOnceOptionsAddInitSubgraphIndex(builder, self.initSubgraphIndex)
+        callOnceOptions = CallOnceOptionsEnd(builder)
         return callOnceOptions

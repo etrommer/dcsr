@@ -55,22 +55,18 @@ class Buffer(object):
         o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(4))
         return o == 0
 
-def Start(builder): builder.StartObject(1)
-def BufferStart(builder):
-    """This method is deprecated. Please switch to Start."""
-    return Start(builder)
-def AddData(builder, data): builder.PrependUOffsetTRelativeSlot(0, flatbuffers.number_types.UOffsetTFlags.py_type(data), 0)
-def BufferAddData(builder, data):
-    """This method is deprecated. Please switch to AddData."""
-    return AddData(builder, data)
-def StartDataVector(builder, numElems): return builder.StartVector(1, numElems, 1)
-def BufferStartDataVector(builder, numElems):
-    """This method is deprecated. Please switch to Start."""
-    return StartDataVector(builder, numElems)
-def End(builder): return builder.EndObject()
-def BufferEnd(builder):
-    """This method is deprecated. Please switch to End."""
-    return End(builder)
+def BufferStart(builder): builder.StartObject(1)
+def Start(builder):
+    return BufferStart(builder)
+def BufferAddData(builder, data): builder.PrependUOffsetTRelativeSlot(0, flatbuffers.number_types.UOffsetTFlags.py_type(data), 0)
+def AddData(builder, data):
+    return BufferAddData(builder, data)
+def BufferStartDataVector(builder, numElems): return builder.StartVector(1, numElems, 1)
+def StartDataVector(builder, numElems):
+    return BufferStartDataVector(builder, numElems)
+def BufferEnd(builder): return builder.EndObject()
+def End(builder):
+    return BufferEnd(builder)
 try:
     from typing import List
 except:
@@ -87,6 +83,11 @@ class BufferT(object):
         buffer = Buffer()
         buffer.Init(buf, pos)
         return cls.InitFromObj(buffer)
+
+    @classmethod
+    def InitFromPackedBuf(cls, buf, pos=0):
+        n = flatbuffers.encode.Get(flatbuffers.packer.uoffset, buf, pos)
+        return cls.InitFromBuf(buf, pos+n)
 
     @classmethod
     def InitFromObj(cls, buffer):
@@ -112,12 +113,12 @@ class BufferT(object):
             if np is not None and type(self.data) is np.ndarray:
                 data = builder.CreateNumpyVector(self.data)
             else:
-                StartDataVector(builder, len(self.data))
+                BufferStartDataVector(builder, len(self.data))
                 for i in reversed(range(len(self.data))):
                     builder.PrependUint8(self.data[i])
                 data = builder.EndVector()
-        Start(builder)
+        BufferStart(builder)
         if self.data is not None:
-            AddData(builder, data)
-        buffer = End(builder)
+            BufferAddData(builder, data)
+        buffer = BufferEnd(builder)
         return buffer

@@ -55,22 +55,18 @@ class Int32Vector(object):
         o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(4))
         return o == 0
 
-def Start(builder): builder.StartObject(1)
-def Int32VectorStart(builder):
-    """This method is deprecated. Please switch to Start."""
-    return Start(builder)
-def AddValues(builder, values): builder.PrependUOffsetTRelativeSlot(0, flatbuffers.number_types.UOffsetTFlags.py_type(values), 0)
-def Int32VectorAddValues(builder, values):
-    """This method is deprecated. Please switch to AddValues."""
-    return AddValues(builder, values)
-def StartValuesVector(builder, numElems): return builder.StartVector(4, numElems, 4)
-def Int32VectorStartValuesVector(builder, numElems):
-    """This method is deprecated. Please switch to Start."""
-    return StartValuesVector(builder, numElems)
-def End(builder): return builder.EndObject()
-def Int32VectorEnd(builder):
-    """This method is deprecated. Please switch to End."""
-    return End(builder)
+def Int32VectorStart(builder): builder.StartObject(1)
+def Start(builder):
+    return Int32VectorStart(builder)
+def Int32VectorAddValues(builder, values): builder.PrependUOffsetTRelativeSlot(0, flatbuffers.number_types.UOffsetTFlags.py_type(values), 0)
+def AddValues(builder, values):
+    return Int32VectorAddValues(builder, values)
+def Int32VectorStartValuesVector(builder, numElems): return builder.StartVector(4, numElems, 4)
+def StartValuesVector(builder, numElems):
+    return Int32VectorStartValuesVector(builder, numElems)
+def Int32VectorEnd(builder): return builder.EndObject()
+def End(builder):
+    return Int32VectorEnd(builder)
 try:
     from typing import List
 except:
@@ -87,6 +83,11 @@ class Int32VectorT(object):
         int32Vector = Int32Vector()
         int32Vector.Init(buf, pos)
         return cls.InitFromObj(int32Vector)
+
+    @classmethod
+    def InitFromPackedBuf(cls, buf, pos=0):
+        n = flatbuffers.encode.Get(flatbuffers.packer.uoffset, buf, pos)
+        return cls.InitFromBuf(buf, pos+n)
 
     @classmethod
     def InitFromObj(cls, int32Vector):
@@ -112,12 +113,12 @@ class Int32VectorT(object):
             if np is not None and type(self.values) is np.ndarray:
                 values = builder.CreateNumpyVector(self.values)
             else:
-                StartValuesVector(builder, len(self.values))
+                Int32VectorStartValuesVector(builder, len(self.values))
                 for i in reversed(range(len(self.values))):
                     builder.PrependInt32(self.values[i])
                 values = builder.EndVector()
-        Start(builder)
+        Int32VectorStart(builder)
         if self.values is not None:
-            AddValues(builder, values)
-        int32Vector = End(builder)
+            Int32VectorAddValues(builder, values)
+        int32Vector = Int32VectorEnd(builder)
         return int32Vector

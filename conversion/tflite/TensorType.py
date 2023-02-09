@@ -16,4 +16,3 @@ class TensorType(object):
     FLOAT64 = 10
     COMPLEX128 = 11
     UINT64 = 12
-

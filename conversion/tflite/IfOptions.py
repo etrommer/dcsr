@@ -42,22 +42,18 @@ class IfOptions(object):
             return self._tab.Get(flatbuffers.number_types.Int32Flags, o + self._tab.Pos)
         return 0
 
-def Start(builder): builder.StartObject(2)
-def IfOptionsStart(builder):
-    """This method is deprecated. Please switch to Start."""
-    return Start(builder)
-def AddThenSubgraphIndex(builder, thenSubgraphIndex): builder.PrependInt32Slot(0, thenSubgraphIndex, 0)
-def IfOptionsAddThenSubgraphIndex(builder, thenSubgraphIndex):
-    """This method is deprecated. Please switch to AddThenSubgraphIndex."""
-    return AddThenSubgraphIndex(builder, thenSubgraphIndex)
-def AddElseSubgraphIndex(builder, elseSubgraphIndex): builder.PrependInt32Slot(1, elseSubgraphIndex, 0)
-def IfOptionsAddElseSubgraphIndex(builder, elseSubgraphIndex):
-    """This method is deprecated. Please switch to AddElseSubgraphIndex."""
-    return AddElseSubgraphIndex(builder, elseSubgraphIndex)
-def End(builder): return builder.EndObject()
-def IfOptionsEnd(builder):
-    """This method is deprecated. Please switch to End."""
-    return End(builder)
+def IfOptionsStart(builder): builder.StartObject(2)
+def Start(builder):
+    return IfOptionsStart(builder)
+def IfOptionsAddThenSubgraphIndex(builder, thenSubgraphIndex): builder.PrependInt32Slot(0, thenSubgraphIndex, 0)
+def AddThenSubgraphIndex(builder, thenSubgraphIndex):
+    return IfOptionsAddThenSubgraphIndex(builder, thenSubgraphIndex)
+def IfOptionsAddElseSubgraphIndex(builder, elseSubgraphIndex): builder.PrependInt32Slot(1, elseSubgraphIndex, 0)
+def AddElseSubgraphIndex(builder, elseSubgraphIndex):
+    return IfOptionsAddElseSubgraphIndex(builder, elseSubgraphIndex)
+def IfOptionsEnd(builder): return builder.EndObject()
+def End(builder):
+    return IfOptionsEnd(builder)
 
 class IfOptionsT(object):
 
@@ -71,6 +67,11 @@ class IfOptionsT(object):
         ifOptions = IfOptions()
         ifOptions.Init(buf, pos)
         return cls.InitFromObj(ifOptions)
+
+    @classmethod
+    def InitFromPackedBuf(cls, buf, pos=0):
+        n = flatbuffers.encode.Get(flatbuffers.packer.uoffset, buf, pos)
+        return cls.InitFromBuf(buf, pos+n)
 
     @classmethod
     def InitFromObj(cls, ifOptions):
@@ -87,8 +88,8 @@ class IfOptionsT(object):
 
     # IfOptionsT
     def Pack(self, builder):
-        Start(builder)
-        AddThenSubgraphIndex(builder, self.thenSubgraphIndex)
-        AddElseSubgraphIndex(builder, self.elseSubgraphIndex)
-        ifOptions = End(builder)
+        IfOptionsStart(builder)
+        IfOptionsAddThenSubgraphIndex(builder, self.thenSubgraphIndex)
+        IfOptionsAddElseSubgraphIndex(builder, self.elseSubgraphIndex)
+        ifOptions = IfOptionsEnd(builder)
         return ifOptions

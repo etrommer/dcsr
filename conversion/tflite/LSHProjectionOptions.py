@@ -35,18 +35,15 @@ class LSHProjectionOptions(object):
             return self._tab.Get(flatbuffers.number_types.Int8Flags, o + self._tab.Pos)
         return 0
 
-def Start(builder): builder.StartObject(1)
-def LSHProjectionOptionsStart(builder):
-    """This method is deprecated. Please switch to Start."""
-    return Start(builder)
-def AddType(builder, type): builder.PrependInt8Slot(0, type, 0)
-def LSHProjectionOptionsAddType(builder, type):
-    """This method is deprecated. Please switch to AddType."""
-    return AddType(builder, type)
-def End(builder): return builder.EndObject()
-def LSHProjectionOptionsEnd(builder):
-    """This method is deprecated. Please switch to End."""
-    return End(builder)
+def LSHProjectionOptionsStart(builder): builder.StartObject(1)
+def Start(builder):
+    return LSHProjectionOptionsStart(builder)
+def LSHProjectionOptionsAddType(builder, type): builder.PrependInt8Slot(0, type, 0)
+def AddType(builder, type):
+    return LSHProjectionOptionsAddType(builder, type)
+def LSHProjectionOptionsEnd(builder): return builder.EndObject()
+def End(builder):
+    return LSHProjectionOptionsEnd(builder)
 
 class LSHProjectionOptionsT(object):
 
@@ -56,25 +53,30 @@ class LSHProjectionOptionsT(object):
 
     @classmethod
     def InitFromBuf(cls, buf, pos):
-        lSHProjectionOptions = LSHProjectionOptions()
-        lSHProjectionOptions.Init(buf, pos)
-        return cls.InitFromObj(lSHProjectionOptions)
+        lshprojectionOptions = LSHProjectionOptions()
+        lshprojectionOptions.Init(buf, pos)
+        return cls.InitFromObj(lshprojectionOptions)
 
     @classmethod
-    def InitFromObj(cls, lSHProjectionOptions):
+    def InitFromPackedBuf(cls, buf, pos=0):
+        n = flatbuffers.encode.Get(flatbuffers.packer.uoffset, buf, pos)
+        return cls.InitFromBuf(buf, pos+n)
+
+    @classmethod
+    def InitFromObj(cls, lshprojectionOptions):
         x = LSHProjectionOptionsT()
-        x._UnPack(lSHProjectionOptions)
+        x._UnPack(lshprojectionOptions)
         return x
 
     # LSHProjectionOptionsT
-    def _UnPack(self, lSHProjectionOptions):
-        if lSHProjectionOptions is None:
+    def _UnPack(self, lshprojectionOptions):
+        if lshprojectionOptions is None:
             return
-        self.type = lSHProjectionOptions.Type()
+        self.type = lshprojectionOptions.Type()
 
     # LSHProjectionOptionsT
     def Pack(self, builder):
-        Start(builder)
-        AddType(builder, self.type)
-        lSHProjectionOptions = End(builder)
-        return lSHProjectionOptions
+        LSHProjectionOptionsStart(builder)
+        LSHProjectionOptionsAddType(builder, self.type)
+        lshprojectionOptions = LSHProjectionOptionsEnd(builder)
+        return lshprojectionOptions

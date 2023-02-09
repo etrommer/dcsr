@@ -28,14 +28,12 @@ class AbsOptions(object):
     def Init(self, buf, pos):
         self._tab = flatbuffers.table.Table(buf, pos)
 
-def Start(builder): builder.StartObject(0)
-def AbsOptionsStart(builder):
-    """This method is deprecated. Please switch to Start."""
-    return Start(builder)
-def End(builder): return builder.EndObject()
-def AbsOptionsEnd(builder):
-    """This method is deprecated. Please switch to End."""
-    return End(builder)
+def AbsOptionsStart(builder): builder.StartObject(0)
+def Start(builder):
+    return AbsOptionsStart(builder)
+def AbsOptionsEnd(builder): return builder.EndObject()
+def End(builder):
+    return AbsOptionsEnd(builder)
 
 class AbsOptionsT(object):
 
@@ -50,6 +48,11 @@ class AbsOptionsT(object):
         return cls.InitFromObj(absOptions)
 
     @classmethod
+    def InitFromPackedBuf(cls, buf, pos=0):
+        n = flatbuffers.encode.Get(flatbuffers.packer.uoffset, buf, pos)
+        return cls.InitFromBuf(buf, pos+n)
+
+    @classmethod
     def InitFromObj(cls, absOptions):
         x = AbsOptionsT()
         x._UnPack(absOptions)
@@ -62,6 +65,6 @@ class AbsOptionsT(object):
 
     # AbsOptionsT
     def Pack(self, builder):
-        Start(builder)
-        absOptions = End(builder)
+        AbsOptionsStart(builder)
+        absOptions = AbsOptionsEnd(builder)
         return absOptions

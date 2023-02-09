@@ -28,14 +28,12 @@ class RangeOptions(object):
     def Init(self, buf, pos):
         self._tab = flatbuffers.table.Table(buf, pos)
 
-def Start(builder): builder.StartObject(0)
-def RangeOptionsStart(builder):
-    """This method is deprecated. Please switch to Start."""
-    return Start(builder)
-def End(builder): return builder.EndObject()
-def RangeOptionsEnd(builder):
-    """This method is deprecated. Please switch to End."""
-    return End(builder)
+def RangeOptionsStart(builder): builder.StartObject(0)
+def Start(builder):
+    return RangeOptionsStart(builder)
+def RangeOptionsEnd(builder): return builder.EndObject()
+def End(builder):
+    return RangeOptionsEnd(builder)
 
 class RangeOptionsT(object):
 
@@ -50,6 +48,11 @@ class RangeOptionsT(object):
         return cls.InitFromObj(rangeOptions)
 
     @classmethod
+    def InitFromPackedBuf(cls, buf, pos=0):
+        n = flatbuffers.encode.Get(flatbuffers.packer.uoffset, buf, pos)
+        return cls.InitFromBuf(buf, pos+n)
+
+    @classmethod
     def InitFromObj(cls, rangeOptions):
         x = RangeOptionsT()
         x._UnPack(rangeOptions)
@@ -62,6 +65,6 @@ class RangeOptionsT(object):
 
     # RangeOptionsT
     def Pack(self, builder):
-        Start(builder)
-        rangeOptions = End(builder)
+        RangeOptionsStart(builder)
+        rangeOptions = RangeOptionsEnd(builder)
         return rangeOptions

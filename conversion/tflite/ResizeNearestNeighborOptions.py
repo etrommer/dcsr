@@ -42,22 +42,18 @@ class ResizeNearestNeighborOptions(object):
             return bool(self._tab.Get(flatbuffers.number_types.BoolFlags, o + self._tab.Pos))
         return False
 
-def Start(builder): builder.StartObject(2)
-def ResizeNearestNeighborOptionsStart(builder):
-    """This method is deprecated. Please switch to Start."""
-    return Start(builder)
-def AddAlignCorners(builder, alignCorners): builder.PrependBoolSlot(0, alignCorners, 0)
-def ResizeNearestNeighborOptionsAddAlignCorners(builder, alignCorners):
-    """This method is deprecated. Please switch to AddAlignCorners."""
-    return AddAlignCorners(builder, alignCorners)
-def AddHalfPixelCenters(builder, halfPixelCenters): builder.PrependBoolSlot(1, halfPixelCenters, 0)
-def ResizeNearestNeighborOptionsAddHalfPixelCenters(builder, halfPixelCenters):
-    """This method is deprecated. Please switch to AddHalfPixelCenters."""
-    return AddHalfPixelCenters(builder, halfPixelCenters)
-def End(builder): return builder.EndObject()
-def ResizeNearestNeighborOptionsEnd(builder):
-    """This method is deprecated. Please switch to End."""
-    return End(builder)
+def ResizeNearestNeighborOptionsStart(builder): builder.StartObject(2)
+def Start(builder):
+    return ResizeNearestNeighborOptionsStart(builder)
+def ResizeNearestNeighborOptionsAddAlignCorners(builder, alignCorners): builder.PrependBoolSlot(0, alignCorners, 0)
+def AddAlignCorners(builder, alignCorners):
+    return ResizeNearestNeighborOptionsAddAlignCorners(builder, alignCorners)
+def ResizeNearestNeighborOptionsAddHalfPixelCenters(builder, halfPixelCenters): builder.PrependBoolSlot(1, halfPixelCenters, 0)
+def AddHalfPixelCenters(builder, halfPixelCenters):
+    return ResizeNearestNeighborOptionsAddHalfPixelCenters(builder, halfPixelCenters)
+def ResizeNearestNeighborOptionsEnd(builder): return builder.EndObject()
+def End(builder):
+    return ResizeNearestNeighborOptionsEnd(builder)
 
 class ResizeNearestNeighborOptionsT(object):
 
@@ -71,6 +67,11 @@ class ResizeNearestNeighborOptionsT(object):
         resizeNearestNeighborOptions = ResizeNearestNeighborOptions()
         resizeNearestNeighborOptions.Init(buf, pos)
         return cls.InitFromObj(resizeNearestNeighborOptions)
+
+    @classmethod
+    def InitFromPackedBuf(cls, buf, pos=0):
+        n = flatbuffers.encode.Get(flatbuffers.packer.uoffset, buf, pos)
+        return cls.InitFromBuf(buf, pos+n)
 
     @classmethod
     def InitFromObj(cls, resizeNearestNeighborOptions):
@@ -87,8 +88,8 @@ class ResizeNearestNeighborOptionsT(object):
 
     # ResizeNearestNeighborOptionsT
     def Pack(self, builder):
-        Start(builder)
-        AddAlignCorners(builder, self.alignCorners)
-        AddHalfPixelCenters(builder, self.halfPixelCenters)
-        resizeNearestNeighborOptions = End(builder)
+        ResizeNearestNeighborOptionsStart(builder)
+        ResizeNearestNeighborOptionsAddAlignCorners(builder, self.alignCorners)
+        ResizeNearestNeighborOptionsAddHalfPixelCenters(builder, self.halfPixelCenters)
+        resizeNearestNeighborOptions = ResizeNearestNeighborOptionsEnd(builder)
         return resizeNearestNeighborOptions

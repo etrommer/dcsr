@@ -35,18 +35,15 @@ class ArgMinOptions(object):
             return self._tab.Get(flatbuffers.number_types.Int8Flags, o + self._tab.Pos)
         return 0
 
-def Start(builder): builder.StartObject(1)
-def ArgMinOptionsStart(builder):
-    """This method is deprecated. Please switch to Start."""
-    return Start(builder)
-def AddOutputType(builder, outputType): builder.PrependInt8Slot(0, outputType, 0)
-def ArgMinOptionsAddOutputType(builder, outputType):
-    """This method is deprecated. Please switch to AddOutputType."""
-    return AddOutputType(builder, outputType)
-def End(builder): return builder.EndObject()
-def ArgMinOptionsEnd(builder):
-    """This method is deprecated. Please switch to End."""
-    return End(builder)
+def ArgMinOptionsStart(builder): builder.StartObject(1)
+def Start(builder):
+    return ArgMinOptionsStart(builder)
+def ArgMinOptionsAddOutputType(builder, outputType): builder.PrependInt8Slot(0, outputType, 0)
+def AddOutputType(builder, outputType):
+    return ArgMinOptionsAddOutputType(builder, outputType)
+def ArgMinOptionsEnd(builder): return builder.EndObject()
+def End(builder):
+    return ArgMinOptionsEnd(builder)
 
 class ArgMinOptionsT(object):
 
@@ -59,6 +56,11 @@ class ArgMinOptionsT(object):
         argMinOptions = ArgMinOptions()
         argMinOptions.Init(buf, pos)
         return cls.InitFromObj(argMinOptions)
+
+    @classmethod
+    def InitFromPackedBuf(cls, buf, pos=0):
+        n = flatbuffers.encode.Get(flatbuffers.packer.uoffset, buf, pos)
+        return cls.InitFromBuf(buf, pos+n)
 
     @classmethod
     def InitFromObj(cls, argMinOptions):
@@ -74,7 +76,7 @@ class ArgMinOptionsT(object):
 
     # ArgMinOptionsT
     def Pack(self, builder):
-        Start(builder)
-        AddOutputType(builder, self.outputType)
-        argMinOptions = End(builder)
+        ArgMinOptionsStart(builder)
+        ArgMinOptionsAddOutputType(builder, self.outputType)
+        argMinOptions = ArgMinOptionsEnd(builder)
         return argMinOptions

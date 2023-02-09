@@ -194,70 +194,54 @@ class Model(object):
         o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(18))
         return o == 0
 
-def Start(builder): builder.StartObject(8)
-def ModelStart(builder):
-    """This method is deprecated. Please switch to Start."""
-    return Start(builder)
-def AddVersion(builder, version): builder.PrependUint32Slot(0, version, 0)
-def ModelAddVersion(builder, version):
-    """This method is deprecated. Please switch to AddVersion."""
-    return AddVersion(builder, version)
-def AddOperatorCodes(builder, operatorCodes): builder.PrependUOffsetTRelativeSlot(1, flatbuffers.number_types.UOffsetTFlags.py_type(operatorCodes), 0)
-def ModelAddOperatorCodes(builder, operatorCodes):
-    """This method is deprecated. Please switch to AddOperatorCodes."""
-    return AddOperatorCodes(builder, operatorCodes)
-def StartOperatorCodesVector(builder, numElems): return builder.StartVector(4, numElems, 4)
-def ModelStartOperatorCodesVector(builder, numElems):
-    """This method is deprecated. Please switch to Start."""
-    return StartOperatorCodesVector(builder, numElems)
-def AddSubgraphs(builder, subgraphs): builder.PrependUOffsetTRelativeSlot(2, flatbuffers.number_types.UOffsetTFlags.py_type(subgraphs), 0)
-def ModelAddSubgraphs(builder, subgraphs):
-    """This method is deprecated. Please switch to AddSubgraphs."""
-    return AddSubgraphs(builder, subgraphs)
-def StartSubgraphsVector(builder, numElems): return builder.StartVector(4, numElems, 4)
-def ModelStartSubgraphsVector(builder, numElems):
-    """This method is deprecated. Please switch to Start."""
-    return StartSubgraphsVector(builder, numElems)
-def AddDescription(builder, description): builder.PrependUOffsetTRelativeSlot(3, flatbuffers.number_types.UOffsetTFlags.py_type(description), 0)
-def ModelAddDescription(builder, description):
-    """This method is deprecated. Please switch to AddDescription."""
-    return AddDescription(builder, description)
-def AddBuffers(builder, buffers): builder.PrependUOffsetTRelativeSlot(4, flatbuffers.number_types.UOffsetTFlags.py_type(buffers), 0)
-def ModelAddBuffers(builder, buffers):
-    """This method is deprecated. Please switch to AddBuffers."""
-    return AddBuffers(builder, buffers)
-def StartBuffersVector(builder, numElems): return builder.StartVector(4, numElems, 4)
-def ModelStartBuffersVector(builder, numElems):
-    """This method is deprecated. Please switch to Start."""
-    return StartBuffersVector(builder, numElems)
-def AddMetadataBuffer(builder, metadataBuffer): builder.PrependUOffsetTRelativeSlot(5, flatbuffers.number_types.UOffsetTFlags.py_type(metadataBuffer), 0)
-def ModelAddMetadataBuffer(builder, metadataBuffer):
-    """This method is deprecated. Please switch to AddMetadataBuffer."""
-    return AddMetadataBuffer(builder, metadataBuffer)
-def StartMetadataBufferVector(builder, numElems): return builder.StartVector(4, numElems, 4)
-def ModelStartMetadataBufferVector(builder, numElems):
-    """This method is deprecated. Please switch to Start."""
-    return StartMetadataBufferVector(builder, numElems)
-def AddMetadata(builder, metadata): builder.PrependUOffsetTRelativeSlot(6, flatbuffers.number_types.UOffsetTFlags.py_type(metadata), 0)
-def ModelAddMetadata(builder, metadata):
-    """This method is deprecated. Please switch to AddMetadata."""
-    return AddMetadata(builder, metadata)
-def StartMetadataVector(builder, numElems): return builder.StartVector(4, numElems, 4)
-def ModelStartMetadataVector(builder, numElems):
-    """This method is deprecated. Please switch to Start."""
-    return StartMetadataVector(builder, numElems)
-def AddSignatureDefs(builder, signatureDefs): builder.PrependUOffsetTRelativeSlot(7, flatbuffers.number_types.UOffsetTFlags.py_type(signatureDefs), 0)
-def ModelAddSignatureDefs(builder, signatureDefs):
-    """This method is deprecated. Please switch to AddSignatureDefs."""
-    return AddSignatureDefs(builder, signatureDefs)
-def StartSignatureDefsVector(builder, numElems): return builder.StartVector(4, numElems, 4)
-def ModelStartSignatureDefsVector(builder, numElems):
-    """This method is deprecated. Please switch to Start."""
-    return StartSignatureDefsVector(builder, numElems)
-def End(builder): return builder.EndObject()
-def ModelEnd(builder):
-    """This method is deprecated. Please switch to End."""
-    return End(builder)
+def ModelStart(builder): builder.StartObject(8)
+def Start(builder):
+    return ModelStart(builder)
+def ModelAddVersion(builder, version): builder.PrependUint32Slot(0, version, 0)
+def AddVersion(builder, version):
+    return ModelAddVersion(builder, version)
+def ModelAddOperatorCodes(builder, operatorCodes): builder.PrependUOffsetTRelativeSlot(1, flatbuffers.number_types.UOffsetTFlags.py_type(operatorCodes), 0)
+def AddOperatorCodes(builder, operatorCodes):
+    return ModelAddOperatorCodes(builder, operatorCodes)
+def ModelStartOperatorCodesVector(builder, numElems): return builder.StartVector(4, numElems, 4)
+def StartOperatorCodesVector(builder, numElems):
+    return ModelStartOperatorCodesVector(builder, numElems)
+def ModelAddSubgraphs(builder, subgraphs): builder.PrependUOffsetTRelativeSlot(2, flatbuffers.number_types.UOffsetTFlags.py_type(subgraphs), 0)
+def AddSubgraphs(builder, subgraphs):
+    return ModelAddSubgraphs(builder, subgraphs)
+def ModelStartSubgraphsVector(builder, numElems): return builder.StartVector(4, numElems, 4)
+def StartSubgraphsVector(builder, numElems):
+    return ModelStartSubgraphsVector(builder, numElems)
+def ModelAddDescription(builder, description): builder.PrependUOffsetTRelativeSlot(3, flatbuffers.number_types.UOffsetTFlags.py_type(description), 0)
+def AddDescription(builder, description):
+    return ModelAddDescription(builder, description)
+def ModelAddBuffers(builder, buffers): builder.PrependUOffsetTRelativeSlot(4, flatbuffers.number_types.UOffsetTFlags.py_type(buffers), 0)
+def AddBuffers(builder, buffers):
+    return ModelAddBuffers(builder, buffers)
+def ModelStartBuffersVector(builder, numElems): return builder.StartVector(4, numElems, 4)
+def StartBuffersVector(builder, numElems):
+    return ModelStartBuffersVector(builder, numElems)
+def ModelAddMetadataBuffer(builder, metadataBuffer): builder.PrependUOffsetTRelativeSlot(5, flatbuffers.number_types.UOffsetTFlags.py_type(metadataBuffer), 0)
+def AddMetadataBuffer(builder, metadataBuffer):
+    return ModelAddMetadataBuffer(builder, metadataBuffer)
+def ModelStartMetadataBufferVector(builder, numElems): return builder.StartVector(4, numElems, 4)
+def StartMetadataBufferVector(builder, numElems):
+    return ModelStartMetadataBufferVector(builder, numElems)
+def ModelAddMetadata(builder, metadata): builder.PrependUOffsetTRelativeSlot(6, flatbuffers.number_types.UOffsetTFlags.py_type(metadata), 0)
+def AddMetadata(builder, metadata):
+    return ModelAddMetadata(builder, metadata)
+def ModelStartMetadataVector(builder, numElems): return builder.StartVector(4, numElems, 4)
+def StartMetadataVector(builder, numElems):
+    return ModelStartMetadataVector(builder, numElems)
+def ModelAddSignatureDefs(builder, signatureDefs): builder.PrependUOffsetTRelativeSlot(7, flatbuffers.number_types.UOffsetTFlags.py_type(signatureDefs), 0)
+def AddSignatureDefs(builder, signatureDefs):
+    return ModelAddSignatureDefs(builder, signatureDefs)
+def ModelStartSignatureDefsVector(builder, numElems): return builder.StartVector(4, numElems, 4)
+def StartSignatureDefsVector(builder, numElems):
+    return ModelStartSignatureDefsVector(builder, numElems)
+def ModelEnd(builder): return builder.EndObject()
+def End(builder):
+    return ModelEnd(builder)
 import tflite.Buffer
 import tflite.Metadata
 import tflite.OperatorCode
@@ -286,6 +270,11 @@ class ModelT(object):
         model = Model()
         model.Init(buf, pos)
         return cls.InitFromObj(model)
+
+    @classmethod
+    def InitFromPackedBuf(cls, buf, pos=0):
+        n = flatbuffers.encode.Get(flatbuffers.packer.uoffset, buf, pos)
+        return cls.InitFromBuf(buf, pos+n)
 
     @classmethod
     def InitFromObj(cls, model):
@@ -353,7 +342,7 @@ class ModelT(object):
             operatorCodeslist = []
             for i in range(len(self.operatorCodes)):
                 operatorCodeslist.append(self.operatorCodes[i].Pack(builder))
-            StartOperatorCodesVector(builder, len(self.operatorCodes))
+            ModelStartOperatorCodesVector(builder, len(self.operatorCodes))
             for i in reversed(range(len(self.operatorCodes))):
                 builder.PrependUOffsetTRelative(operatorCodeslist[i])
             operatorCodes = builder.EndVector()
@@ -361,7 +350,7 @@ class ModelT(object):
             subgraphslist = []
             for i in range(len(self.subgraphs)):
                 subgraphslist.append(self.subgraphs[i].Pack(builder))
-            StartSubgraphsVector(builder, len(self.subgraphs))
+            ModelStartSubgraphsVector(builder, len(self.subgraphs))
             for i in reversed(range(len(self.subgraphs))):
                 builder.PrependUOffsetTRelative(subgraphslist[i])
             subgraphs = builder.EndVector()
@@ -371,7 +360,7 @@ class ModelT(object):
             bufferslist = []
             for i in range(len(self.buffers)):
                 bufferslist.append(self.buffers[i].Pack(builder))
-            StartBuffersVector(builder, len(self.buffers))
+            ModelStartBuffersVector(builder, len(self.buffers))
             for i in reversed(range(len(self.buffers))):
                 builder.PrependUOffsetTRelative(bufferslist[i])
             buffers = builder.EndVector()
@@ -379,7 +368,7 @@ class ModelT(object):
             if np is not None and type(self.metadataBuffer) is np.ndarray:
                 metadataBuffer = builder.CreateNumpyVector(self.metadataBuffer)
             else:
-                StartMetadataBufferVector(builder, len(self.metadataBuffer))
+                ModelStartMetadataBufferVector(builder, len(self.metadataBuffer))
                 for i in reversed(range(len(self.metadataBuffer))):
                     builder.PrependInt32(self.metadataBuffer[i])
                 metadataBuffer = builder.EndVector()
@@ -387,7 +376,7 @@ class ModelT(object):
             metadatalist = []
             for i in range(len(self.metadata)):
                 metadatalist.append(self.metadata[i].Pack(builder))
-            StartMetadataVector(builder, len(self.metadata))
+            ModelStartMetadataVector(builder, len(self.metadata))
             for i in reversed(range(len(self.metadata))):
                 builder.PrependUOffsetTRelative(metadatalist[i])
             metadata = builder.EndVector()
@@ -395,25 +384,25 @@ class ModelT(object):
             signatureDefslist = []
             for i in range(len(self.signatureDefs)):
                 signatureDefslist.append(self.signatureDefs[i].Pack(builder))
-            StartSignatureDefsVector(builder, len(self.signatureDefs))
+            ModelStartSignatureDefsVector(builder, len(self.signatureDefs))
             for i in reversed(range(len(self.signatureDefs))):
                 builder.PrependUOffsetTRelative(signatureDefslist[i])
             signatureDefs = builder.EndVector()
-        Start(builder)
-        AddVersion(builder, self.version)
+        ModelStart(builder)
+        ModelAddVersion(builder, self.version)
         if self.operatorCodes is not None:
-            AddOperatorCodes(builder, operatorCodes)
+            ModelAddOperatorCodes(builder, operatorCodes)
         if self.subgraphs is not None:
-            AddSubgraphs(builder, subgraphs)
+            ModelAddSubgraphs(builder, subgraphs)
         if self.description is not None:
-            AddDescription(builder, description)
+            ModelAddDescription(builder, description)
         if self.buffers is not None:
-            AddBuffers(builder, buffers)
+            ModelAddBuffers(builder, buffers)
         if self.metadataBuffer is not None:
-            AddMetadataBuffer(builder, metadataBuffer)
+            ModelAddMetadataBuffer(builder, metadataBuffer)
         if self.metadata is not None:
-            AddMetadata(builder, metadata)
+            ModelAddMetadata(builder, metadata)
         if self.signatureDefs is not None:
-            AddSignatureDefs(builder, signatureDefs)
-        model = End(builder)
+            ModelAddSignatureDefs(builder, signatureDefs)
+        model = ModelEnd(builder)
         return model

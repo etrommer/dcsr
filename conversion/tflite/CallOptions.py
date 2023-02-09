@@ -35,18 +35,15 @@ class CallOptions(object):
             return self._tab.Get(flatbuffers.number_types.Uint32Flags, o + self._tab.Pos)
         return 0
 
-def Start(builder): builder.StartObject(1)
-def CallOptionsStart(builder):
-    """This method is deprecated. Please switch to Start."""
-    return Start(builder)
-def AddSubgraph(builder, subgraph): builder.PrependUint32Slot(0, subgraph, 0)
-def CallOptionsAddSubgraph(builder, subgraph):
-    """This method is deprecated. Please switch to AddSubgraph."""
-    return AddSubgraph(builder, subgraph)
-def End(builder): return builder.EndObject()
-def CallOptionsEnd(builder):
-    """This method is deprecated. Please switch to End."""
-    return End(builder)
+def CallOptionsStart(builder): builder.StartObject(1)
+def Start(builder):
+    return CallOptionsStart(builder)
+def CallOptionsAddSubgraph(builder, subgraph): builder.PrependUint32Slot(0, subgraph, 0)
+def AddSubgraph(builder, subgraph):
+    return CallOptionsAddSubgraph(builder, subgraph)
+def CallOptionsEnd(builder): return builder.EndObject()
+def End(builder):
+    return CallOptionsEnd(builder)
 
 class CallOptionsT(object):
 
@@ -59,6 +56,11 @@ class CallOptionsT(object):
         callOptions = CallOptions()
         callOptions.Init(buf, pos)
         return cls.InitFromObj(callOptions)
+
+    @classmethod
+    def InitFromPackedBuf(cls, buf, pos=0):
+        n = flatbuffers.encode.Get(flatbuffers.packer.uoffset, buf, pos)
+        return cls.InitFromBuf(buf, pos+n)
 
     @classmethod
     def InitFromObj(cls, callOptions):
@@ -74,7 +76,7 @@ class CallOptionsT(object):
 
     # CallOptionsT
     def Pack(self, builder):
-        Start(builder)
-        AddSubgraph(builder, self.subgraph)
-        callOptions = End(builder)
+        CallOptionsStart(builder)
+        CallOptionsAddSubgraph(builder, self.subgraph)
+        callOptions = CallOptionsEnd(builder)
         return callOptions

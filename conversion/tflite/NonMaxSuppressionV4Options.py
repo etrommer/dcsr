@@ -28,14 +28,12 @@ class NonMaxSuppressionV4Options(object):
     def Init(self, buf, pos):
         self._tab = flatbuffers.table.Table(buf, pos)
 
-def Start(builder): builder.StartObject(0)
-def NonMaxSuppressionV4OptionsStart(builder):
-    """This method is deprecated. Please switch to Start."""
-    return Start(builder)
-def End(builder): return builder.EndObject()
-def NonMaxSuppressionV4OptionsEnd(builder):
-    """This method is deprecated. Please switch to End."""
-    return End(builder)
+def NonMaxSuppressionV4OptionsStart(builder): builder.StartObject(0)
+def Start(builder):
+    return NonMaxSuppressionV4OptionsStart(builder)
+def NonMaxSuppressionV4OptionsEnd(builder): return builder.EndObject()
+def End(builder):
+    return NonMaxSuppressionV4OptionsEnd(builder)
 
 class NonMaxSuppressionV4OptionsT(object):
 
@@ -50,6 +48,11 @@ class NonMaxSuppressionV4OptionsT(object):
         return cls.InitFromObj(nonMaxSuppressionV4Options)
 
     @classmethod
+    def InitFromPackedBuf(cls, buf, pos=0):
+        n = flatbuffers.encode.Get(flatbuffers.packer.uoffset, buf, pos)
+        return cls.InitFromBuf(buf, pos+n)
+
+    @classmethod
     def InitFromObj(cls, nonMaxSuppressionV4Options):
         x = NonMaxSuppressionV4OptionsT()
         x._UnPack(nonMaxSuppressionV4Options)
@@ -62,6 +65,6 @@ class NonMaxSuppressionV4OptionsT(object):
 
     # NonMaxSuppressionV4OptionsT
     def Pack(self, builder):
-        Start(builder)
-        nonMaxSuppressionV4Options = End(builder)
+        NonMaxSuppressionV4OptionsStart(builder)
+        nonMaxSuppressionV4Options = NonMaxSuppressionV4OptionsEnd(builder)
         return nonMaxSuppressionV4Options

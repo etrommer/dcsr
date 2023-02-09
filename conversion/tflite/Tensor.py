@@ -132,54 +132,42 @@ class Tensor(object):
         o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(18))
         return o == 0
 
-def Start(builder): builder.StartObject(8)
-def TensorStart(builder):
-    """This method is deprecated. Please switch to Start."""
-    return Start(builder)
-def AddShape(builder, shape): builder.PrependUOffsetTRelativeSlot(0, flatbuffers.number_types.UOffsetTFlags.py_type(shape), 0)
-def TensorAddShape(builder, shape):
-    """This method is deprecated. Please switch to AddShape."""
-    return AddShape(builder, shape)
-def StartShapeVector(builder, numElems): return builder.StartVector(4, numElems, 4)
-def TensorStartShapeVector(builder, numElems):
-    """This method is deprecated. Please switch to Start."""
-    return StartShapeVector(builder, numElems)
-def AddType(builder, type): builder.PrependInt8Slot(1, type, 0)
-def TensorAddType(builder, type):
-    """This method is deprecated. Please switch to AddType."""
-    return AddType(builder, type)
-def AddBuffer(builder, buffer): builder.PrependUint32Slot(2, buffer, 0)
-def TensorAddBuffer(builder, buffer):
-    """This method is deprecated. Please switch to AddBuffer."""
-    return AddBuffer(builder, buffer)
-def AddName(builder, name): builder.PrependUOffsetTRelativeSlot(3, flatbuffers.number_types.UOffsetTFlags.py_type(name), 0)
-def TensorAddName(builder, name):
-    """This method is deprecated. Please switch to AddName."""
-    return AddName(builder, name)
-def AddQuantization(builder, quantization): builder.PrependUOffsetTRelativeSlot(4, flatbuffers.number_types.UOffsetTFlags.py_type(quantization), 0)
-def TensorAddQuantization(builder, quantization):
-    """This method is deprecated. Please switch to AddQuantization."""
-    return AddQuantization(builder, quantization)
-def AddIsVariable(builder, isVariable): builder.PrependBoolSlot(5, isVariable, 0)
-def TensorAddIsVariable(builder, isVariable):
-    """This method is deprecated. Please switch to AddIsVariable."""
-    return AddIsVariable(builder, isVariable)
-def AddSparsity(builder, sparsity): builder.PrependUOffsetTRelativeSlot(6, flatbuffers.number_types.UOffsetTFlags.py_type(sparsity), 0)
-def TensorAddSparsity(builder, sparsity):
-    """This method is deprecated. Please switch to AddSparsity."""
-    return AddSparsity(builder, sparsity)
-def AddShapeSignature(builder, shapeSignature): builder.PrependUOffsetTRelativeSlot(7, flatbuffers.number_types.UOffsetTFlags.py_type(shapeSignature), 0)
-def TensorAddShapeSignature(builder, shapeSignature):
-    """This method is deprecated. Please switch to AddShapeSignature."""
-    return AddShapeSignature(builder, shapeSignature)
-def StartShapeSignatureVector(builder, numElems): return builder.StartVector(4, numElems, 4)
-def TensorStartShapeSignatureVector(builder, numElems):
-    """This method is deprecated. Please switch to Start."""
-    return StartShapeSignatureVector(builder, numElems)
-def End(builder): return builder.EndObject()
-def TensorEnd(builder):
-    """This method is deprecated. Please switch to End."""
-    return End(builder)
+def TensorStart(builder): builder.StartObject(8)
+def Start(builder):
+    return TensorStart(builder)
+def TensorAddShape(builder, shape): builder.PrependUOffsetTRelativeSlot(0, flatbuffers.number_types.UOffsetTFlags.py_type(shape), 0)
+def AddShape(builder, shape):
+    return TensorAddShape(builder, shape)
+def TensorStartShapeVector(builder, numElems): return builder.StartVector(4, numElems, 4)
+def StartShapeVector(builder, numElems):
+    return TensorStartShapeVector(builder, numElems)
+def TensorAddType(builder, type): builder.PrependInt8Slot(1, type, 0)
+def AddType(builder, type):
+    return TensorAddType(builder, type)
+def TensorAddBuffer(builder, buffer): builder.PrependUint32Slot(2, buffer, 0)
+def AddBuffer(builder, buffer):
+    return TensorAddBuffer(builder, buffer)
+def TensorAddName(builder, name): builder.PrependUOffsetTRelativeSlot(3, flatbuffers.number_types.UOffsetTFlags.py_type(name), 0)
+def AddName(builder, name):
+    return TensorAddName(builder, name)
+def TensorAddQuantization(builder, quantization): builder.PrependUOffsetTRelativeSlot(4, flatbuffers.number_types.UOffsetTFlags.py_type(quantization), 0)
+def AddQuantization(builder, quantization):
+    return TensorAddQuantization(builder, quantization)
+def TensorAddIsVariable(builder, isVariable): builder.PrependBoolSlot(5, isVariable, 0)
+def AddIsVariable(builder, isVariable):
+    return TensorAddIsVariable(builder, isVariable)
+def TensorAddSparsity(builder, sparsity): builder.PrependUOffsetTRelativeSlot(6, flatbuffers.number_types.UOffsetTFlags.py_type(sparsity), 0)
+def AddSparsity(builder, sparsity):
+    return TensorAddSparsity(builder, sparsity)
+def TensorAddShapeSignature(builder, shapeSignature): builder.PrependUOffsetTRelativeSlot(7, flatbuffers.number_types.UOffsetTFlags.py_type(shapeSignature), 0)
+def AddShapeSignature(builder, shapeSignature):
+    return TensorAddShapeSignature(builder, shapeSignature)
+def TensorStartShapeSignatureVector(builder, numElems): return builder.StartVector(4, numElems, 4)
+def StartShapeSignatureVector(builder, numElems):
+    return TensorStartShapeSignatureVector(builder, numElems)
+def TensorEnd(builder): return builder.EndObject()
+def End(builder):
+    return TensorEnd(builder)
 import tflite.QuantizationParameters
 import tflite.SparsityParameters
 try:
@@ -205,6 +193,11 @@ class TensorT(object):
         tensor = Tensor()
         tensor.Init(buf, pos)
         return cls.InitFromObj(tensor)
+
+    @classmethod
+    def InitFromPackedBuf(cls, buf, pos=0):
+        n = flatbuffers.encode.Get(flatbuffers.packer.uoffset, buf, pos)
+        return cls.InitFromBuf(buf, pos+n)
 
     @classmethod
     def InitFromObj(cls, tensor):
@@ -245,7 +238,7 @@ class TensorT(object):
             if np is not None and type(self.shape) is np.ndarray:
                 shape = builder.CreateNumpyVector(self.shape)
             else:
-                StartShapeVector(builder, len(self.shape))
+                TensorStartShapeVector(builder, len(self.shape))
                 for i in reversed(range(len(self.shape))):
                     builder.PrependInt32(self.shape[i])
                 shape = builder.EndVector()
@@ -259,23 +252,23 @@ class TensorT(object):
             if np is not None and type(self.shapeSignature) is np.ndarray:
                 shapeSignature = builder.CreateNumpyVector(self.shapeSignature)
             else:
-                StartShapeSignatureVector(builder, len(self.shapeSignature))
+                TensorStartShapeSignatureVector(builder, len(self.shapeSignature))
                 for i in reversed(range(len(self.shapeSignature))):
                     builder.PrependInt32(self.shapeSignature[i])
                 shapeSignature = builder.EndVector()
-        Start(builder)
+        TensorStart(builder)
         if self.shape is not None:
-            AddShape(builder, shape)
-        AddType(builder, self.type)
-        AddBuffer(builder, self.buffer)
+            TensorAddShape(builder, shape)
+        TensorAddType(builder, self.type)
+        TensorAddBuffer(builder, self.buffer)
         if self.name is not None:
-            AddName(builder, name)
+            TensorAddName(builder, name)
         if self.quantization is not None:
-            AddQuantization(builder, quantization)
-        AddIsVariable(builder, self.isVariable)
+            TensorAddQuantization(builder, quantization)
+        TensorAddIsVariable(builder, self.isVariable)
         if self.sparsity is not None:
-            AddSparsity(builder, sparsity)
+            TensorAddSparsity(builder, sparsity)
         if self.shapeSignature is not None:
-            AddShapeSignature(builder, shapeSignature)
-        tensor = End(builder)
+            TensorAddShapeSignature(builder, shapeSignature)
+        tensor = TensorEnd(builder)
         return tensor

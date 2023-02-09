@@ -42,22 +42,18 @@ class AddOptions(object):
             return bool(self._tab.Get(flatbuffers.number_types.BoolFlags, o + self._tab.Pos))
         return True
 
-def Start(builder): builder.StartObject(2)
-def AddOptionsStart(builder):
-    """This method is deprecated. Please switch to Start."""
-    return Start(builder)
-def AddFusedActivationFunction(builder, fusedActivationFunction): builder.PrependInt8Slot(0, fusedActivationFunction, 0)
-def AddOptionsAddFusedActivationFunction(builder, fusedActivationFunction):
-    """This method is deprecated. Please switch to AddFusedActivationFunction."""
-    return AddFusedActivationFunction(builder, fusedActivationFunction)
-def AddPotScaleInt16(builder, potScaleInt16): builder.PrependBoolSlot(1, potScaleInt16, 1)
-def AddOptionsAddPotScaleInt16(builder, potScaleInt16):
-    """This method is deprecated. Please switch to AddPotScaleInt16."""
-    return AddPotScaleInt16(builder, potScaleInt16)
-def End(builder): return builder.EndObject()
-def AddOptionsEnd(builder):
-    """This method is deprecated. Please switch to End."""
-    return End(builder)
+def AddOptionsStart(builder): builder.StartObject(2)
+def Start(builder):
+    return AddOptionsStart(builder)
+def AddOptionsAddFusedActivationFunction(builder, fusedActivationFunction): builder.PrependInt8Slot(0, fusedActivationFunction, 0)
+def AddFusedActivationFunction(builder, fusedActivationFunction):
+    return AddOptionsAddFusedActivationFunction(builder, fusedActivationFunction)
+def AddOptionsAddPotScaleInt16(builder, potScaleInt16): builder.PrependBoolSlot(1, potScaleInt16, 1)
+def AddPotScaleInt16(builder, potScaleInt16):
+    return AddOptionsAddPotScaleInt16(builder, potScaleInt16)
+def AddOptionsEnd(builder): return builder.EndObject()
+def End(builder):
+    return AddOptionsEnd(builder)
 
 class AddOptionsT(object):
 
@@ -71,6 +67,11 @@ class AddOptionsT(object):
         addOptions = AddOptions()
         addOptions.Init(buf, pos)
         return cls.InitFromObj(addOptions)
+
+    @classmethod
+    def InitFromPackedBuf(cls, buf, pos=0):
+        n = flatbuffers.encode.Get(flatbuffers.packer.uoffset, buf, pos)
+        return cls.InitFromBuf(buf, pos+n)
 
     @classmethod
     def InitFromObj(cls, addOptions):
@@ -87,8 +88,8 @@ class AddOptionsT(object):
 
     # AddOptionsT
     def Pack(self, builder):
-        Start(builder)
-        AddFusedActivationFunction(builder, self.fusedActivationFunction)
-        AddPotScaleInt16(builder, self.potScaleInt16)
-        addOptions = End(builder)
+        AddOptionsStart(builder)
+        AddOptionsAddFusedActivationFunction(builder, self.fusedActivationFunction)
+        AddOptionsAddPotScaleInt16(builder, self.potScaleInt16)
+        addOptions = AddOptionsEnd(builder)
         return addOptions

@@ -49,26 +49,21 @@ class SVDFOptions(object):
             return bool(self._tab.Get(flatbuffers.number_types.BoolFlags, o + self._tab.Pos))
         return False
 
-def Start(builder): builder.StartObject(3)
-def SVDFOptionsStart(builder):
-    """This method is deprecated. Please switch to Start."""
-    return Start(builder)
-def AddRank(builder, rank): builder.PrependInt32Slot(0, rank, 0)
-def SVDFOptionsAddRank(builder, rank):
-    """This method is deprecated. Please switch to AddRank."""
-    return AddRank(builder, rank)
-def AddFusedActivationFunction(builder, fusedActivationFunction): builder.PrependInt8Slot(1, fusedActivationFunction, 0)
-def SVDFOptionsAddFusedActivationFunction(builder, fusedActivationFunction):
-    """This method is deprecated. Please switch to AddFusedActivationFunction."""
-    return AddFusedActivationFunction(builder, fusedActivationFunction)
-def AddAsymmetricQuantizeInputs(builder, asymmetricQuantizeInputs): builder.PrependBoolSlot(2, asymmetricQuantizeInputs, 0)
-def SVDFOptionsAddAsymmetricQuantizeInputs(builder, asymmetricQuantizeInputs):
-    """This method is deprecated. Please switch to AddAsymmetricQuantizeInputs."""
-    return AddAsymmetricQuantizeInputs(builder, asymmetricQuantizeInputs)
-def End(builder): return builder.EndObject()
-def SVDFOptionsEnd(builder):
-    """This method is deprecated. Please switch to End."""
-    return End(builder)
+def SVDFOptionsStart(builder): builder.StartObject(3)
+def Start(builder):
+    return SVDFOptionsStart(builder)
+def SVDFOptionsAddRank(builder, rank): builder.PrependInt32Slot(0, rank, 0)
+def AddRank(builder, rank):
+    return SVDFOptionsAddRank(builder, rank)
+def SVDFOptionsAddFusedActivationFunction(builder, fusedActivationFunction): builder.PrependInt8Slot(1, fusedActivationFunction, 0)
+def AddFusedActivationFunction(builder, fusedActivationFunction):
+    return SVDFOptionsAddFusedActivationFunction(builder, fusedActivationFunction)
+def SVDFOptionsAddAsymmetricQuantizeInputs(builder, asymmetricQuantizeInputs): builder.PrependBoolSlot(2, asymmetricQuantizeInputs, 0)
+def AddAsymmetricQuantizeInputs(builder, asymmetricQuantizeInputs):
+    return SVDFOptionsAddAsymmetricQuantizeInputs(builder, asymmetricQuantizeInputs)
+def SVDFOptionsEnd(builder): return builder.EndObject()
+def End(builder):
+    return SVDFOptionsEnd(builder)
 
 class SVDFOptionsT(object):
 
@@ -80,29 +75,34 @@ class SVDFOptionsT(object):
 
     @classmethod
     def InitFromBuf(cls, buf, pos):
-        sVDFOptions = SVDFOptions()
-        sVDFOptions.Init(buf, pos)
-        return cls.InitFromObj(sVDFOptions)
+        svdfoptions = SVDFOptions()
+        svdfoptions.Init(buf, pos)
+        return cls.InitFromObj(svdfoptions)
 
     @classmethod
-    def InitFromObj(cls, sVDFOptions):
+    def InitFromPackedBuf(cls, buf, pos=0):
+        n = flatbuffers.encode.Get(flatbuffers.packer.uoffset, buf, pos)
+        return cls.InitFromBuf(buf, pos+n)
+
+    @classmethod
+    def InitFromObj(cls, svdfoptions):
         x = SVDFOptionsT()
-        x._UnPack(sVDFOptions)
+        x._UnPack(svdfoptions)
         return x
 
     # SVDFOptionsT
-    def _UnPack(self, sVDFOptions):
-        if sVDFOptions is None:
+    def _UnPack(self, svdfoptions):
+        if svdfoptions is None:
             return
-        self.rank = sVDFOptions.Rank()
-        self.fusedActivationFunction = sVDFOptions.FusedActivationFunction()
-        self.asymmetricQuantizeInputs = sVDFOptions.AsymmetricQuantizeInputs()
+        self.rank = svdfoptions.Rank()
+        self.fusedActivationFunction = svdfoptions.FusedActivationFunction()
+        self.asymmetricQuantizeInputs = svdfoptions.AsymmetricQuantizeInputs()
 
     # SVDFOptionsT
     def Pack(self, builder):
-        Start(builder)
-        AddRank(builder, self.rank)
-        AddFusedActivationFunction(builder, self.fusedActivationFunction)
-        AddAsymmetricQuantizeInputs(builder, self.asymmetricQuantizeInputs)
-        sVDFOptions = End(builder)
-        return sVDFOptions
+        SVDFOptionsStart(builder)
+        SVDFOptionsAddRank(builder, self.rank)
+        SVDFOptionsAddFusedActivationFunction(builder, self.fusedActivationFunction)
+        SVDFOptionsAddAsymmetricQuantizeInputs(builder, self.asymmetricQuantizeInputs)
+        svdfoptions = SVDFOptionsEnd(builder)
+        return svdfoptions

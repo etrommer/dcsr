@@ -6,7 +6,6 @@ class QuantizationDetails(object):
     NONE = 0
     CustomQuantization = 1
 
-
 def QuantizationDetailsCreator(unionType, table):
     from flatbuffers.table import Table
     if not isinstance(table, Table):

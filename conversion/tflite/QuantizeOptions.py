@@ -28,14 +28,12 @@ class QuantizeOptions(object):
     def Init(self, buf, pos):
         self._tab = flatbuffers.table.Table(buf, pos)
 
-def Start(builder): builder.StartObject(0)
-def QuantizeOptionsStart(builder):
-    """This method is deprecated. Please switch to Start."""
-    return Start(builder)
-def End(builder): return builder.EndObject()
-def QuantizeOptionsEnd(builder):
-    """This method is deprecated. Please switch to End."""
-    return End(builder)
+def QuantizeOptionsStart(builder): builder.StartObject(0)
+def Start(builder):
+    return QuantizeOptionsStart(builder)
+def QuantizeOptionsEnd(builder): return builder.EndObject()
+def End(builder):
+    return QuantizeOptionsEnd(builder)
 
 class QuantizeOptionsT(object):
 
@@ -50,6 +48,11 @@ class QuantizeOptionsT(object):
         return cls.InitFromObj(quantizeOptions)
 
     @classmethod
+    def InitFromPackedBuf(cls, buf, pos=0):
+        n = flatbuffers.encode.Get(flatbuffers.packer.uoffset, buf, pos)
+        return cls.InitFromBuf(buf, pos+n)
+
+    @classmethod
     def InitFromObj(cls, quantizeOptions):
         x = QuantizeOptionsT()
         x._UnPack(quantizeOptions)
@@ -62,6 +65,6 @@ class QuantizeOptionsT(object):
 
     # QuantizeOptionsT
     def Pack(self, builder):
-        Start(builder)
-        quantizeOptions = End(builder)
+        QuantizeOptionsStart(builder)
+        quantizeOptions = QuantizeOptionsEnd(builder)
         return quantizeOptions

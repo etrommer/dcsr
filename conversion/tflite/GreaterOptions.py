@@ -28,14 +28,12 @@ class GreaterOptions(object):
     def Init(self, buf, pos):
         self._tab = flatbuffers.table.Table(buf, pos)
 
-def Start(builder): builder.StartObject(0)
-def GreaterOptionsStart(builder):
-    """This method is deprecated. Please switch to Start."""
-    return Start(builder)
-def End(builder): return builder.EndObject()
-def GreaterOptionsEnd(builder):
-    """This method is deprecated. Please switch to End."""
-    return End(builder)
+def GreaterOptionsStart(builder): builder.StartObject(0)
+def Start(builder):
+    return GreaterOptionsStart(builder)
+def GreaterOptionsEnd(builder): return builder.EndObject()
+def End(builder):
+    return GreaterOptionsEnd(builder)
 
 class GreaterOptionsT(object):
 
@@ -50,6 +48,11 @@ class GreaterOptionsT(object):
         return cls.InitFromObj(greaterOptions)
 
     @classmethod
+    def InitFromPackedBuf(cls, buf, pos=0):
+        n = flatbuffers.encode.Get(flatbuffers.packer.uoffset, buf, pos)
+        return cls.InitFromBuf(buf, pos+n)
+
+    @classmethod
     def InitFromObj(cls, greaterOptions):
         x = GreaterOptionsT()
         x._UnPack(greaterOptions)
@@ -62,6 +65,6 @@ class GreaterOptionsT(object):
 
     # GreaterOptionsT
     def Pack(self, builder):
-        Start(builder)
-        greaterOptions = End(builder)
+        GreaterOptionsStart(builder)
+        greaterOptions = GreaterOptionsEnd(builder)
         return greaterOptions

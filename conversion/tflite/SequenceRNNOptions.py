@@ -49,26 +49,21 @@ class SequenceRNNOptions(object):
             return bool(self._tab.Get(flatbuffers.number_types.BoolFlags, o + self._tab.Pos))
         return False
 
-def Start(builder): builder.StartObject(3)
-def SequenceRNNOptionsStart(builder):
-    """This method is deprecated. Please switch to Start."""
-    return Start(builder)
-def AddTimeMajor(builder, timeMajor): builder.PrependBoolSlot(0, timeMajor, 0)
-def SequenceRNNOptionsAddTimeMajor(builder, timeMajor):
-    """This method is deprecated. Please switch to AddTimeMajor."""
-    return AddTimeMajor(builder, timeMajor)
-def AddFusedActivationFunction(builder, fusedActivationFunction): builder.PrependInt8Slot(1, fusedActivationFunction, 0)
-def SequenceRNNOptionsAddFusedActivationFunction(builder, fusedActivationFunction):
-    """This method is deprecated. Please switch to AddFusedActivationFunction."""
-    return AddFusedActivationFunction(builder, fusedActivationFunction)
-def AddAsymmetricQuantizeInputs(builder, asymmetricQuantizeInputs): builder.PrependBoolSlot(2, asymmetricQuantizeInputs, 0)
-def SequenceRNNOptionsAddAsymmetricQuantizeInputs(builder, asymmetricQuantizeInputs):
-    """This method is deprecated. Please switch to AddAsymmetricQuantizeInputs."""
-    return AddAsymmetricQuantizeInputs(builder, asymmetricQuantizeInputs)
-def End(builder): return builder.EndObject()
-def SequenceRNNOptionsEnd(builder):
-    """This method is deprecated. Please switch to End."""
-    return End(builder)
+def SequenceRNNOptionsStart(builder): builder.StartObject(3)
+def Start(builder):
+    return SequenceRNNOptionsStart(builder)
+def SequenceRNNOptionsAddTimeMajor(builder, timeMajor): builder.PrependBoolSlot(0, timeMajor, 0)
+def AddTimeMajor(builder, timeMajor):
+    return SequenceRNNOptionsAddTimeMajor(builder, timeMajor)
+def SequenceRNNOptionsAddFusedActivationFunction(builder, fusedActivationFunction): builder.PrependInt8Slot(1, fusedActivationFunction, 0)
+def AddFusedActivationFunction(builder, fusedActivationFunction):
+    return SequenceRNNOptionsAddFusedActivationFunction(builder, fusedActivationFunction)
+def SequenceRNNOptionsAddAsymmetricQuantizeInputs(builder, asymmetricQuantizeInputs): builder.PrependBoolSlot(2, asymmetricQuantizeInputs, 0)
+def AddAsymmetricQuantizeInputs(builder, asymmetricQuantizeInputs):
+    return SequenceRNNOptionsAddAsymmetricQuantizeInputs(builder, asymmetricQuantizeInputs)
+def SequenceRNNOptionsEnd(builder): return builder.EndObject()
+def End(builder):
+    return SequenceRNNOptionsEnd(builder)
 
 class SequenceRNNOptionsT(object):
 
@@ -80,29 +75,34 @@ class SequenceRNNOptionsT(object):
 
     @classmethod
     def InitFromBuf(cls, buf, pos):
-        sequenceRNNOptions = SequenceRNNOptions()
-        sequenceRNNOptions.Init(buf, pos)
-        return cls.InitFromObj(sequenceRNNOptions)
+        sequenceRnnoptions = SequenceRNNOptions()
+        sequenceRnnoptions.Init(buf, pos)
+        return cls.InitFromObj(sequenceRnnoptions)
 
     @classmethod
-    def InitFromObj(cls, sequenceRNNOptions):
+    def InitFromPackedBuf(cls, buf, pos=0):
+        n = flatbuffers.encode.Get(flatbuffers.packer.uoffset, buf, pos)
+        return cls.InitFromBuf(buf, pos+n)
+
+    @classmethod
+    def InitFromObj(cls, sequenceRnnoptions):
         x = SequenceRNNOptionsT()
-        x._UnPack(sequenceRNNOptions)
+        x._UnPack(sequenceRnnoptions)
         return x
 
     # SequenceRNNOptionsT
-    def _UnPack(self, sequenceRNNOptions):
-        if sequenceRNNOptions is None:
+    def _UnPack(self, sequenceRnnoptions):
+        if sequenceRnnoptions is None:
             return
-        self.timeMajor = sequenceRNNOptions.TimeMajor()
-        self.fusedActivationFunction = sequenceRNNOptions.FusedActivationFunction()
-        self.asymmetricQuantizeInputs = sequenceRNNOptions.AsymmetricQuantizeInputs()
+        self.timeMajor = sequenceRnnoptions.TimeMajor()
+        self.fusedActivationFunction = sequenceRnnoptions.FusedActivationFunction()
+        self.asymmetricQuantizeInputs = sequenceRnnoptions.AsymmetricQuantizeInputs()
 
     # SequenceRNNOptionsT
     def Pack(self, builder):
-        Start(builder)
-        AddTimeMajor(builder, self.timeMajor)
-        AddFusedActivationFunction(builder, self.fusedActivationFunction)
-        AddAsymmetricQuantizeInputs(builder, self.asymmetricQuantizeInputs)
-        sequenceRNNOptions = End(builder)
-        return sequenceRNNOptions
+        SequenceRNNOptionsStart(builder)
+        SequenceRNNOptionsAddTimeMajor(builder, self.timeMajor)
+        SequenceRNNOptionsAddFusedActivationFunction(builder, self.fusedActivationFunction)
+        SequenceRNNOptionsAddAsymmetricQuantizeInputs(builder, self.asymmetricQuantizeInputs)
+        sequenceRnnoptions = SequenceRNNOptionsEnd(builder)
+        return sequenceRnnoptions

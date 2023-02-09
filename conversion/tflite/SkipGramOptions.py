@@ -49,26 +49,21 @@ class SkipGramOptions(object):
             return bool(self._tab.Get(flatbuffers.number_types.BoolFlags, o + self._tab.Pos))
         return False
 
-def Start(builder): builder.StartObject(3)
-def SkipGramOptionsStart(builder):
-    """This method is deprecated. Please switch to Start."""
-    return Start(builder)
-def AddNgramSize(builder, ngramSize): builder.PrependInt32Slot(0, ngramSize, 0)
-def SkipGramOptionsAddNgramSize(builder, ngramSize):
-    """This method is deprecated. Please switch to AddNgramSize."""
-    return AddNgramSize(builder, ngramSize)
-def AddMaxSkipSize(builder, maxSkipSize): builder.PrependInt32Slot(1, maxSkipSize, 0)
-def SkipGramOptionsAddMaxSkipSize(builder, maxSkipSize):
-    """This method is deprecated. Please switch to AddMaxSkipSize."""
-    return AddMaxSkipSize(builder, maxSkipSize)
-def AddIncludeAllNgrams(builder, includeAllNgrams): builder.PrependBoolSlot(2, includeAllNgrams, 0)
-def SkipGramOptionsAddIncludeAllNgrams(builder, includeAllNgrams):
-    """This method is deprecated. Please switch to AddIncludeAllNgrams."""
-    return AddIncludeAllNgrams(builder, includeAllNgrams)
-def End(builder): return builder.EndObject()
-def SkipGramOptionsEnd(builder):
-    """This method is deprecated. Please switch to End."""
-    return End(builder)
+def SkipGramOptionsStart(builder): builder.StartObject(3)
+def Start(builder):
+    return SkipGramOptionsStart(builder)
+def SkipGramOptionsAddNgramSize(builder, ngramSize): builder.PrependInt32Slot(0, ngramSize, 0)
+def AddNgramSize(builder, ngramSize):
+    return SkipGramOptionsAddNgramSize(builder, ngramSize)
+def SkipGramOptionsAddMaxSkipSize(builder, maxSkipSize): builder.PrependInt32Slot(1, maxSkipSize, 0)
+def AddMaxSkipSize(builder, maxSkipSize):
+    return SkipGramOptionsAddMaxSkipSize(builder, maxSkipSize)
+def SkipGramOptionsAddIncludeAllNgrams(builder, includeAllNgrams): builder.PrependBoolSlot(2, includeAllNgrams, 0)
+def AddIncludeAllNgrams(builder, includeAllNgrams):
+    return SkipGramOptionsAddIncludeAllNgrams(builder, includeAllNgrams)
+def SkipGramOptionsEnd(builder): return builder.EndObject()
+def End(builder):
+    return SkipGramOptionsEnd(builder)
 
 class SkipGramOptionsT(object):
 
@@ -83,6 +78,11 @@ class SkipGramOptionsT(object):
         skipGramOptions = SkipGramOptions()
         skipGramOptions.Init(buf, pos)
         return cls.InitFromObj(skipGramOptions)
+
+    @classmethod
+    def InitFromPackedBuf(cls, buf, pos=0):
+        n = flatbuffers.encode.Get(flatbuffers.packer.uoffset, buf, pos)
+        return cls.InitFromBuf(buf, pos+n)
 
     @classmethod
     def InitFromObj(cls, skipGramOptions):
@@ -100,9 +100,9 @@ class SkipGramOptionsT(object):
 
     # SkipGramOptionsT
     def Pack(self, builder):
-        Start(builder)
-        AddNgramSize(builder, self.ngramSize)
-        AddMaxSkipSize(builder, self.maxSkipSize)
-        AddIncludeAllNgrams(builder, self.includeAllNgrams)
-        skipGramOptions = End(builder)
+        SkipGramOptionsStart(builder)
+        SkipGramOptionsAddNgramSize(builder, self.ngramSize)
+        SkipGramOptionsAddMaxSkipSize(builder, self.maxSkipSize)
+        SkipGramOptionsAddIncludeAllNgrams(builder, self.includeAllNgrams)
+        skipGramOptions = SkipGramOptionsEnd(builder)
         return skipGramOptions

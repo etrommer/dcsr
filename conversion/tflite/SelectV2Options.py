@@ -28,14 +28,12 @@ class SelectV2Options(object):
     def Init(self, buf, pos):
         self._tab = flatbuffers.table.Table(buf, pos)
 
-def Start(builder): builder.StartObject(0)
-def SelectV2OptionsStart(builder):
-    """This method is deprecated. Please switch to Start."""
-    return Start(builder)
-def End(builder): return builder.EndObject()
-def SelectV2OptionsEnd(builder):
-    """This method is deprecated. Please switch to End."""
-    return End(builder)
+def SelectV2OptionsStart(builder): builder.StartObject(0)
+def Start(builder):
+    return SelectV2OptionsStart(builder)
+def SelectV2OptionsEnd(builder): return builder.EndObject()
+def End(builder):
+    return SelectV2OptionsEnd(builder)
 
 class SelectV2OptionsT(object):
 
@@ -50,6 +48,11 @@ class SelectV2OptionsT(object):
         return cls.InitFromObj(selectV2Options)
 
     @classmethod
+    def InitFromPackedBuf(cls, buf, pos=0):
+        n = flatbuffers.encode.Get(flatbuffers.packer.uoffset, buf, pos)
+        return cls.InitFromBuf(buf, pos+n)
+
+    @classmethod
     def InitFromObj(cls, selectV2Options):
         x = SelectV2OptionsT()
         x._UnPack(selectV2Options)
@@ -62,6 +65,6 @@ class SelectV2OptionsT(object):
 
     # SelectV2OptionsT
     def Pack(self, builder):
-        Start(builder)
-        selectV2Options = End(builder)
+        SelectV2OptionsStart(builder)
+        selectV2Options = SelectV2OptionsEnd(builder)
         return selectV2Options

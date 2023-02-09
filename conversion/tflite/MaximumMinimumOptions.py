@@ -28,14 +28,12 @@ class MaximumMinimumOptions(object):
     def Init(self, buf, pos):
         self._tab = flatbuffers.table.Table(buf, pos)
 
-def Start(builder): builder.StartObject(0)
-def MaximumMinimumOptionsStart(builder):
-    """This method is deprecated. Please switch to Start."""
-    return Start(builder)
-def End(builder): return builder.EndObject()
-def MaximumMinimumOptionsEnd(builder):
-    """This method is deprecated. Please switch to End."""
-    return End(builder)
+def MaximumMinimumOptionsStart(builder): builder.StartObject(0)
+def Start(builder):
+    return MaximumMinimumOptionsStart(builder)
+def MaximumMinimumOptionsEnd(builder): return builder.EndObject()
+def End(builder):
+    return MaximumMinimumOptionsEnd(builder)
 
 class MaximumMinimumOptionsT(object):
 
@@ -50,6 +48,11 @@ class MaximumMinimumOptionsT(object):
         return cls.InitFromObj(maximumMinimumOptions)
 
     @classmethod
+    def InitFromPackedBuf(cls, buf, pos=0):
+        n = flatbuffers.encode.Get(flatbuffers.packer.uoffset, buf, pos)
+        return cls.InitFromBuf(buf, pos+n)
+
+    @classmethod
     def InitFromObj(cls, maximumMinimumOptions):
         x = MaximumMinimumOptionsT()
         x._UnPack(maximumMinimumOptions)
@@ -62,6 +65,6 @@ class MaximumMinimumOptionsT(object):
 
     # MaximumMinimumOptionsT
     def Pack(self, builder):
-        Start(builder)
-        maximumMinimumOptions = End(builder)
+        MaximumMinimumOptionsStart(builder)
+        maximumMinimumOptions = MaximumMinimumOptionsEnd(builder)
         return maximumMinimumOptions

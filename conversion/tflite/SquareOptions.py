@@ -28,14 +28,12 @@ class SquareOptions(object):
     def Init(self, buf, pos):
         self._tab = flatbuffers.table.Table(buf, pos)
 
-def Start(builder): builder.StartObject(0)
-def SquareOptionsStart(builder):
-    """This method is deprecated. Please switch to Start."""
-    return Start(builder)
-def End(builder): return builder.EndObject()
-def SquareOptionsEnd(builder):
-    """This method is deprecated. Please switch to End."""
-    return End(builder)
+def SquareOptionsStart(builder): builder.StartObject(0)
+def Start(builder):
+    return SquareOptionsStart(builder)
+def SquareOptionsEnd(builder): return builder.EndObject()
+def End(builder):
+    return SquareOptionsEnd(builder)
 
 class SquareOptionsT(object):
 
@@ -50,6 +48,11 @@ class SquareOptionsT(object):
         return cls.InitFromObj(squareOptions)
 
     @classmethod
+    def InitFromPackedBuf(cls, buf, pos=0):
+        n = flatbuffers.encode.Get(flatbuffers.packer.uoffset, buf, pos)
+        return cls.InitFromBuf(buf, pos+n)
+
+    @classmethod
     def InitFromObj(cls, squareOptions):
         x = SquareOptionsT()
         x._UnPack(squareOptions)
@@ -62,6 +65,6 @@ class SquareOptionsT(object):
 
     # SquareOptionsT
     def Pack(self, builder):
-        Start(builder)
-        squareOptions = End(builder)
+        SquareOptionsStart(builder)
+        squareOptions = SquareOptionsEnd(builder)
         return squareOptions

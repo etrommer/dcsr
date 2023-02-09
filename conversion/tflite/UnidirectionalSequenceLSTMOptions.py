@@ -63,34 +63,27 @@ class UnidirectionalSequenceLSTMOptions(object):
             return bool(self._tab.Get(flatbuffers.number_types.BoolFlags, o + self._tab.Pos))
         return False
 
-def Start(builder): builder.StartObject(5)
-def UnidirectionalSequenceLSTMOptionsStart(builder):
-    """This method is deprecated. Please switch to Start."""
-    return Start(builder)
-def AddFusedActivationFunction(builder, fusedActivationFunction): builder.PrependInt8Slot(0, fusedActivationFunction, 0)
-def UnidirectionalSequenceLSTMOptionsAddFusedActivationFunction(builder, fusedActivationFunction):
-    """This method is deprecated. Please switch to AddFusedActivationFunction."""
-    return AddFusedActivationFunction(builder, fusedActivationFunction)
-def AddCellClip(builder, cellClip): builder.PrependFloat32Slot(1, cellClip, 0.0)
-def UnidirectionalSequenceLSTMOptionsAddCellClip(builder, cellClip):
-    """This method is deprecated. Please switch to AddCellClip."""
-    return AddCellClip(builder, cellClip)
-def AddProjClip(builder, projClip): builder.PrependFloat32Slot(2, projClip, 0.0)
-def UnidirectionalSequenceLSTMOptionsAddProjClip(builder, projClip):
-    """This method is deprecated. Please switch to AddProjClip."""
-    return AddProjClip(builder, projClip)
-def AddTimeMajor(builder, timeMajor): builder.PrependBoolSlot(3, timeMajor, 0)
-def UnidirectionalSequenceLSTMOptionsAddTimeMajor(builder, timeMajor):
-    """This method is deprecated. Please switch to AddTimeMajor."""
-    return AddTimeMajor(builder, timeMajor)
-def AddAsymmetricQuantizeInputs(builder, asymmetricQuantizeInputs): builder.PrependBoolSlot(4, asymmetricQuantizeInputs, 0)
-def UnidirectionalSequenceLSTMOptionsAddAsymmetricQuantizeInputs(builder, asymmetricQuantizeInputs):
-    """This method is deprecated. Please switch to AddAsymmetricQuantizeInputs."""
-    return AddAsymmetricQuantizeInputs(builder, asymmetricQuantizeInputs)
-def End(builder): return builder.EndObject()
-def UnidirectionalSequenceLSTMOptionsEnd(builder):
-    """This method is deprecated. Please switch to End."""
-    return End(builder)
+def UnidirectionalSequenceLSTMOptionsStart(builder): builder.StartObject(5)
+def Start(builder):
+    return UnidirectionalSequenceLSTMOptionsStart(builder)
+def UnidirectionalSequenceLSTMOptionsAddFusedActivationFunction(builder, fusedActivationFunction): builder.PrependInt8Slot(0, fusedActivationFunction, 0)
+def AddFusedActivationFunction(builder, fusedActivationFunction):
+    return UnidirectionalSequenceLSTMOptionsAddFusedActivationFunction(builder, fusedActivationFunction)
+def UnidirectionalSequenceLSTMOptionsAddCellClip(builder, cellClip): builder.PrependFloat32Slot(1, cellClip, 0.0)
+def AddCellClip(builder, cellClip):
+    return UnidirectionalSequenceLSTMOptionsAddCellClip(builder, cellClip)
+def UnidirectionalSequenceLSTMOptionsAddProjClip(builder, projClip): builder.PrependFloat32Slot(2, projClip, 0.0)
+def AddProjClip(builder, projClip):
+    return UnidirectionalSequenceLSTMOptionsAddProjClip(builder, projClip)
+def UnidirectionalSequenceLSTMOptionsAddTimeMajor(builder, timeMajor): builder.PrependBoolSlot(3, timeMajor, 0)
+def AddTimeMajor(builder, timeMajor):
+    return UnidirectionalSequenceLSTMOptionsAddTimeMajor(builder, timeMajor)
+def UnidirectionalSequenceLSTMOptionsAddAsymmetricQuantizeInputs(builder, asymmetricQuantizeInputs): builder.PrependBoolSlot(4, asymmetricQuantizeInputs, 0)
+def AddAsymmetricQuantizeInputs(builder, asymmetricQuantizeInputs):
+    return UnidirectionalSequenceLSTMOptionsAddAsymmetricQuantizeInputs(builder, asymmetricQuantizeInputs)
+def UnidirectionalSequenceLSTMOptionsEnd(builder): return builder.EndObject()
+def End(builder):
+    return UnidirectionalSequenceLSTMOptionsEnd(builder)
 
 class UnidirectionalSequenceLSTMOptionsT(object):
 
@@ -104,33 +97,38 @@ class UnidirectionalSequenceLSTMOptionsT(object):
 
     @classmethod
     def InitFromBuf(cls, buf, pos):
-        unidirectionalSequenceLSTMOptions = UnidirectionalSequenceLSTMOptions()
-        unidirectionalSequenceLSTMOptions.Init(buf, pos)
-        return cls.InitFromObj(unidirectionalSequenceLSTMOptions)
+        unidirectionalSequenceLstmoptions = UnidirectionalSequenceLSTMOptions()
+        unidirectionalSequenceLstmoptions.Init(buf, pos)
+        return cls.InitFromObj(unidirectionalSequenceLstmoptions)
 
     @classmethod
-    def InitFromObj(cls, unidirectionalSequenceLSTMOptions):
+    def InitFromPackedBuf(cls, buf, pos=0):
+        n = flatbuffers.encode.Get(flatbuffers.packer.uoffset, buf, pos)
+        return cls.InitFromBuf(buf, pos+n)
+
+    @classmethod
+    def InitFromObj(cls, unidirectionalSequenceLstmoptions):
         x = UnidirectionalSequenceLSTMOptionsT()
-        x._UnPack(unidirectionalSequenceLSTMOptions)
+        x._UnPack(unidirectionalSequenceLstmoptions)
         return x
 
     # UnidirectionalSequenceLSTMOptionsT
-    def _UnPack(self, unidirectionalSequenceLSTMOptions):
-        if unidirectionalSequenceLSTMOptions is None:
+    def _UnPack(self, unidirectionalSequenceLstmoptions):
+        if unidirectionalSequenceLstmoptions is None:
             return
-        self.fusedActivationFunction = unidirectionalSequenceLSTMOptions.FusedActivationFunction()
-        self.cellClip = unidirectionalSequenceLSTMOptions.CellClip()
-        self.projClip = unidirectionalSequenceLSTMOptions.ProjClip()
-        self.timeMajor = unidirectionalSequenceLSTMOptions.TimeMajor()
-        self.asymmetricQuantizeInputs = unidirectionalSequenceLSTMOptions.AsymmetricQuantizeInputs()
+        self.fusedActivationFunction = unidirectionalSequenceLstmoptions.FusedActivationFunction()
+        self.cellClip = unidirectionalSequenceLstmoptions.CellClip()
+        self.projClip = unidirectionalSequenceLstmoptions.ProjClip()
+        self.timeMajor = unidirectionalSequenceLstmoptions.TimeMajor()
+        self.asymmetricQuantizeInputs = unidirectionalSequenceLstmoptions.AsymmetricQuantizeInputs()
 
     # UnidirectionalSequenceLSTMOptionsT
     def Pack(self, builder):
-        Start(builder)
-        AddFusedActivationFunction(builder, self.fusedActivationFunction)
-        AddCellClip(builder, self.cellClip)
-        AddProjClip(builder, self.projClip)
-        AddTimeMajor(builder, self.timeMajor)
-        AddAsymmetricQuantizeInputs(builder, self.asymmetricQuantizeInputs)
-        unidirectionalSequenceLSTMOptions = End(builder)
-        return unidirectionalSequenceLSTMOptions
+        UnidirectionalSequenceLSTMOptionsStart(builder)
+        UnidirectionalSequenceLSTMOptionsAddFusedActivationFunction(builder, self.fusedActivationFunction)
+        UnidirectionalSequenceLSTMOptionsAddCellClip(builder, self.cellClip)
+        UnidirectionalSequenceLSTMOptionsAddProjClip(builder, self.projClip)
+        UnidirectionalSequenceLSTMOptionsAddTimeMajor(builder, self.timeMajor)
+        UnidirectionalSequenceLSTMOptionsAddAsymmetricQuantizeInputs(builder, self.asymmetricQuantizeInputs)
+        unidirectionalSequenceLstmoptions = UnidirectionalSequenceLSTMOptionsEnd(builder)
+        return unidirectionalSequenceLstmoptions

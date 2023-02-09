@@ -35,18 +35,15 @@ class L2NormOptions(object):
             return self._tab.Get(flatbuffers.number_types.Int8Flags, o + self._tab.Pos)
         return 0
 
-def Start(builder): builder.StartObject(1)
-def L2NormOptionsStart(builder):
-    """This method is deprecated. Please switch to Start."""
-    return Start(builder)
-def AddFusedActivationFunction(builder, fusedActivationFunction): builder.PrependInt8Slot(0, fusedActivationFunction, 0)
-def L2NormOptionsAddFusedActivationFunction(builder, fusedActivationFunction):
-    """This method is deprecated. Please switch to AddFusedActivationFunction."""
-    return AddFusedActivationFunction(builder, fusedActivationFunction)
-def End(builder): return builder.EndObject()
-def L2NormOptionsEnd(builder):
-    """This method is deprecated. Please switch to End."""
-    return End(builder)
+def L2NormOptionsStart(builder): builder.StartObject(1)
+def Start(builder):
+    return L2NormOptionsStart(builder)
+def L2NormOptionsAddFusedActivationFunction(builder, fusedActivationFunction): builder.PrependInt8Slot(0, fusedActivationFunction, 0)
+def AddFusedActivationFunction(builder, fusedActivationFunction):
+    return L2NormOptionsAddFusedActivationFunction(builder, fusedActivationFunction)
+def L2NormOptionsEnd(builder): return builder.EndObject()
+def End(builder):
+    return L2NormOptionsEnd(builder)
 
 class L2NormOptionsT(object):
 
@@ -59,6 +56,11 @@ class L2NormOptionsT(object):
         l2NormOptions = L2NormOptions()
         l2NormOptions.Init(buf, pos)
         return cls.InitFromObj(l2NormOptions)
+
+    @classmethod
+    def InitFromPackedBuf(cls, buf, pos=0):
+        n = flatbuffers.encode.Get(flatbuffers.packer.uoffset, buf, pos)
+        return cls.InitFromBuf(buf, pos+n)
 
     @classmethod
     def InitFromObj(cls, l2NormOptions):
@@ -74,7 +76,7 @@ class L2NormOptionsT(object):
 
     # L2NormOptionsT
     def Pack(self, builder):
-        Start(builder)
-        AddFusedActivationFunction(builder, self.fusedActivationFunction)
-        l2NormOptions = End(builder)
+        L2NormOptionsStart(builder)
+        L2NormOptionsAddFusedActivationFunction(builder, self.fusedActivationFunction)
+        l2NormOptions = L2NormOptionsEnd(builder)
         return l2NormOptions

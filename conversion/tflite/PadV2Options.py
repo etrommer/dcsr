@@ -28,14 +28,12 @@ class PadV2Options(object):
     def Init(self, buf, pos):
         self._tab = flatbuffers.table.Table(buf, pos)
 
-def Start(builder): builder.StartObject(0)
-def PadV2OptionsStart(builder):
-    """This method is deprecated. Please switch to Start."""
-    return Start(builder)
-def End(builder): return builder.EndObject()
-def PadV2OptionsEnd(builder):
-    """This method is deprecated. Please switch to End."""
-    return End(builder)
+def PadV2OptionsStart(builder): builder.StartObject(0)
+def Start(builder):
+    return PadV2OptionsStart(builder)
+def PadV2OptionsEnd(builder): return builder.EndObject()
+def End(builder):
+    return PadV2OptionsEnd(builder)
 
 class PadV2OptionsT(object):
 
@@ -50,6 +48,11 @@ class PadV2OptionsT(object):
         return cls.InitFromObj(padV2Options)
 
     @classmethod
+    def InitFromPackedBuf(cls, buf, pos=0):
+        n = flatbuffers.encode.Get(flatbuffers.packer.uoffset, buf, pos)
+        return cls.InitFromBuf(buf, pos+n)
+
+    @classmethod
     def InitFromObj(cls, padV2Options):
         x = PadV2OptionsT()
         x._UnPack(padV2Options)
@@ -62,6 +65,6 @@ class PadV2OptionsT(object):
 
     # PadV2OptionsT
     def Pack(self, builder):
-        Start(builder)
-        padV2Options = End(builder)
+        PadV2OptionsStart(builder)
+        padV2Options = PadV2OptionsEnd(builder)
         return padV2Options

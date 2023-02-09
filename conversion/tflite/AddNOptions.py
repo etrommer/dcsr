@@ -28,14 +28,12 @@ class AddNOptions(object):
     def Init(self, buf, pos):
         self._tab = flatbuffers.table.Table(buf, pos)
 
-def Start(builder): builder.StartObject(0)
-def AddNOptionsStart(builder):
-    """This method is deprecated. Please switch to Start."""
-    return Start(builder)
-def End(builder): return builder.EndObject()
-def AddNOptionsEnd(builder):
-    """This method is deprecated. Please switch to End."""
-    return End(builder)
+def AddNOptionsStart(builder): builder.StartObject(0)
+def Start(builder):
+    return AddNOptionsStart(builder)
+def AddNOptionsEnd(builder): return builder.EndObject()
+def End(builder):
+    return AddNOptionsEnd(builder)
 
 class AddNOptionsT(object):
 
@@ -45,23 +43,28 @@ class AddNOptionsT(object):
 
     @classmethod
     def InitFromBuf(cls, buf, pos):
-        addNOptions = AddNOptions()
-        addNOptions.Init(buf, pos)
-        return cls.InitFromObj(addNOptions)
+        addNoptions = AddNOptions()
+        addNoptions.Init(buf, pos)
+        return cls.InitFromObj(addNoptions)
 
     @classmethod
-    def InitFromObj(cls, addNOptions):
+    def InitFromPackedBuf(cls, buf, pos=0):
+        n = flatbuffers.encode.Get(flatbuffers.packer.uoffset, buf, pos)
+        return cls.InitFromBuf(buf, pos+n)
+
+    @classmethod
+    def InitFromObj(cls, addNoptions):
         x = AddNOptionsT()
-        x._UnPack(addNOptions)
+        x._UnPack(addNoptions)
         return x
 
     # AddNOptionsT
-    def _UnPack(self, addNOptions):
-        if addNOptions is None:
+    def _UnPack(self, addNoptions):
+        if addNoptions is None:
             return
 
     # AddNOptionsT
     def Pack(self, builder):
-        Start(builder)
-        addNOptions = End(builder)
-        return addNOptions
+        AddNOptionsStart(builder)
+        addNoptions = AddNOptionsEnd(builder)
+        return addNoptions

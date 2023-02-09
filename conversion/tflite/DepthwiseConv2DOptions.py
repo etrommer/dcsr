@@ -77,42 +77,33 @@ class DepthwiseConv2DOptions(object):
             return self._tab.Get(flatbuffers.number_types.Int32Flags, o + self._tab.Pos)
         return 1
 
-def Start(builder): builder.StartObject(7)
-def DepthwiseConv2DOptionsStart(builder):
-    """This method is deprecated. Please switch to Start."""
-    return Start(builder)
-def AddPadding(builder, padding): builder.PrependInt8Slot(0, padding, 0)
-def DepthwiseConv2DOptionsAddPadding(builder, padding):
-    """This method is deprecated. Please switch to AddPadding."""
-    return AddPadding(builder, padding)
-def AddStrideW(builder, strideW): builder.PrependInt32Slot(1, strideW, 0)
-def DepthwiseConv2DOptionsAddStrideW(builder, strideW):
-    """This method is deprecated. Please switch to AddStrideW."""
-    return AddStrideW(builder, strideW)
-def AddStrideH(builder, strideH): builder.PrependInt32Slot(2, strideH, 0)
-def DepthwiseConv2DOptionsAddStrideH(builder, strideH):
-    """This method is deprecated. Please switch to AddStrideH."""
-    return AddStrideH(builder, strideH)
-def AddDepthMultiplier(builder, depthMultiplier): builder.PrependInt32Slot(3, depthMultiplier, 0)
-def DepthwiseConv2DOptionsAddDepthMultiplier(builder, depthMultiplier):
-    """This method is deprecated. Please switch to AddDepthMultiplier."""
-    return AddDepthMultiplier(builder, depthMultiplier)
-def AddFusedActivationFunction(builder, fusedActivationFunction): builder.PrependInt8Slot(4, fusedActivationFunction, 0)
-def DepthwiseConv2DOptionsAddFusedActivationFunction(builder, fusedActivationFunction):
-    """This method is deprecated. Please switch to AddFusedActivationFunction."""
-    return AddFusedActivationFunction(builder, fusedActivationFunction)
-def AddDilationWFactor(builder, dilationWFactor): builder.PrependInt32Slot(5, dilationWFactor, 1)
-def DepthwiseConv2DOptionsAddDilationWFactor(builder, dilationWFactor):
-    """This method is deprecated. Please switch to AddDilationWFactor."""
-    return AddDilationWFactor(builder, dilationWFactor)
-def AddDilationHFactor(builder, dilationHFactor): builder.PrependInt32Slot(6, dilationHFactor, 1)
-def DepthwiseConv2DOptionsAddDilationHFactor(builder, dilationHFactor):
-    """This method is deprecated. Please switch to AddDilationHFactor."""
-    return AddDilationHFactor(builder, dilationHFactor)
-def End(builder): return builder.EndObject()
-def DepthwiseConv2DOptionsEnd(builder):
-    """This method is deprecated. Please switch to End."""
-    return End(builder)
+def DepthwiseConv2DOptionsStart(builder): builder.StartObject(7)
+def Start(builder):
+    return DepthwiseConv2DOptionsStart(builder)
+def DepthwiseConv2DOptionsAddPadding(builder, padding): builder.PrependInt8Slot(0, padding, 0)
+def AddPadding(builder, padding):
+    return DepthwiseConv2DOptionsAddPadding(builder, padding)
+def DepthwiseConv2DOptionsAddStrideW(builder, strideW): builder.PrependInt32Slot(1, strideW, 0)
+def AddStrideW(builder, strideW):
+    return DepthwiseConv2DOptionsAddStrideW(builder, strideW)
+def DepthwiseConv2DOptionsAddStrideH(builder, strideH): builder.PrependInt32Slot(2, strideH, 0)
+def AddStrideH(builder, strideH):
+    return DepthwiseConv2DOptionsAddStrideH(builder, strideH)
+def DepthwiseConv2DOptionsAddDepthMultiplier(builder, depthMultiplier): builder.PrependInt32Slot(3, depthMultiplier, 0)
+def AddDepthMultiplier(builder, depthMultiplier):
+    return DepthwiseConv2DOptionsAddDepthMultiplier(builder, depthMultiplier)
+def DepthwiseConv2DOptionsAddFusedActivationFunction(builder, fusedActivationFunction): builder.PrependInt8Slot(4, fusedActivationFunction, 0)
+def AddFusedActivationFunction(builder, fusedActivationFunction):
+    return DepthwiseConv2DOptionsAddFusedActivationFunction(builder, fusedActivationFunction)
+def DepthwiseConv2DOptionsAddDilationWFactor(builder, dilationWFactor): builder.PrependInt32Slot(5, dilationWFactor, 1)
+def AddDilationWFactor(builder, dilationWFactor):
+    return DepthwiseConv2DOptionsAddDilationWFactor(builder, dilationWFactor)
+def DepthwiseConv2DOptionsAddDilationHFactor(builder, dilationHFactor): builder.PrependInt32Slot(6, dilationHFactor, 1)
+def AddDilationHFactor(builder, dilationHFactor):
+    return DepthwiseConv2DOptionsAddDilationHFactor(builder, dilationHFactor)
+def DepthwiseConv2DOptionsEnd(builder): return builder.EndObject()
+def End(builder):
+    return DepthwiseConv2DOptionsEnd(builder)
 
 class DepthwiseConv2DOptionsT(object):
 
@@ -128,37 +119,42 @@ class DepthwiseConv2DOptionsT(object):
 
     @classmethod
     def InitFromBuf(cls, buf, pos):
-        depthwiseConv2DOptions = DepthwiseConv2DOptions()
-        depthwiseConv2DOptions.Init(buf, pos)
-        return cls.InitFromObj(depthwiseConv2DOptions)
+        depthwiseConv2Doptions = DepthwiseConv2DOptions()
+        depthwiseConv2Doptions.Init(buf, pos)
+        return cls.InitFromObj(depthwiseConv2Doptions)
 
     @classmethod
-    def InitFromObj(cls, depthwiseConv2DOptions):
+    def InitFromPackedBuf(cls, buf, pos=0):
+        n = flatbuffers.encode.Get(flatbuffers.packer.uoffset, buf, pos)
+        return cls.InitFromBuf(buf, pos+n)
+
+    @classmethod
+    def InitFromObj(cls, depthwiseConv2Doptions):
         x = DepthwiseConv2DOptionsT()
-        x._UnPack(depthwiseConv2DOptions)
+        x._UnPack(depthwiseConv2Doptions)
         return x
 
     # DepthwiseConv2DOptionsT
-    def _UnPack(self, depthwiseConv2DOptions):
-        if depthwiseConv2DOptions is None:
+    def _UnPack(self, depthwiseConv2Doptions):
+        if depthwiseConv2Doptions is None:
             return
-        self.padding = depthwiseConv2DOptions.Padding()
-        self.strideW = depthwiseConv2DOptions.StrideW()
-        self.strideH = depthwiseConv2DOptions.StrideH()
-        self.depthMultiplier = depthwiseConv2DOptions.DepthMultiplier()
-        self.fusedActivationFunction = depthwiseConv2DOptions.FusedActivationFunction()
-        self.dilationWFactor = depthwiseConv2DOptions.DilationWFactor()
-        self.dilationHFactor = depthwiseConv2DOptions.DilationHFactor()
+        self.padding = depthwiseConv2Doptions.Padding()
+        self.strideW = depthwiseConv2Doptions.StrideW()
+        self.strideH = depthwiseConv2Doptions.StrideH()
+        self.depthMultiplier = depthwiseConv2Doptions.DepthMultiplier()
+        self.fusedActivationFunction = depthwiseConv2Doptions.FusedActivationFunction()
+        self.dilationWFactor = depthwiseConv2Doptions.DilationWFactor()
+        self.dilationHFactor = depthwiseConv2Doptions.DilationHFactor()
 
     # DepthwiseConv2DOptionsT
     def Pack(self, builder):
-        Start(builder)
-        AddPadding(builder, self.padding)
-        AddStrideW(builder, self.strideW)
-        AddStrideH(builder, self.strideH)
-        AddDepthMultiplier(builder, self.depthMultiplier)
-        AddFusedActivationFunction(builder, self.fusedActivationFunction)
-        AddDilationWFactor(builder, self.dilationWFactor)
-        AddDilationHFactor(builder, self.dilationHFactor)
-        depthwiseConv2DOptions = End(builder)
-        return depthwiseConv2DOptions
+        DepthwiseConv2DOptionsStart(builder)
+        DepthwiseConv2DOptionsAddPadding(builder, self.padding)
+        DepthwiseConv2DOptionsAddStrideW(builder, self.strideW)
+        DepthwiseConv2DOptionsAddStrideH(builder, self.strideH)
+        DepthwiseConv2DOptionsAddDepthMultiplier(builder, self.depthMultiplier)
+        DepthwiseConv2DOptionsAddFusedActivationFunction(builder, self.fusedActivationFunction)
+        DepthwiseConv2DOptionsAddDilationWFactor(builder, self.dilationWFactor)
+        DepthwiseConv2DOptionsAddDilationHFactor(builder, self.dilationHFactor)
+        depthwiseConv2Doptions = DepthwiseConv2DOptionsEnd(builder)
+        return depthwiseConv2Doptions

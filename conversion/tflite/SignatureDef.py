@@ -92,38 +92,30 @@ class SignatureDef(object):
             return self._tab.String(o + self._tab.Pos)
         return None
 
-def Start(builder): builder.StartObject(4)
-def SignatureDefStart(builder):
-    """This method is deprecated. Please switch to Start."""
-    return Start(builder)
-def AddInputs(builder, inputs): builder.PrependUOffsetTRelativeSlot(0, flatbuffers.number_types.UOffsetTFlags.py_type(inputs), 0)
-def SignatureDefAddInputs(builder, inputs):
-    """This method is deprecated. Please switch to AddInputs."""
-    return AddInputs(builder, inputs)
-def StartInputsVector(builder, numElems): return builder.StartVector(4, numElems, 4)
-def SignatureDefStartInputsVector(builder, numElems):
-    """This method is deprecated. Please switch to Start."""
-    return StartInputsVector(builder, numElems)
-def AddOutputs(builder, outputs): builder.PrependUOffsetTRelativeSlot(1, flatbuffers.number_types.UOffsetTFlags.py_type(outputs), 0)
-def SignatureDefAddOutputs(builder, outputs):
-    """This method is deprecated. Please switch to AddOutputs."""
-    return AddOutputs(builder, outputs)
-def StartOutputsVector(builder, numElems): return builder.StartVector(4, numElems, 4)
-def SignatureDefStartOutputsVector(builder, numElems):
-    """This method is deprecated. Please switch to Start."""
-    return StartOutputsVector(builder, numElems)
-def AddMethodName(builder, methodName): builder.PrependUOffsetTRelativeSlot(2, flatbuffers.number_types.UOffsetTFlags.py_type(methodName), 0)
-def SignatureDefAddMethodName(builder, methodName):
-    """This method is deprecated. Please switch to AddMethodName."""
-    return AddMethodName(builder, methodName)
-def AddKey(builder, key): builder.PrependUOffsetTRelativeSlot(3, flatbuffers.number_types.UOffsetTFlags.py_type(key), 0)
-def SignatureDefAddKey(builder, key):
-    """This method is deprecated. Please switch to AddKey."""
-    return AddKey(builder, key)
-def End(builder): return builder.EndObject()
-def SignatureDefEnd(builder):
-    """This method is deprecated. Please switch to End."""
-    return End(builder)
+def SignatureDefStart(builder): builder.StartObject(4)
+def Start(builder):
+    return SignatureDefStart(builder)
+def SignatureDefAddInputs(builder, inputs): builder.PrependUOffsetTRelativeSlot(0, flatbuffers.number_types.UOffsetTFlags.py_type(inputs), 0)
+def AddInputs(builder, inputs):
+    return SignatureDefAddInputs(builder, inputs)
+def SignatureDefStartInputsVector(builder, numElems): return builder.StartVector(4, numElems, 4)
+def StartInputsVector(builder, numElems):
+    return SignatureDefStartInputsVector(builder, numElems)
+def SignatureDefAddOutputs(builder, outputs): builder.PrependUOffsetTRelativeSlot(1, flatbuffers.number_types.UOffsetTFlags.py_type(outputs), 0)
+def AddOutputs(builder, outputs):
+    return SignatureDefAddOutputs(builder, outputs)
+def SignatureDefStartOutputsVector(builder, numElems): return builder.StartVector(4, numElems, 4)
+def StartOutputsVector(builder, numElems):
+    return SignatureDefStartOutputsVector(builder, numElems)
+def SignatureDefAddMethodName(builder, methodName): builder.PrependUOffsetTRelativeSlot(2, flatbuffers.number_types.UOffsetTFlags.py_type(methodName), 0)
+def AddMethodName(builder, methodName):
+    return SignatureDefAddMethodName(builder, methodName)
+def SignatureDefAddKey(builder, key): builder.PrependUOffsetTRelativeSlot(3, flatbuffers.number_types.UOffsetTFlags.py_type(key), 0)
+def AddKey(builder, key):
+    return SignatureDefAddKey(builder, key)
+def SignatureDefEnd(builder): return builder.EndObject()
+def End(builder):
+    return SignatureDefEnd(builder)
 import tflite.TensorMap
 try:
     from typing import List
@@ -144,6 +136,11 @@ class SignatureDefT(object):
         signatureDef = SignatureDef()
         signatureDef.Init(buf, pos)
         return cls.InitFromObj(signatureDef)
+
+    @classmethod
+    def InitFromPackedBuf(cls, buf, pos=0):
+        n = flatbuffers.encode.Get(flatbuffers.packer.uoffset, buf, pos)
+        return cls.InitFromBuf(buf, pos+n)
 
     @classmethod
     def InitFromObj(cls, signatureDef):
@@ -180,7 +177,7 @@ class SignatureDefT(object):
             inputslist = []
             for i in range(len(self.inputs)):
                 inputslist.append(self.inputs[i].Pack(builder))
-            StartInputsVector(builder, len(self.inputs))
+            SignatureDefStartInputsVector(builder, len(self.inputs))
             for i in reversed(range(len(self.inputs))):
                 builder.PrependUOffsetTRelative(inputslist[i])
             inputs = builder.EndVector()
@@ -188,7 +185,7 @@ class SignatureDefT(object):
             outputslist = []
             for i in range(len(self.outputs)):
                 outputslist.append(self.outputs[i].Pack(builder))
-            StartOutputsVector(builder, len(self.outputs))
+            SignatureDefStartOutputsVector(builder, len(self.outputs))
             for i in reversed(range(len(self.outputs))):
                 builder.PrependUOffsetTRelative(outputslist[i])
             outputs = builder.EndVector()
@@ -196,14 +193,14 @@ class SignatureDefT(object):
             methodName = builder.CreateString(self.methodName)
         if self.key is not None:
             key = builder.CreateString(self.key)
-        Start(builder)
+        SignatureDefStart(builder)
         if self.inputs is not None:
-            AddInputs(builder, inputs)
+            SignatureDefAddInputs(builder, inputs)
         if self.outputs is not None:
-            AddOutputs(builder, outputs)
+            SignatureDefAddOutputs(builder, outputs)
         if self.methodName is not None:
-            AddMethodName(builder, methodName)
+            SignatureDefAddMethodName(builder, methodName)
         if self.key is not None:
-            AddKey(builder, key)
-        signatureDef = End(builder)
+            SignatureDefAddKey(builder, key)
+        signatureDef = SignatureDefEnd(builder)
         return signatureDef

@@ -28,14 +28,12 @@ class LessEqualOptions(object):
     def Init(self, buf, pos):
         self._tab = flatbuffers.table.Table(buf, pos)
 
-def Start(builder): builder.StartObject(0)
-def LessEqualOptionsStart(builder):
-    """This method is deprecated. Please switch to Start."""
-    return Start(builder)
-def End(builder): return builder.EndObject()
-def LessEqualOptionsEnd(builder):
-    """This method is deprecated. Please switch to End."""
-    return End(builder)
+def LessEqualOptionsStart(builder): builder.StartObject(0)
+def Start(builder):
+    return LessEqualOptionsStart(builder)
+def LessEqualOptionsEnd(builder): return builder.EndObject()
+def End(builder):
+    return LessEqualOptionsEnd(builder)
 
 class LessEqualOptionsT(object):
 
@@ -50,6 +48,11 @@ class LessEqualOptionsT(object):
         return cls.InitFromObj(lessEqualOptions)
 
     @classmethod
+    def InitFromPackedBuf(cls, buf, pos=0):
+        n = flatbuffers.encode.Get(flatbuffers.packer.uoffset, buf, pos)
+        return cls.InitFromBuf(buf, pos+n)
+
+    @classmethod
     def InitFromObj(cls, lessEqualOptions):
         x = LessEqualOptionsT()
         x._UnPack(lessEqualOptions)
@@ -62,6 +65,6 @@ class LessEqualOptionsT(object):
 
     # LessEqualOptionsT
     def Pack(self, builder):
-        Start(builder)
-        lessEqualOptions = End(builder)
+        LessEqualOptionsStart(builder)
+        lessEqualOptions = LessEqualOptionsEnd(builder)
         return lessEqualOptions

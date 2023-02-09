@@ -28,14 +28,12 @@ class BatchToSpaceNDOptions(object):
     def Init(self, buf, pos):
         self._tab = flatbuffers.table.Table(buf, pos)
 
-def Start(builder): builder.StartObject(0)
-def BatchToSpaceNDOptionsStart(builder):
-    """This method is deprecated. Please switch to Start."""
-    return Start(builder)
-def End(builder): return builder.EndObject()
-def BatchToSpaceNDOptionsEnd(builder):
-    """This method is deprecated. Please switch to End."""
-    return End(builder)
+def BatchToSpaceNDOptionsStart(builder): builder.StartObject(0)
+def Start(builder):
+    return BatchToSpaceNDOptionsStart(builder)
+def BatchToSpaceNDOptionsEnd(builder): return builder.EndObject()
+def End(builder):
+    return BatchToSpaceNDOptionsEnd(builder)
 
 class BatchToSpaceNDOptionsT(object):
 
@@ -45,23 +43,28 @@ class BatchToSpaceNDOptionsT(object):
 
     @classmethod
     def InitFromBuf(cls, buf, pos):
-        batchToSpaceNDOptions = BatchToSpaceNDOptions()
-        batchToSpaceNDOptions.Init(buf, pos)
-        return cls.InitFromObj(batchToSpaceNDOptions)
+        batchToSpaceNdoptions = BatchToSpaceNDOptions()
+        batchToSpaceNdoptions.Init(buf, pos)
+        return cls.InitFromObj(batchToSpaceNdoptions)
 
     @classmethod
-    def InitFromObj(cls, batchToSpaceNDOptions):
+    def InitFromPackedBuf(cls, buf, pos=0):
+        n = flatbuffers.encode.Get(flatbuffers.packer.uoffset, buf, pos)
+        return cls.InitFromBuf(buf, pos+n)
+
+    @classmethod
+    def InitFromObj(cls, batchToSpaceNdoptions):
         x = BatchToSpaceNDOptionsT()
-        x._UnPack(batchToSpaceNDOptions)
+        x._UnPack(batchToSpaceNdoptions)
         return x
 
     # BatchToSpaceNDOptionsT
-    def _UnPack(self, batchToSpaceNDOptions):
-        if batchToSpaceNDOptions is None:
+    def _UnPack(self, batchToSpaceNdoptions):
+        if batchToSpaceNdoptions is None:
             return
 
     # BatchToSpaceNDOptionsT
     def Pack(self, builder):
-        Start(builder)
-        batchToSpaceNDOptions = End(builder)
-        return batchToSpaceNDOptions
+        BatchToSpaceNDOptionsStart(builder)
+        batchToSpaceNdoptions = BatchToSpaceNDOptionsEnd(builder)
+        return batchToSpaceNdoptions

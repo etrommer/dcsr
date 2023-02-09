@@ -28,14 +28,12 @@ class TransposeOptions(object):
     def Init(self, buf, pos):
         self._tab = flatbuffers.table.Table(buf, pos)
 
-def Start(builder): builder.StartObject(0)
-def TransposeOptionsStart(builder):
-    """This method is deprecated. Please switch to Start."""
-    return Start(builder)
-def End(builder): return builder.EndObject()
-def TransposeOptionsEnd(builder):
-    """This method is deprecated. Please switch to End."""
-    return End(builder)
+def TransposeOptionsStart(builder): builder.StartObject(0)
+def Start(builder):
+    return TransposeOptionsStart(builder)
+def TransposeOptionsEnd(builder): return builder.EndObject()
+def End(builder):
+    return TransposeOptionsEnd(builder)
 
 class TransposeOptionsT(object):
 
@@ -50,6 +48,11 @@ class TransposeOptionsT(object):
         return cls.InitFromObj(transposeOptions)
 
     @classmethod
+    def InitFromPackedBuf(cls, buf, pos=0):
+        n = flatbuffers.encode.Get(flatbuffers.packer.uoffset, buf, pos)
+        return cls.InitFromBuf(buf, pos+n)
+
+    @classmethod
     def InitFromObj(cls, transposeOptions):
         x = TransposeOptionsT()
         x._UnPack(transposeOptions)
@@ -62,6 +65,6 @@ class TransposeOptionsT(object):
 
     # TransposeOptionsT
     def Pack(self, builder):
-        Start(builder)
-        transposeOptions = End(builder)
+        TransposeOptionsStart(builder)
+        transposeOptions = TransposeOptionsEnd(builder)
         return transposeOptions

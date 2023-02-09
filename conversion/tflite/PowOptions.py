@@ -28,14 +28,12 @@ class PowOptions(object):
     def Init(self, buf, pos):
         self._tab = flatbuffers.table.Table(buf, pos)
 
-def Start(builder): builder.StartObject(0)
-def PowOptionsStart(builder):
-    """This method is deprecated. Please switch to Start."""
-    return Start(builder)
-def End(builder): return builder.EndObject()
-def PowOptionsEnd(builder):
-    """This method is deprecated. Please switch to End."""
-    return End(builder)
+def PowOptionsStart(builder): builder.StartObject(0)
+def Start(builder):
+    return PowOptionsStart(builder)
+def PowOptionsEnd(builder): return builder.EndObject()
+def End(builder):
+    return PowOptionsEnd(builder)
 
 class PowOptionsT(object):
 
@@ -50,6 +48,11 @@ class PowOptionsT(object):
         return cls.InitFromObj(powOptions)
 
     @classmethod
+    def InitFromPackedBuf(cls, buf, pos=0):
+        n = flatbuffers.encode.Get(flatbuffers.packer.uoffset, buf, pos)
+        return cls.InitFromBuf(buf, pos+n)
+
+    @classmethod
     def InitFromObj(cls, powOptions):
         x = PowOptionsT()
         x._UnPack(powOptions)
@@ -62,6 +65,6 @@ class PowOptionsT(object):
 
     # PowOptionsT
     def Pack(self, builder):
-        Start(builder)
-        powOptions = End(builder)
+        PowOptionsStart(builder)
+        powOptions = PowOptionsEnd(builder)
         return powOptions

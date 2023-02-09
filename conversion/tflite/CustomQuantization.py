@@ -55,22 +55,18 @@ class CustomQuantization(object):
         o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(4))
         return o == 0
 
-def Start(builder): builder.StartObject(1)
-def CustomQuantizationStart(builder):
-    """This method is deprecated. Please switch to Start."""
-    return Start(builder)
-def AddCustom(builder, custom): builder.PrependUOffsetTRelativeSlot(0, flatbuffers.number_types.UOffsetTFlags.py_type(custom), 0)
-def CustomQuantizationAddCustom(builder, custom):
-    """This method is deprecated. Please switch to AddCustom."""
-    return AddCustom(builder, custom)
-def StartCustomVector(builder, numElems): return builder.StartVector(1, numElems, 1)
-def CustomQuantizationStartCustomVector(builder, numElems):
-    """This method is deprecated. Please switch to Start."""
-    return StartCustomVector(builder, numElems)
-def End(builder): return builder.EndObject()
-def CustomQuantizationEnd(builder):
-    """This method is deprecated. Please switch to End."""
-    return End(builder)
+def CustomQuantizationStart(builder): builder.StartObject(1)
+def Start(builder):
+    return CustomQuantizationStart(builder)
+def CustomQuantizationAddCustom(builder, custom): builder.PrependUOffsetTRelativeSlot(0, flatbuffers.number_types.UOffsetTFlags.py_type(custom), 0)
+def AddCustom(builder, custom):
+    return CustomQuantizationAddCustom(builder, custom)
+def CustomQuantizationStartCustomVector(builder, numElems): return builder.StartVector(1, numElems, 1)
+def StartCustomVector(builder, numElems):
+    return CustomQuantizationStartCustomVector(builder, numElems)
+def CustomQuantizationEnd(builder): return builder.EndObject()
+def End(builder):
+    return CustomQuantizationEnd(builder)
 try:
     from typing import List
 except:
@@ -87,6 +83,11 @@ class CustomQuantizationT(object):
         customQuantization = CustomQuantization()
         customQuantization.Init(buf, pos)
         return cls.InitFromObj(customQuantization)
+
+    @classmethod
+    def InitFromPackedBuf(cls, buf, pos=0):
+        n = flatbuffers.encode.Get(flatbuffers.packer.uoffset, buf, pos)
+        return cls.InitFromBuf(buf, pos+n)
 
     @classmethod
     def InitFromObj(cls, customQuantization):
@@ -112,12 +113,12 @@ class CustomQuantizationT(object):
             if np is not None and type(self.custom) is np.ndarray:
                 custom = builder.CreateNumpyVector(self.custom)
             else:
-                StartCustomVector(builder, len(self.custom))
+                CustomQuantizationStartCustomVector(builder, len(self.custom))
                 for i in reversed(range(len(self.custom))):
                     builder.PrependUint8(self.custom[i])
                 custom = builder.EndVector()
-        Start(builder)
+        CustomQuantizationStart(builder)
         if self.custom is not None:
-            AddCustom(builder, custom)
-        customQuantization = End(builder)
+            CustomQuantizationAddCustom(builder, custom)
+        customQuantization = CustomQuantizationEnd(builder)
         return customQuantization

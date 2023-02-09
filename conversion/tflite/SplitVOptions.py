@@ -35,18 +35,15 @@ class SplitVOptions(object):
             return self._tab.Get(flatbuffers.number_types.Int32Flags, o + self._tab.Pos)
         return 0
 
-def Start(builder): builder.StartObject(1)
-def SplitVOptionsStart(builder):
-    """This method is deprecated. Please switch to Start."""
-    return Start(builder)
-def AddNumSplits(builder, numSplits): builder.PrependInt32Slot(0, numSplits, 0)
-def SplitVOptionsAddNumSplits(builder, numSplits):
-    """This method is deprecated. Please switch to AddNumSplits."""
-    return AddNumSplits(builder, numSplits)
-def End(builder): return builder.EndObject()
-def SplitVOptionsEnd(builder):
-    """This method is deprecated. Please switch to End."""
-    return End(builder)
+def SplitVOptionsStart(builder): builder.StartObject(1)
+def Start(builder):
+    return SplitVOptionsStart(builder)
+def SplitVOptionsAddNumSplits(builder, numSplits): builder.PrependInt32Slot(0, numSplits, 0)
+def AddNumSplits(builder, numSplits):
+    return SplitVOptionsAddNumSplits(builder, numSplits)
+def SplitVOptionsEnd(builder): return builder.EndObject()
+def End(builder):
+    return SplitVOptionsEnd(builder)
 
 class SplitVOptionsT(object):
 
@@ -56,25 +53,30 @@ class SplitVOptionsT(object):
 
     @classmethod
     def InitFromBuf(cls, buf, pos):
-        splitVOptions = SplitVOptions()
-        splitVOptions.Init(buf, pos)
-        return cls.InitFromObj(splitVOptions)
+        splitVoptions = SplitVOptions()
+        splitVoptions.Init(buf, pos)
+        return cls.InitFromObj(splitVoptions)
 
     @classmethod
-    def InitFromObj(cls, splitVOptions):
+    def InitFromPackedBuf(cls, buf, pos=0):
+        n = flatbuffers.encode.Get(flatbuffers.packer.uoffset, buf, pos)
+        return cls.InitFromBuf(buf, pos+n)
+
+    @classmethod
+    def InitFromObj(cls, splitVoptions):
         x = SplitVOptionsT()
-        x._UnPack(splitVOptions)
+        x._UnPack(splitVoptions)
         return x
 
     # SplitVOptionsT
-    def _UnPack(self, splitVOptions):
-        if splitVOptions is None:
+    def _UnPack(self, splitVoptions):
+        if splitVoptions is None:
             return
-        self.numSplits = splitVOptions.NumSplits()
+        self.numSplits = splitVoptions.NumSplits()
 
     # SplitVOptionsT
     def Pack(self, builder):
-        Start(builder)
-        AddNumSplits(builder, self.numSplits)
-        splitVOptions = End(builder)
-        return splitVOptions
+        SplitVOptionsStart(builder)
+        SplitVOptionsAddNumSplits(builder, self.numSplits)
+        splitVoptions = SplitVOptionsEnd(builder)
+        return splitVoptions

@@ -42,22 +42,18 @@ class TensorMap(object):
             return self._tab.Get(flatbuffers.number_types.Uint32Flags, o + self._tab.Pos)
         return 0
 
-def Start(builder): builder.StartObject(2)
-def TensorMapStart(builder):
-    """This method is deprecated. Please switch to Start."""
-    return Start(builder)
-def AddName(builder, name): builder.PrependUOffsetTRelativeSlot(0, flatbuffers.number_types.UOffsetTFlags.py_type(name), 0)
-def TensorMapAddName(builder, name):
-    """This method is deprecated. Please switch to AddName."""
-    return AddName(builder, name)
-def AddTensorIndex(builder, tensorIndex): builder.PrependUint32Slot(1, tensorIndex, 0)
-def TensorMapAddTensorIndex(builder, tensorIndex):
-    """This method is deprecated. Please switch to AddTensorIndex."""
-    return AddTensorIndex(builder, tensorIndex)
-def End(builder): return builder.EndObject()
-def TensorMapEnd(builder):
-    """This method is deprecated. Please switch to End."""
-    return End(builder)
+def TensorMapStart(builder): builder.StartObject(2)
+def Start(builder):
+    return TensorMapStart(builder)
+def TensorMapAddName(builder, name): builder.PrependUOffsetTRelativeSlot(0, flatbuffers.number_types.UOffsetTFlags.py_type(name), 0)
+def AddName(builder, name):
+    return TensorMapAddName(builder, name)
+def TensorMapAddTensorIndex(builder, tensorIndex): builder.PrependUint32Slot(1, tensorIndex, 0)
+def AddTensorIndex(builder, tensorIndex):
+    return TensorMapAddTensorIndex(builder, tensorIndex)
+def TensorMapEnd(builder): return builder.EndObject()
+def End(builder):
+    return TensorMapEnd(builder)
 
 class TensorMapT(object):
 
@@ -71,6 +67,11 @@ class TensorMapT(object):
         tensorMap = TensorMap()
         tensorMap.Init(buf, pos)
         return cls.InitFromObj(tensorMap)
+
+    @classmethod
+    def InitFromPackedBuf(cls, buf, pos=0):
+        n = flatbuffers.encode.Get(flatbuffers.packer.uoffset, buf, pos)
+        return cls.InitFromBuf(buf, pos+n)
 
     @classmethod
     def InitFromObj(cls, tensorMap):
@@ -89,9 +90,9 @@ class TensorMapT(object):
     def Pack(self, builder):
         if self.name is not None:
             name = builder.CreateString(self.name)
-        Start(builder)
+        TensorMapStart(builder)
         if self.name is not None:
-            AddName(builder, name)
-        AddTensorIndex(builder, self.tensorIndex)
-        tensorMap = End(builder)
+            TensorMapAddName(builder, name)
+        TensorMapAddTensorIndex(builder, self.tensorIndex)
+        tensorMap = TensorMapEnd(builder)
         return tensorMap

@@ -35,18 +35,15 @@ class MulOptions(object):
             return self._tab.Get(flatbuffers.number_types.Int8Flags, o + self._tab.Pos)
         return 0
 
-def Start(builder): builder.StartObject(1)
-def MulOptionsStart(builder):
-    """This method is deprecated. Please switch to Start."""
-    return Start(builder)
-def AddFusedActivationFunction(builder, fusedActivationFunction): builder.PrependInt8Slot(0, fusedActivationFunction, 0)
-def MulOptionsAddFusedActivationFunction(builder, fusedActivationFunction):
-    """This method is deprecated. Please switch to AddFusedActivationFunction."""
-    return AddFusedActivationFunction(builder, fusedActivationFunction)
-def End(builder): return builder.EndObject()
-def MulOptionsEnd(builder):
-    """This method is deprecated. Please switch to End."""
-    return End(builder)
+def MulOptionsStart(builder): builder.StartObject(1)
+def Start(builder):
+    return MulOptionsStart(builder)
+def MulOptionsAddFusedActivationFunction(builder, fusedActivationFunction): builder.PrependInt8Slot(0, fusedActivationFunction, 0)
+def AddFusedActivationFunction(builder, fusedActivationFunction):
+    return MulOptionsAddFusedActivationFunction(builder, fusedActivationFunction)
+def MulOptionsEnd(builder): return builder.EndObject()
+def End(builder):
+    return MulOptionsEnd(builder)
 
 class MulOptionsT(object):
 
@@ -59,6 +56,11 @@ class MulOptionsT(object):
         mulOptions = MulOptions()
         mulOptions.Init(buf, pos)
         return cls.InitFromObj(mulOptions)
+
+    @classmethod
+    def InitFromPackedBuf(cls, buf, pos=0):
+        n = flatbuffers.encode.Get(flatbuffers.packer.uoffset, buf, pos)
+        return cls.InitFromBuf(buf, pos+n)
 
     @classmethod
     def InitFromObj(cls, mulOptions):
@@ -74,7 +76,7 @@ class MulOptionsT(object):
 
     # MulOptionsT
     def Pack(self, builder):
-        Start(builder)
-        AddFusedActivationFunction(builder, self.fusedActivationFunction)
-        mulOptions = End(builder)
+        MulOptionsStart(builder)
+        MulOptionsAddFusedActivationFunction(builder, self.fusedActivationFunction)
+        mulOptions = MulOptionsEnd(builder)
         return mulOptions

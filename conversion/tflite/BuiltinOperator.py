@@ -136,4 +136,3 @@ class BuiltinOperator(object):
     BROADCAST_TO = 130
     RFFT2D = 131
     CONV_3D = 132
-

@@ -28,14 +28,12 @@ class NotEqualOptions(object):
     def Init(self, buf, pos):
         self._tab = flatbuffers.table.Table(buf, pos)
 
-def Start(builder): builder.StartObject(0)
-def NotEqualOptionsStart(builder):
-    """This method is deprecated. Please switch to Start."""
-    return Start(builder)
-def End(builder): return builder.EndObject()
-def NotEqualOptionsEnd(builder):
-    """This method is deprecated. Please switch to End."""
-    return End(builder)
+def NotEqualOptionsStart(builder): builder.StartObject(0)
+def Start(builder):
+    return NotEqualOptionsStart(builder)
+def NotEqualOptionsEnd(builder): return builder.EndObject()
+def End(builder):
+    return NotEqualOptionsEnd(builder)
 
 class NotEqualOptionsT(object):
 
@@ -50,6 +48,11 @@ class NotEqualOptionsT(object):
         return cls.InitFromObj(notEqualOptions)
 
     @classmethod
+    def InitFromPackedBuf(cls, buf, pos=0):
+        n = flatbuffers.encode.Get(flatbuffers.packer.uoffset, buf, pos)
+        return cls.InitFromBuf(buf, pos+n)
+
+    @classmethod
     def InitFromObj(cls, notEqualOptions):
         x = NotEqualOptionsT()
         x._UnPack(notEqualOptions)
@@ -62,6 +65,6 @@ class NotEqualOptionsT(object):
 
     # NotEqualOptionsT
     def Pack(self, builder):
-        Start(builder)
-        notEqualOptions = End(builder)
+        NotEqualOptionsStart(builder)
+        notEqualOptions = NotEqualOptionsEnd(builder)
         return notEqualOptions

@@ -55,22 +55,18 @@ class SqueezeOptions(object):
         o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(4))
         return o == 0
 
-def Start(builder): builder.StartObject(1)
-def SqueezeOptionsStart(builder):
-    """This method is deprecated. Please switch to Start."""
-    return Start(builder)
-def AddSqueezeDims(builder, squeezeDims): builder.PrependUOffsetTRelativeSlot(0, flatbuffers.number_types.UOffsetTFlags.py_type(squeezeDims), 0)
-def SqueezeOptionsAddSqueezeDims(builder, squeezeDims):
-    """This method is deprecated. Please switch to AddSqueezeDims."""
-    return AddSqueezeDims(builder, squeezeDims)
-def StartSqueezeDimsVector(builder, numElems): return builder.StartVector(4, numElems, 4)
-def SqueezeOptionsStartSqueezeDimsVector(builder, numElems):
-    """This method is deprecated. Please switch to Start."""
-    return StartSqueezeDimsVector(builder, numElems)
-def End(builder): return builder.EndObject()
-def SqueezeOptionsEnd(builder):
-    """This method is deprecated. Please switch to End."""
-    return End(builder)
+def SqueezeOptionsStart(builder): builder.StartObject(1)
+def Start(builder):
+    return SqueezeOptionsStart(builder)
+def SqueezeOptionsAddSqueezeDims(builder, squeezeDims): builder.PrependUOffsetTRelativeSlot(0, flatbuffers.number_types.UOffsetTFlags.py_type(squeezeDims), 0)
+def AddSqueezeDims(builder, squeezeDims):
+    return SqueezeOptionsAddSqueezeDims(builder, squeezeDims)
+def SqueezeOptionsStartSqueezeDimsVector(builder, numElems): return builder.StartVector(4, numElems, 4)
+def StartSqueezeDimsVector(builder, numElems):
+    return SqueezeOptionsStartSqueezeDimsVector(builder, numElems)
+def SqueezeOptionsEnd(builder): return builder.EndObject()
+def End(builder):
+    return SqueezeOptionsEnd(builder)
 try:
     from typing import List
 except:
@@ -87,6 +83,11 @@ class SqueezeOptionsT(object):
         squeezeOptions = SqueezeOptions()
         squeezeOptions.Init(buf, pos)
         return cls.InitFromObj(squeezeOptions)
+
+    @classmethod
+    def InitFromPackedBuf(cls, buf, pos=0):
+        n = flatbuffers.encode.Get(flatbuffers.packer.uoffset, buf, pos)
+        return cls.InitFromBuf(buf, pos+n)
 
     @classmethod
     def InitFromObj(cls, squeezeOptions):
@@ -112,12 +113,12 @@ class SqueezeOptionsT(object):
             if np is not None and type(self.squeezeDims) is np.ndarray:
                 squeezeDims = builder.CreateNumpyVector(self.squeezeDims)
             else:
-                StartSqueezeDimsVector(builder, len(self.squeezeDims))
+                SqueezeOptionsStartSqueezeDimsVector(builder, len(self.squeezeDims))
                 for i in reversed(range(len(self.squeezeDims))):
                     builder.PrependInt32(self.squeezeDims[i])
                 squeezeDims = builder.EndVector()
-        Start(builder)
+        SqueezeOptionsStart(builder)
         if self.squeezeDims is not None:
-            AddSqueezeDims(builder, squeezeDims)
-        squeezeOptions = End(builder)
+            SqueezeOptionsAddSqueezeDims(builder, squeezeDims)
+        squeezeOptions = SqueezeOptionsEnd(builder)
         return squeezeOptions

@@ -28,14 +28,12 @@ class LogSoftmaxOptions(object):
     def Init(self, buf, pos):
         self._tab = flatbuffers.table.Table(buf, pos)
 
-def Start(builder): builder.StartObject(0)
-def LogSoftmaxOptionsStart(builder):
-    """This method is deprecated. Please switch to Start."""
-    return Start(builder)
-def End(builder): return builder.EndObject()
-def LogSoftmaxOptionsEnd(builder):
-    """This method is deprecated. Please switch to End."""
-    return End(builder)
+def LogSoftmaxOptionsStart(builder): builder.StartObject(0)
+def Start(builder):
+    return LogSoftmaxOptionsStart(builder)
+def LogSoftmaxOptionsEnd(builder): return builder.EndObject()
+def End(builder):
+    return LogSoftmaxOptionsEnd(builder)
 
 class LogSoftmaxOptionsT(object):
 
@@ -50,6 +48,11 @@ class LogSoftmaxOptionsT(object):
         return cls.InitFromObj(logSoftmaxOptions)
 
     @classmethod
+    def InitFromPackedBuf(cls, buf, pos=0):
+        n = flatbuffers.encode.Get(flatbuffers.packer.uoffset, buf, pos)
+        return cls.InitFromBuf(buf, pos+n)
+
+    @classmethod
     def InitFromObj(cls, logSoftmaxOptions):
         x = LogSoftmaxOptionsT()
         x._UnPack(logSoftmaxOptions)
@@ -62,6 +65,6 @@ class LogSoftmaxOptionsT(object):
 
     # LogSoftmaxOptionsT
     def Pack(self, builder):
-        Start(builder)
-        logSoftmaxOptions = End(builder)
+        LogSoftmaxOptionsStart(builder)
+        logSoftmaxOptions = LogSoftmaxOptionsEnd(builder)
         return logSoftmaxOptions

@@ -118,42 +118,33 @@ class SparsityParameters(object):
             return obj
         return None
 
-def Start(builder): builder.StartObject(4)
-def SparsityParametersStart(builder):
-    """This method is deprecated. Please switch to Start."""
-    return Start(builder)
-def AddTraversalOrder(builder, traversalOrder): builder.PrependUOffsetTRelativeSlot(0, flatbuffers.number_types.UOffsetTFlags.py_type(traversalOrder), 0)
-def SparsityParametersAddTraversalOrder(builder, traversalOrder):
-    """This method is deprecated. Please switch to AddTraversalOrder."""
-    return AddTraversalOrder(builder, traversalOrder)
-def StartTraversalOrderVector(builder, numElems): return builder.StartVector(4, numElems, 4)
-def SparsityParametersStartTraversalOrderVector(builder, numElems):
-    """This method is deprecated. Please switch to Start."""
-    return StartTraversalOrderVector(builder, numElems)
-def AddBlockMap(builder, blockMap): builder.PrependUOffsetTRelativeSlot(1, flatbuffers.number_types.UOffsetTFlags.py_type(blockMap), 0)
-def SparsityParametersAddBlockMap(builder, blockMap):
-    """This method is deprecated. Please switch to AddBlockMap."""
-    return AddBlockMap(builder, blockMap)
-def StartBlockMapVector(builder, numElems): return builder.StartVector(4, numElems, 4)
-def SparsityParametersStartBlockMapVector(builder, numElems):
-    """This method is deprecated. Please switch to Start."""
-    return StartBlockMapVector(builder, numElems)
-def AddDimMetadata(builder, dimMetadata): builder.PrependUOffsetTRelativeSlot(2, flatbuffers.number_types.UOffsetTFlags.py_type(dimMetadata), 0)
-def SparsityParametersAddDimMetadata(builder, dimMetadata):
-    """This method is deprecated. Please switch to AddDimMetadata."""
-    return AddDimMetadata(builder, dimMetadata)
-def StartDimMetadataVector(builder, numElems): return builder.StartVector(4, numElems, 4)
-def SparsityParametersStartDimMetadataVector(builder, numElems):
-    """This method is deprecated. Please switch to Start."""
-    return StartDimMetadataVector(builder, numElems)
-def AddCompSparsity(builder, compSparsity): builder.PrependUOffsetTRelativeSlot(3, flatbuffers.number_types.UOffsetTFlags.py_type(compSparsity), 0)
-def SparsityParametersAddCompSparsity(builder, compSparsity):
-    """This method is deprecated. Please switch to AddCompSparsity."""
-    return AddCompSparsity(builder, compSparsity)
-def End(builder): return builder.EndObject()
-def SparsityParametersEnd(builder):
-    """This method is deprecated. Please switch to End."""
-    return End(builder)
+def SparsityParametersStart(builder): builder.StartObject(4)
+def Start(builder):
+    return SparsityParametersStart(builder)
+def SparsityParametersAddTraversalOrder(builder, traversalOrder): builder.PrependUOffsetTRelativeSlot(0, flatbuffers.number_types.UOffsetTFlags.py_type(traversalOrder), 0)
+def AddTraversalOrder(builder, traversalOrder):
+    return SparsityParametersAddTraversalOrder(builder, traversalOrder)
+def SparsityParametersStartTraversalOrderVector(builder, numElems): return builder.StartVector(4, numElems, 4)
+def StartTraversalOrderVector(builder, numElems):
+    return SparsityParametersStartTraversalOrderVector(builder, numElems)
+def SparsityParametersAddBlockMap(builder, blockMap): builder.PrependUOffsetTRelativeSlot(1, flatbuffers.number_types.UOffsetTFlags.py_type(blockMap), 0)
+def AddBlockMap(builder, blockMap):
+    return SparsityParametersAddBlockMap(builder, blockMap)
+def SparsityParametersStartBlockMapVector(builder, numElems): return builder.StartVector(4, numElems, 4)
+def StartBlockMapVector(builder, numElems):
+    return SparsityParametersStartBlockMapVector(builder, numElems)
+def SparsityParametersAddDimMetadata(builder, dimMetadata): builder.PrependUOffsetTRelativeSlot(2, flatbuffers.number_types.UOffsetTFlags.py_type(dimMetadata), 0)
+def AddDimMetadata(builder, dimMetadata):
+    return SparsityParametersAddDimMetadata(builder, dimMetadata)
+def SparsityParametersStartDimMetadataVector(builder, numElems): return builder.StartVector(4, numElems, 4)
+def StartDimMetadataVector(builder, numElems):
+    return SparsityParametersStartDimMetadataVector(builder, numElems)
+def SparsityParametersAddCompSparsity(builder, compSparsity): builder.PrependUOffsetTRelativeSlot(3, flatbuffers.number_types.UOffsetTFlags.py_type(compSparsity), 0)
+def AddCompSparsity(builder, compSparsity):
+    return SparsityParametersAddCompSparsity(builder, compSparsity)
+def SparsityParametersEnd(builder): return builder.EndObject()
+def End(builder):
+    return SparsityParametersEnd(builder)
 import tflite.CompressedSparsity
 import tflite.DimensionMetadata
 try:
@@ -175,6 +166,11 @@ class SparsityParametersT(object):
         sparsityParameters = SparsityParameters()
         sparsityParameters.Init(buf, pos)
         return cls.InitFromObj(sparsityParameters)
+
+    @classmethod
+    def InitFromPackedBuf(cls, buf, pos=0):
+        n = flatbuffers.encode.Get(flatbuffers.packer.uoffset, buf, pos)
+        return cls.InitFromBuf(buf, pos+n)
 
     @classmethod
     def InitFromObj(cls, sparsityParameters):
@@ -217,7 +213,7 @@ class SparsityParametersT(object):
             if np is not None and type(self.traversalOrder) is np.ndarray:
                 traversalOrder = builder.CreateNumpyVector(self.traversalOrder)
             else:
-                StartTraversalOrderVector(builder, len(self.traversalOrder))
+                SparsityParametersStartTraversalOrderVector(builder, len(self.traversalOrder))
                 for i in reversed(range(len(self.traversalOrder))):
                     builder.PrependInt32(self.traversalOrder[i])
                 traversalOrder = builder.EndVector()
@@ -225,7 +221,7 @@ class SparsityParametersT(object):
             if np is not None and type(self.blockMap) is np.ndarray:
                 blockMap = builder.CreateNumpyVector(self.blockMap)
             else:
-                StartBlockMapVector(builder, len(self.blockMap))
+                SparsityParametersStartBlockMapVector(builder, len(self.blockMap))
                 for i in reversed(range(len(self.blockMap))):
                     builder.PrependInt32(self.blockMap[i])
                 blockMap = builder.EndVector()
@@ -233,20 +229,20 @@ class SparsityParametersT(object):
             dimMetadatalist = []
             for i in range(len(self.dimMetadata)):
                 dimMetadatalist.append(self.dimMetadata[i].Pack(builder))
-            StartDimMetadataVector(builder, len(self.dimMetadata))
+            SparsityParametersStartDimMetadataVector(builder, len(self.dimMetadata))
             for i in reversed(range(len(self.dimMetadata))):
                 builder.PrependUOffsetTRelative(dimMetadatalist[i])
             dimMetadata = builder.EndVector()
         if self.compSparsity is not None:
             compSparsity = self.compSparsity.Pack(builder)
-        Start(builder)
+        SparsityParametersStart(builder)
         if self.traversalOrder is not None:
-            AddTraversalOrder(builder, traversalOrder)
+            SparsityParametersAddTraversalOrder(builder, traversalOrder)
         if self.blockMap is not None:
-            AddBlockMap(builder, blockMap)
+            SparsityParametersAddBlockMap(builder, blockMap)
         if self.dimMetadata is not None:
-            AddDimMetadata(builder, dimMetadata)
+            SparsityParametersAddDimMetadata(builder, dimMetadata)
         if self.compSparsity is not None:
-            AddCompSparsity(builder, compSparsity)
-        sparsityParameters = End(builder)
+            SparsityParametersAddCompSparsity(builder, compSparsity)
+        sparsityParameters = SparsityParametersEnd(builder)
         return sparsityParameters

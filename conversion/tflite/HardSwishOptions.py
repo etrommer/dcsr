@@ -28,14 +28,12 @@ class HardSwishOptions(object):
     def Init(self, buf, pos):
         self._tab = flatbuffers.table.Table(buf, pos)
 
-def Start(builder): builder.StartObject(0)
-def HardSwishOptionsStart(builder):
-    """This method is deprecated. Please switch to Start."""
-    return Start(builder)
-def End(builder): return builder.EndObject()
-def HardSwishOptionsEnd(builder):
-    """This method is deprecated. Please switch to End."""
-    return End(builder)
+def HardSwishOptionsStart(builder): builder.StartObject(0)
+def Start(builder):
+    return HardSwishOptionsStart(builder)
+def HardSwishOptionsEnd(builder): return builder.EndObject()
+def End(builder):
+    return HardSwishOptionsEnd(builder)
 
 class HardSwishOptionsT(object):
 
@@ -50,6 +48,11 @@ class HardSwishOptionsT(object):
         return cls.InitFromObj(hardSwishOptions)
 
     @classmethod
+    def InitFromPackedBuf(cls, buf, pos=0):
+        n = flatbuffers.encode.Get(flatbuffers.packer.uoffset, buf, pos)
+        return cls.InitFromBuf(buf, pos+n)
+
+    @classmethod
     def InitFromObj(cls, hardSwishOptions):
         x = HardSwishOptionsT()
         x._UnPack(hardSwishOptions)
@@ -62,6 +65,6 @@ class HardSwishOptionsT(object):
 
     # HardSwishOptionsT
     def Pack(self, builder):
-        Start(builder)
-        hardSwishOptions = End(builder)
+        HardSwishOptionsStart(builder)
+        hardSwishOptions = HardSwishOptionsEnd(builder)
         return hardSwishOptions

@@ -35,18 +35,15 @@ class GatherOptions(object):
             return self._tab.Get(flatbuffers.number_types.Int32Flags, o + self._tab.Pos)
         return 0
 
-def Start(builder): builder.StartObject(1)
-def GatherOptionsStart(builder):
-    """This method is deprecated. Please switch to Start."""
-    return Start(builder)
-def AddAxis(builder, axis): builder.PrependInt32Slot(0, axis, 0)
-def GatherOptionsAddAxis(builder, axis):
-    """This method is deprecated. Please switch to AddAxis."""
-    return AddAxis(builder, axis)
-def End(builder): return builder.EndObject()
-def GatherOptionsEnd(builder):
-    """This method is deprecated. Please switch to End."""
-    return End(builder)
+def GatherOptionsStart(builder): builder.StartObject(1)
+def Start(builder):
+    return GatherOptionsStart(builder)
+def GatherOptionsAddAxis(builder, axis): builder.PrependInt32Slot(0, axis, 0)
+def AddAxis(builder, axis):
+    return GatherOptionsAddAxis(builder, axis)
+def GatherOptionsEnd(builder): return builder.EndObject()
+def End(builder):
+    return GatherOptionsEnd(builder)
 
 class GatherOptionsT(object):
 
@@ -59,6 +56,11 @@ class GatherOptionsT(object):
         gatherOptions = GatherOptions()
         gatherOptions.Init(buf, pos)
         return cls.InitFromObj(gatherOptions)
+
+    @classmethod
+    def InitFromPackedBuf(cls, buf, pos=0):
+        n = flatbuffers.encode.Get(flatbuffers.packer.uoffset, buf, pos)
+        return cls.InitFromBuf(buf, pos+n)
 
     @classmethod
     def InitFromObj(cls, gatherOptions):
@@ -74,7 +76,7 @@ class GatherOptionsT(object):
 
     # GatherOptionsT
     def Pack(self, builder):
-        Start(builder)
-        AddAxis(builder, self.axis)
-        gatherOptions = End(builder)
+        GatherOptionsStart(builder)
+        GatherOptionsAddAxis(builder, self.axis)
+        gatherOptions = GatherOptionsEnd(builder)
         return gatherOptions

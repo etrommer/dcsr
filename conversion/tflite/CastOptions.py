@@ -42,22 +42,18 @@ class CastOptions(object):
             return self._tab.Get(flatbuffers.number_types.Int8Flags, o + self._tab.Pos)
         return 0
 
-def Start(builder): builder.StartObject(2)
-def CastOptionsStart(builder):
-    """This method is deprecated. Please switch to Start."""
-    return Start(builder)
-def AddInDataType(builder, inDataType): builder.PrependInt8Slot(0, inDataType, 0)
-def CastOptionsAddInDataType(builder, inDataType):
-    """This method is deprecated. Please switch to AddInDataType."""
-    return AddInDataType(builder, inDataType)
-def AddOutDataType(builder, outDataType): builder.PrependInt8Slot(1, outDataType, 0)
-def CastOptionsAddOutDataType(builder, outDataType):
-    """This method is deprecated. Please switch to AddOutDataType."""
-    return AddOutDataType(builder, outDataType)
-def End(builder): return builder.EndObject()
-def CastOptionsEnd(builder):
-    """This method is deprecated. Please switch to End."""
-    return End(builder)
+def CastOptionsStart(builder): builder.StartObject(2)
+def Start(builder):
+    return CastOptionsStart(builder)
+def CastOptionsAddInDataType(builder, inDataType): builder.PrependInt8Slot(0, inDataType, 0)
+def AddInDataType(builder, inDataType):
+    return CastOptionsAddInDataType(builder, inDataType)
+def CastOptionsAddOutDataType(builder, outDataType): builder.PrependInt8Slot(1, outDataType, 0)
+def AddOutDataType(builder, outDataType):
+    return CastOptionsAddOutDataType(builder, outDataType)
+def CastOptionsEnd(builder): return builder.EndObject()
+def End(builder):
+    return CastOptionsEnd(builder)
 
 class CastOptionsT(object):
 
@@ -71,6 +67,11 @@ class CastOptionsT(object):
         castOptions = CastOptions()
         castOptions.Init(buf, pos)
         return cls.InitFromObj(castOptions)
+
+    @classmethod
+    def InitFromPackedBuf(cls, buf, pos=0):
+        n = flatbuffers.encode.Get(flatbuffers.packer.uoffset, buf, pos)
+        return cls.InitFromBuf(buf, pos+n)
 
     @classmethod
     def InitFromObj(cls, castOptions):
@@ -87,8 +88,8 @@ class CastOptionsT(object):
 
     # CastOptionsT
     def Pack(self, builder):
-        Start(builder)
-        AddInDataType(builder, self.inDataType)
-        AddOutDataType(builder, self.outDataType)
-        castOptions = End(builder)
+        CastOptionsStart(builder)
+        CastOptionsAddInDataType(builder, self.inDataType)
+        CastOptionsAddOutDataType(builder, self.outDataType)
+        castOptions = CastOptionsEnd(builder)
         return castOptions

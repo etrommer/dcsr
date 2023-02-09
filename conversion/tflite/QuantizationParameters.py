@@ -160,58 +160,45 @@ class QuantizationParameters(object):
             return self._tab.Get(flatbuffers.number_types.Int32Flags, o + self._tab.Pos)
         return 0
 
-def Start(builder): builder.StartObject(7)
-def QuantizationParametersStart(builder):
-    """This method is deprecated. Please switch to Start."""
-    return Start(builder)
-def AddMin(builder, min): builder.PrependUOffsetTRelativeSlot(0, flatbuffers.number_types.UOffsetTFlags.py_type(min), 0)
-def QuantizationParametersAddMin(builder, min):
-    """This method is deprecated. Please switch to AddMin."""
-    return AddMin(builder, min)
-def StartMinVector(builder, numElems): return builder.StartVector(4, numElems, 4)
-def QuantizationParametersStartMinVector(builder, numElems):
-    """This method is deprecated. Please switch to Start."""
-    return StartMinVector(builder, numElems)
-def AddMax(builder, max): builder.PrependUOffsetTRelativeSlot(1, flatbuffers.number_types.UOffsetTFlags.py_type(max), 0)
-def QuantizationParametersAddMax(builder, max):
-    """This method is deprecated. Please switch to AddMax."""
-    return AddMax(builder, max)
-def StartMaxVector(builder, numElems): return builder.StartVector(4, numElems, 4)
-def QuantizationParametersStartMaxVector(builder, numElems):
-    """This method is deprecated. Please switch to Start."""
-    return StartMaxVector(builder, numElems)
-def AddScale(builder, scale): builder.PrependUOffsetTRelativeSlot(2, flatbuffers.number_types.UOffsetTFlags.py_type(scale), 0)
-def QuantizationParametersAddScale(builder, scale):
-    """This method is deprecated. Please switch to AddScale."""
-    return AddScale(builder, scale)
-def StartScaleVector(builder, numElems): return builder.StartVector(4, numElems, 4)
-def QuantizationParametersStartScaleVector(builder, numElems):
-    """This method is deprecated. Please switch to Start."""
-    return StartScaleVector(builder, numElems)
-def AddZeroPoint(builder, zeroPoint): builder.PrependUOffsetTRelativeSlot(3, flatbuffers.number_types.UOffsetTFlags.py_type(zeroPoint), 0)
-def QuantizationParametersAddZeroPoint(builder, zeroPoint):
-    """This method is deprecated. Please switch to AddZeroPoint."""
-    return AddZeroPoint(builder, zeroPoint)
-def StartZeroPointVector(builder, numElems): return builder.StartVector(8, numElems, 8)
-def QuantizationParametersStartZeroPointVector(builder, numElems):
-    """This method is deprecated. Please switch to Start."""
-    return StartZeroPointVector(builder, numElems)
-def AddDetailsType(builder, detailsType): builder.PrependUint8Slot(4, detailsType, 0)
-def QuantizationParametersAddDetailsType(builder, detailsType):
-    """This method is deprecated. Please switch to AddDetailsType."""
-    return AddDetailsType(builder, detailsType)
-def AddDetails(builder, details): builder.PrependUOffsetTRelativeSlot(5, flatbuffers.number_types.UOffsetTFlags.py_type(details), 0)
-def QuantizationParametersAddDetails(builder, details):
-    """This method is deprecated. Please switch to AddDetails."""
-    return AddDetails(builder, details)
-def AddQuantizedDimension(builder, quantizedDimension): builder.PrependInt32Slot(6, quantizedDimension, 0)
-def QuantizationParametersAddQuantizedDimension(builder, quantizedDimension):
-    """This method is deprecated. Please switch to AddQuantizedDimension."""
-    return AddQuantizedDimension(builder, quantizedDimension)
-def End(builder): return builder.EndObject()
-def QuantizationParametersEnd(builder):
-    """This method is deprecated. Please switch to End."""
-    return End(builder)
+def QuantizationParametersStart(builder): builder.StartObject(7)
+def Start(builder):
+    return QuantizationParametersStart(builder)
+def QuantizationParametersAddMin(builder, min): builder.PrependUOffsetTRelativeSlot(0, flatbuffers.number_types.UOffsetTFlags.py_type(min), 0)
+def AddMin(builder, min):
+    return QuantizationParametersAddMin(builder, min)
+def QuantizationParametersStartMinVector(builder, numElems): return builder.StartVector(4, numElems, 4)
+def StartMinVector(builder, numElems):
+    return QuantizationParametersStartMinVector(builder, numElems)
+def QuantizationParametersAddMax(builder, max): builder.PrependUOffsetTRelativeSlot(1, flatbuffers.number_types.UOffsetTFlags.py_type(max), 0)
+def AddMax(builder, max):
+    return QuantizationParametersAddMax(builder, max)
+def QuantizationParametersStartMaxVector(builder, numElems): return builder.StartVector(4, numElems, 4)
+def StartMaxVector(builder, numElems):
+    return QuantizationParametersStartMaxVector(builder, numElems)
+def QuantizationParametersAddScale(builder, scale): builder.PrependUOffsetTRelativeSlot(2, flatbuffers.number_types.UOffsetTFlags.py_type(scale), 0)
+def AddScale(builder, scale):
+    return QuantizationParametersAddScale(builder, scale)
+def QuantizationParametersStartScaleVector(builder, numElems): return builder.StartVector(4, numElems, 4)
+def StartScaleVector(builder, numElems):
+    return QuantizationParametersStartScaleVector(builder, numElems)
+def QuantizationParametersAddZeroPoint(builder, zeroPoint): builder.PrependUOffsetTRelativeSlot(3, flatbuffers.number_types.UOffsetTFlags.py_type(zeroPoint), 0)
+def AddZeroPoint(builder, zeroPoint):
+    return QuantizationParametersAddZeroPoint(builder, zeroPoint)
+def QuantizationParametersStartZeroPointVector(builder, numElems): return builder.StartVector(8, numElems, 8)
+def StartZeroPointVector(builder, numElems):
+    return QuantizationParametersStartZeroPointVector(builder, numElems)
+def QuantizationParametersAddDetailsType(builder, detailsType): builder.PrependUint8Slot(4, detailsType, 0)
+def AddDetailsType(builder, detailsType):
+    return QuantizationParametersAddDetailsType(builder, detailsType)
+def QuantizationParametersAddDetails(builder, details): builder.PrependUOffsetTRelativeSlot(5, flatbuffers.number_types.UOffsetTFlags.py_type(details), 0)
+def AddDetails(builder, details):
+    return QuantizationParametersAddDetails(builder, details)
+def QuantizationParametersAddQuantizedDimension(builder, quantizedDimension): builder.PrependInt32Slot(6, quantizedDimension, 0)
+def AddQuantizedDimension(builder, quantizedDimension):
+    return QuantizationParametersAddQuantizedDimension(builder, quantizedDimension)
+def QuantizationParametersEnd(builder): return builder.EndObject()
+def End(builder):
+    return QuantizationParametersEnd(builder)
 import tflite.CustomQuantization
 import tflite.QuantizationDetails
 try:
@@ -236,6 +223,11 @@ class QuantizationParametersT(object):
         quantizationParameters = QuantizationParameters()
         quantizationParameters.Init(buf, pos)
         return cls.InitFromObj(quantizationParameters)
+
+    @classmethod
+    def InitFromPackedBuf(cls, buf, pos=0):
+        n = flatbuffers.encode.Get(flatbuffers.packer.uoffset, buf, pos)
+        return cls.InitFromBuf(buf, pos+n)
 
     @classmethod
     def InitFromObj(cls, quantizationParameters):
@@ -285,7 +277,7 @@ class QuantizationParametersT(object):
             if np is not None and type(self.min) is np.ndarray:
                 min = builder.CreateNumpyVector(self.min)
             else:
-                StartMinVector(builder, len(self.min))
+                QuantizationParametersStartMinVector(builder, len(self.min))
                 for i in reversed(range(len(self.min))):
                     builder.PrependFloat32(self.min[i])
                 min = builder.EndVector()
@@ -293,7 +285,7 @@ class QuantizationParametersT(object):
             if np is not None and type(self.max) is np.ndarray:
                 max = builder.CreateNumpyVector(self.max)
             else:
-                StartMaxVector(builder, len(self.max))
+                QuantizationParametersStartMaxVector(builder, len(self.max))
                 for i in reversed(range(len(self.max))):
                     builder.PrependFloat32(self.max[i])
                 max = builder.EndVector()
@@ -301,7 +293,7 @@ class QuantizationParametersT(object):
             if np is not None and type(self.scale) is np.ndarray:
                 scale = builder.CreateNumpyVector(self.scale)
             else:
-                StartScaleVector(builder, len(self.scale))
+                QuantizationParametersStartScaleVector(builder, len(self.scale))
                 for i in reversed(range(len(self.scale))):
                     builder.PrependFloat32(self.scale[i])
                 scale = builder.EndVector()
@@ -309,24 +301,24 @@ class QuantizationParametersT(object):
             if np is not None and type(self.zeroPoint) is np.ndarray:
                 zeroPoint = builder.CreateNumpyVector(self.zeroPoint)
             else:
-                StartZeroPointVector(builder, len(self.zeroPoint))
+                QuantizationParametersStartZeroPointVector(builder, len(self.zeroPoint))
                 for i in reversed(range(len(self.zeroPoint))):
                     builder.PrependInt64(self.zeroPoint[i])
                 zeroPoint = builder.EndVector()
         if self.details is not None:
             details = self.details.Pack(builder)
-        Start(builder)
+        QuantizationParametersStart(builder)
         if self.min is not None:
-            AddMin(builder, min)
+            QuantizationParametersAddMin(builder, min)
         if self.max is not None:
-            AddMax(builder, max)
+            QuantizationParametersAddMax(builder, max)
         if self.scale is not None:
-            AddScale(builder, scale)
+            QuantizationParametersAddScale(builder, scale)
         if self.zeroPoint is not None:
-            AddZeroPoint(builder, zeroPoint)
-        AddDetailsType(builder, self.detailsType)
+            QuantizationParametersAddZeroPoint(builder, zeroPoint)
+        QuantizationParametersAddDetailsType(builder, self.detailsType)
         if self.details is not None:
-            AddDetails(builder, details)
-        AddQuantizedDimension(builder, self.quantizedDimension)
-        quantizationParameters = End(builder)
+            QuantizationParametersAddDetails(builder, details)
+        QuantizationParametersAddQuantizedDimension(builder, self.quantizedDimension)
+        quantizationParameters = QuantizationParametersEnd(builder)
         return quantizationParameters

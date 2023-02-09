@@ -42,22 +42,18 @@ class RNNOptions(object):
             return bool(self._tab.Get(flatbuffers.number_types.BoolFlags, o + self._tab.Pos))
         return False
 
-def Start(builder): builder.StartObject(2)
-def RNNOptionsStart(builder):
-    """This method is deprecated. Please switch to Start."""
-    return Start(builder)
-def AddFusedActivationFunction(builder, fusedActivationFunction): builder.PrependInt8Slot(0, fusedActivationFunction, 0)
-def RNNOptionsAddFusedActivationFunction(builder, fusedActivationFunction):
-    """This method is deprecated. Please switch to AddFusedActivationFunction."""
-    return AddFusedActivationFunction(builder, fusedActivationFunction)
-def AddAsymmetricQuantizeInputs(builder, asymmetricQuantizeInputs): builder.PrependBoolSlot(1, asymmetricQuantizeInputs, 0)
-def RNNOptionsAddAsymmetricQuantizeInputs(builder, asymmetricQuantizeInputs):
-    """This method is deprecated. Please switch to AddAsymmetricQuantizeInputs."""
-    return AddAsymmetricQuantizeInputs(builder, asymmetricQuantizeInputs)
-def End(builder): return builder.EndObject()
-def RNNOptionsEnd(builder):
-    """This method is deprecated. Please switch to End."""
-    return End(builder)
+def RNNOptionsStart(builder): builder.StartObject(2)
+def Start(builder):
+    return RNNOptionsStart(builder)
+def RNNOptionsAddFusedActivationFunction(builder, fusedActivationFunction): builder.PrependInt8Slot(0, fusedActivationFunction, 0)
+def AddFusedActivationFunction(builder, fusedActivationFunction):
+    return RNNOptionsAddFusedActivationFunction(builder, fusedActivationFunction)
+def RNNOptionsAddAsymmetricQuantizeInputs(builder, asymmetricQuantizeInputs): builder.PrependBoolSlot(1, asymmetricQuantizeInputs, 0)
+def AddAsymmetricQuantizeInputs(builder, asymmetricQuantizeInputs):
+    return RNNOptionsAddAsymmetricQuantizeInputs(builder, asymmetricQuantizeInputs)
+def RNNOptionsEnd(builder): return builder.EndObject()
+def End(builder):
+    return RNNOptionsEnd(builder)
 
 class RNNOptionsT(object):
 
@@ -68,27 +64,32 @@ class RNNOptionsT(object):
 
     @classmethod
     def InitFromBuf(cls, buf, pos):
-        rNNOptions = RNNOptions()
-        rNNOptions.Init(buf, pos)
-        return cls.InitFromObj(rNNOptions)
+        rnnoptions = RNNOptions()
+        rnnoptions.Init(buf, pos)
+        return cls.InitFromObj(rnnoptions)
 
     @classmethod
-    def InitFromObj(cls, rNNOptions):
+    def InitFromPackedBuf(cls, buf, pos=0):
+        n = flatbuffers.encode.Get(flatbuffers.packer.uoffset, buf, pos)
+        return cls.InitFromBuf(buf, pos+n)
+
+    @classmethod
+    def InitFromObj(cls, rnnoptions):
         x = RNNOptionsT()
-        x._UnPack(rNNOptions)
+        x._UnPack(rnnoptions)
         return x
 
     # RNNOptionsT
-    def _UnPack(self, rNNOptions):
-        if rNNOptions is None:
+    def _UnPack(self, rnnoptions):
+        if rnnoptions is None:
             return
-        self.fusedActivationFunction = rNNOptions.FusedActivationFunction()
-        self.asymmetricQuantizeInputs = rNNOptions.AsymmetricQuantizeInputs()
+        self.fusedActivationFunction = rnnoptions.FusedActivationFunction()
+        self.asymmetricQuantizeInputs = rnnoptions.AsymmetricQuantizeInputs()
 
     # RNNOptionsT
     def Pack(self, builder):
-        Start(builder)
-        AddFusedActivationFunction(builder, self.fusedActivationFunction)
-        AddAsymmetricQuantizeInputs(builder, self.asymmetricQuantizeInputs)
-        rNNOptions = End(builder)
-        return rNNOptions
+        RNNOptionsStart(builder)
+        RNNOptionsAddFusedActivationFunction(builder, self.fusedActivationFunction)
+        RNNOptionsAddAsymmetricQuantizeInputs(builder, self.asymmetricQuantizeInputs)
+        rnnoptions = RNNOptionsEnd(builder)
+        return rnnoptions

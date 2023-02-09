@@ -35,18 +35,15 @@ class SplitOptions(object):
             return self._tab.Get(flatbuffers.number_types.Int32Flags, o + self._tab.Pos)
         return 0
 
-def Start(builder): builder.StartObject(1)
-def SplitOptionsStart(builder):
-    """This method is deprecated. Please switch to Start."""
-    return Start(builder)
-def AddNumSplits(builder, numSplits): builder.PrependInt32Slot(0, numSplits, 0)
-def SplitOptionsAddNumSplits(builder, numSplits):
-    """This method is deprecated. Please switch to AddNumSplits."""
-    return AddNumSplits(builder, numSplits)
-def End(builder): return builder.EndObject()
-def SplitOptionsEnd(builder):
-    """This method is deprecated. Please switch to End."""
-    return End(builder)
+def SplitOptionsStart(builder): builder.StartObject(1)
+def Start(builder):
+    return SplitOptionsStart(builder)
+def SplitOptionsAddNumSplits(builder, numSplits): builder.PrependInt32Slot(0, numSplits, 0)
+def AddNumSplits(builder, numSplits):
+    return SplitOptionsAddNumSplits(builder, numSplits)
+def SplitOptionsEnd(builder): return builder.EndObject()
+def End(builder):
+    return SplitOptionsEnd(builder)
 
 class SplitOptionsT(object):
 
@@ -59,6 +56,11 @@ class SplitOptionsT(object):
         splitOptions = SplitOptions()
         splitOptions.Init(buf, pos)
         return cls.InitFromObj(splitOptions)
+
+    @classmethod
+    def InitFromPackedBuf(cls, buf, pos=0):
+        n = flatbuffers.encode.Get(flatbuffers.packer.uoffset, buf, pos)
+        return cls.InitFromBuf(buf, pos+n)
 
     @classmethod
     def InitFromObj(cls, splitOptions):
@@ -74,7 +76,7 @@ class SplitOptionsT(object):
 
     # SplitOptionsT
     def Pack(self, builder):
-        Start(builder)
-        AddNumSplits(builder, self.numSplits)
-        splitOptions = End(builder)
+        SplitOptionsStart(builder)
+        SplitOptionsAddNumSplits(builder, self.numSplits)
+        splitOptions = SplitOptionsEnd(builder)
         return splitOptions

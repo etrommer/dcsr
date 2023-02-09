@@ -55,22 +55,18 @@ class ReshapeOptions(object):
         o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(4))
         return o == 0
 
-def Start(builder): builder.StartObject(1)
-def ReshapeOptionsStart(builder):
-    """This method is deprecated. Please switch to Start."""
-    return Start(builder)
-def AddNewShape(builder, newShape): builder.PrependUOffsetTRelativeSlot(0, flatbuffers.number_types.UOffsetTFlags.py_type(newShape), 0)
-def ReshapeOptionsAddNewShape(builder, newShape):
-    """This method is deprecated. Please switch to AddNewShape."""
-    return AddNewShape(builder, newShape)
-def StartNewShapeVector(builder, numElems): return builder.StartVector(4, numElems, 4)
-def ReshapeOptionsStartNewShapeVector(builder, numElems):
-    """This method is deprecated. Please switch to Start."""
-    return StartNewShapeVector(builder, numElems)
-def End(builder): return builder.EndObject()
-def ReshapeOptionsEnd(builder):
-    """This method is deprecated. Please switch to End."""
-    return End(builder)
+def ReshapeOptionsStart(builder): builder.StartObject(1)
+def Start(builder):
+    return ReshapeOptionsStart(builder)
+def ReshapeOptionsAddNewShape(builder, newShape): builder.PrependUOffsetTRelativeSlot(0, flatbuffers.number_types.UOffsetTFlags.py_type(newShape), 0)
+def AddNewShape(builder, newShape):
+    return ReshapeOptionsAddNewShape(builder, newShape)
+def ReshapeOptionsStartNewShapeVector(builder, numElems): return builder.StartVector(4, numElems, 4)
+def StartNewShapeVector(builder, numElems):
+    return ReshapeOptionsStartNewShapeVector(builder, numElems)
+def ReshapeOptionsEnd(builder): return builder.EndObject()
+def End(builder):
+    return ReshapeOptionsEnd(builder)
 try:
     from typing import List
 except:
@@ -87,6 +83,11 @@ class ReshapeOptionsT(object):
         reshapeOptions = ReshapeOptions()
         reshapeOptions.Init(buf, pos)
         return cls.InitFromObj(reshapeOptions)
+
+    @classmethod
+    def InitFromPackedBuf(cls, buf, pos=0):
+        n = flatbuffers.encode.Get(flatbuffers.packer.uoffset, buf, pos)
+        return cls.InitFromBuf(buf, pos+n)
 
     @classmethod
     def InitFromObj(cls, reshapeOptions):
@@ -112,12 +113,12 @@ class ReshapeOptionsT(object):
             if np is not None and type(self.newShape) is np.ndarray:
                 newShape = builder.CreateNumpyVector(self.newShape)
             else:
-                StartNewShapeVector(builder, len(self.newShape))
+                ReshapeOptionsStartNewShapeVector(builder, len(self.newShape))
                 for i in reversed(range(len(self.newShape))):
                     builder.PrependInt32(self.newShape[i])
                 newShape = builder.EndVector()
-        Start(builder)
+        ReshapeOptionsStart(builder)
         if self.newShape is not None:
-            AddNewShape(builder, newShape)
-        reshapeOptions = End(builder)
+            ReshapeOptionsAddNewShape(builder, newShape)
+        reshapeOptions = ReshapeOptionsEnd(builder)
         return reshapeOptions

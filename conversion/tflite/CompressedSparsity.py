@@ -170,58 +170,45 @@ class CompressedSparsity(object):
             return self._tab.Get(flatbuffers.number_types.Uint32Flags, o + self._tab.Pos)
         return 0
 
-def Start(builder): builder.StartObject(6)
-def CompressedSparsityStart(builder):
-    """This method is deprecated. Please switch to Start."""
-    return Start(builder)
-def AddRowOffsets(builder, rowOffsets): builder.PrependUOffsetTRelativeSlot(0, flatbuffers.number_types.UOffsetTFlags.py_type(rowOffsets), 0)
-def CompressedSparsityAddRowOffsets(builder, rowOffsets):
-    """This method is deprecated. Please switch to AddRowOffsets."""
-    return AddRowOffsets(builder, rowOffsets)
-def StartRowOffsetsVector(builder, numElems): return builder.StartVector(2, numElems, 2)
-def CompressedSparsityStartRowOffsetsVector(builder, numElems):
-    """This method is deprecated. Please switch to Start."""
-    return StartRowOffsetsVector(builder, numElems)
-def AddDeltaIndices(builder, deltaIndices): builder.PrependUOffsetTRelativeSlot(1, flatbuffers.number_types.UOffsetTFlags.py_type(deltaIndices), 0)
-def CompressedSparsityAddDeltaIndices(builder, deltaIndices):
-    """This method is deprecated. Please switch to AddDeltaIndices."""
-    return AddDeltaIndices(builder, deltaIndices)
-def StartDeltaIndicesVector(builder, numElems): return builder.StartVector(1, numElems, 1)
-def CompressedSparsityStartDeltaIndicesVector(builder, numElems):
-    """This method is deprecated. Please switch to Start."""
-    return StartDeltaIndicesVector(builder, numElems)
-def AddGroupMinimums(builder, groupMinimums): builder.PrependUOffsetTRelativeSlot(2, flatbuffers.number_types.UOffsetTFlags.py_type(groupMinimums), 0)
-def CompressedSparsityAddGroupMinimums(builder, groupMinimums):
-    """This method is deprecated. Please switch to AddGroupMinimums."""
-    return AddGroupMinimums(builder, groupMinimums)
-def StartGroupMinimumsVector(builder, numElems): return builder.StartVector(1, numElems, 1)
-def CompressedSparsityStartGroupMinimumsVector(builder, numElems):
-    """This method is deprecated. Please switch to Start."""
-    return StartGroupMinimumsVector(builder, numElems)
-def AddBitmaps(builder, bitmaps): builder.PrependUOffsetTRelativeSlot(3, flatbuffers.number_types.UOffsetTFlags.py_type(bitmaps), 0)
-def CompressedSparsityAddBitmaps(builder, bitmaps):
-    """This method is deprecated. Please switch to AddBitmaps."""
-    return AddBitmaps(builder, bitmaps)
-def StartBitmapsVector(builder, numElems): return builder.StartVector(1, numElems, 1)
-def CompressedSparsityStartBitmapsVector(builder, numElems):
-    """This method is deprecated. Please switch to Start."""
-    return StartBitmapsVector(builder, numElems)
-def AddBitmasks(builder, bitmasks): builder.PrependUOffsetTRelativeSlot(4, flatbuffers.number_types.UOffsetTFlags.py_type(bitmasks), 0)
-def CompressedSparsityAddBitmasks(builder, bitmasks):
-    """This method is deprecated. Please switch to AddBitmasks."""
-    return AddBitmasks(builder, bitmasks)
-def StartBitmasksVector(builder, numElems): return builder.StartVector(2, numElems, 2)
-def CompressedSparsityStartBitmasksVector(builder, numElems):
-    """This method is deprecated. Please switch to Start."""
-    return StartBitmasksVector(builder, numElems)
-def AddNnze(builder, nnze): builder.PrependUint32Slot(5, nnze, 0)
-def CompressedSparsityAddNnze(builder, nnze):
-    """This method is deprecated. Please switch to AddNnze."""
-    return AddNnze(builder, nnze)
-def End(builder): return builder.EndObject()
-def CompressedSparsityEnd(builder):
-    """This method is deprecated. Please switch to End."""
-    return End(builder)
+def CompressedSparsityStart(builder): builder.StartObject(6)
+def Start(builder):
+    return CompressedSparsityStart(builder)
+def CompressedSparsityAddRowOffsets(builder, rowOffsets): builder.PrependUOffsetTRelativeSlot(0, flatbuffers.number_types.UOffsetTFlags.py_type(rowOffsets), 0)
+def AddRowOffsets(builder, rowOffsets):
+    return CompressedSparsityAddRowOffsets(builder, rowOffsets)
+def CompressedSparsityStartRowOffsetsVector(builder, numElems): return builder.StartVector(2, numElems, 2)
+def StartRowOffsetsVector(builder, numElems):
+    return CompressedSparsityStartRowOffsetsVector(builder, numElems)
+def CompressedSparsityAddDeltaIndices(builder, deltaIndices): builder.PrependUOffsetTRelativeSlot(1, flatbuffers.number_types.UOffsetTFlags.py_type(deltaIndices), 0)
+def AddDeltaIndices(builder, deltaIndices):
+    return CompressedSparsityAddDeltaIndices(builder, deltaIndices)
+def CompressedSparsityStartDeltaIndicesVector(builder, numElems): return builder.StartVector(1, numElems, 1)
+def StartDeltaIndicesVector(builder, numElems):
+    return CompressedSparsityStartDeltaIndicesVector(builder, numElems)
+def CompressedSparsityAddGroupMinimums(builder, groupMinimums): builder.PrependUOffsetTRelativeSlot(2, flatbuffers.number_types.UOffsetTFlags.py_type(groupMinimums), 0)
+def AddGroupMinimums(builder, groupMinimums):
+    return CompressedSparsityAddGroupMinimums(builder, groupMinimums)
+def CompressedSparsityStartGroupMinimumsVector(builder, numElems): return builder.StartVector(1, numElems, 1)
+def StartGroupMinimumsVector(builder, numElems):
+    return CompressedSparsityStartGroupMinimumsVector(builder, numElems)
+def CompressedSparsityAddBitmaps(builder, bitmaps): builder.PrependUOffsetTRelativeSlot(3, flatbuffers.number_types.UOffsetTFlags.py_type(bitmaps), 0)
+def AddBitmaps(builder, bitmaps):
+    return CompressedSparsityAddBitmaps(builder, bitmaps)
+def CompressedSparsityStartBitmapsVector(builder, numElems): return builder.StartVector(1, numElems, 1)
+def StartBitmapsVector(builder, numElems):
+    return CompressedSparsityStartBitmapsVector(builder, numElems)
+def CompressedSparsityAddBitmasks(builder, bitmasks): builder.PrependUOffsetTRelativeSlot(4, flatbuffers.number_types.UOffsetTFlags.py_type(bitmasks), 0)
+def AddBitmasks(builder, bitmasks):
+    return CompressedSparsityAddBitmasks(builder, bitmasks)
+def CompressedSparsityStartBitmasksVector(builder, numElems): return builder.StartVector(2, numElems, 2)
+def StartBitmasksVector(builder, numElems):
+    return CompressedSparsityStartBitmasksVector(builder, numElems)
+def CompressedSparsityAddNnze(builder, nnze): builder.PrependUint32Slot(5, nnze, 0)
+def AddNnze(builder, nnze):
+    return CompressedSparsityAddNnze(builder, nnze)
+def CompressedSparsityEnd(builder): return builder.EndObject()
+def End(builder):
+    return CompressedSparsityEnd(builder)
 try:
     from typing import List
 except:
@@ -243,6 +230,11 @@ class CompressedSparsityT(object):
         compressedSparsity = CompressedSparsity()
         compressedSparsity.Init(buf, pos)
         return cls.InitFromObj(compressedSparsity)
+
+    @classmethod
+    def InitFromPackedBuf(cls, buf, pos=0):
+        n = flatbuffers.encode.Get(flatbuffers.packer.uoffset, buf, pos)
+        return cls.InitFromBuf(buf, pos+n)
 
     @classmethod
     def InitFromObj(cls, compressedSparsity):
@@ -297,7 +289,7 @@ class CompressedSparsityT(object):
             if np is not None and type(self.rowOffsets) is np.ndarray:
                 rowOffsets = builder.CreateNumpyVector(self.rowOffsets)
             else:
-                StartRowOffsetsVector(builder, len(self.rowOffsets))
+                CompressedSparsityStartRowOffsetsVector(builder, len(self.rowOffsets))
                 for i in reversed(range(len(self.rowOffsets))):
                     builder.PrependInt16(self.rowOffsets[i])
                 rowOffsets = builder.EndVector()
@@ -305,7 +297,7 @@ class CompressedSparsityT(object):
             if np is not None and type(self.deltaIndices) is np.ndarray:
                 deltaIndices = builder.CreateNumpyVector(self.deltaIndices)
             else:
-                StartDeltaIndicesVector(builder, len(self.deltaIndices))
+                CompressedSparsityStartDeltaIndicesVector(builder, len(self.deltaIndices))
                 for i in reversed(range(len(self.deltaIndices))):
                     builder.PrependUint8(self.deltaIndices[i])
                 deltaIndices = builder.EndVector()
@@ -313,7 +305,7 @@ class CompressedSparsityT(object):
             if np is not None and type(self.groupMinimums) is np.ndarray:
                 groupMinimums = builder.CreateNumpyVector(self.groupMinimums)
             else:
-                StartGroupMinimumsVector(builder, len(self.groupMinimums))
+                CompressedSparsityStartGroupMinimumsVector(builder, len(self.groupMinimums))
                 for i in reversed(range(len(self.groupMinimums))):
                     builder.PrependByte(self.groupMinimums[i])
                 groupMinimums = builder.EndVector()
@@ -321,7 +313,7 @@ class CompressedSparsityT(object):
             if np is not None and type(self.bitmaps) is np.ndarray:
                 bitmaps = builder.CreateNumpyVector(self.bitmaps)
             else:
-                StartBitmapsVector(builder, len(self.bitmaps))
+                CompressedSparsityStartBitmapsVector(builder, len(self.bitmaps))
                 for i in reversed(range(len(self.bitmaps))):
                     builder.PrependUint8(self.bitmaps[i])
                 bitmaps = builder.EndVector()
@@ -329,21 +321,21 @@ class CompressedSparsityT(object):
             if np is not None and type(self.bitmasks) is np.ndarray:
                 bitmasks = builder.CreateNumpyVector(self.bitmasks)
             else:
-                StartBitmasksVector(builder, len(self.bitmasks))
+                CompressedSparsityStartBitmasksVector(builder, len(self.bitmasks))
                 for i in reversed(range(len(self.bitmasks))):
                     builder.PrependUint16(self.bitmasks[i])
                 bitmasks = builder.EndVector()
-        Start(builder)
+        CompressedSparsityStart(builder)
         if self.rowOffsets is not None:
-            AddRowOffsets(builder, rowOffsets)
+            CompressedSparsityAddRowOffsets(builder, rowOffsets)
         if self.deltaIndices is not None:
-            AddDeltaIndices(builder, deltaIndices)
+            CompressedSparsityAddDeltaIndices(builder, deltaIndices)
         if self.groupMinimums is not None:
-            AddGroupMinimums(builder, groupMinimums)
+            CompressedSparsityAddGroupMinimums(builder, groupMinimums)
         if self.bitmaps is not None:
-            AddBitmaps(builder, bitmaps)
+            CompressedSparsityAddBitmaps(builder, bitmaps)
         if self.bitmasks is not None:
-            AddBitmasks(builder, bitmasks)
-        AddNnze(builder, self.nnze)
-        compressedSparsity = End(builder)
+            CompressedSparsityAddBitmasks(builder, bitmasks)
+        CompressedSparsityAddNnze(builder, self.nnze)
+        compressedSparsity = CompressedSparsityEnd(builder)
         return compressedSparsity

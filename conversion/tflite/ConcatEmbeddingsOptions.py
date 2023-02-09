@@ -89,34 +89,27 @@ class ConcatEmbeddingsOptions(object):
         o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(8))
         return o == 0
 
-def Start(builder): builder.StartObject(3)
-def ConcatEmbeddingsOptionsStart(builder):
-    """This method is deprecated. Please switch to Start."""
-    return Start(builder)
-def AddNumChannels(builder, numChannels): builder.PrependInt32Slot(0, numChannels, 0)
-def ConcatEmbeddingsOptionsAddNumChannels(builder, numChannels):
-    """This method is deprecated. Please switch to AddNumChannels."""
-    return AddNumChannels(builder, numChannels)
-def AddNumColumnsPerChannel(builder, numColumnsPerChannel): builder.PrependUOffsetTRelativeSlot(1, flatbuffers.number_types.UOffsetTFlags.py_type(numColumnsPerChannel), 0)
-def ConcatEmbeddingsOptionsAddNumColumnsPerChannel(builder, numColumnsPerChannel):
-    """This method is deprecated. Please switch to AddNumColumnsPerChannel."""
-    return AddNumColumnsPerChannel(builder, numColumnsPerChannel)
-def StartNumColumnsPerChannelVector(builder, numElems): return builder.StartVector(4, numElems, 4)
-def ConcatEmbeddingsOptionsStartNumColumnsPerChannelVector(builder, numElems):
-    """This method is deprecated. Please switch to Start."""
-    return StartNumColumnsPerChannelVector(builder, numElems)
-def AddEmbeddingDimPerChannel(builder, embeddingDimPerChannel): builder.PrependUOffsetTRelativeSlot(2, flatbuffers.number_types.UOffsetTFlags.py_type(embeddingDimPerChannel), 0)
-def ConcatEmbeddingsOptionsAddEmbeddingDimPerChannel(builder, embeddingDimPerChannel):
-    """This method is deprecated. Please switch to AddEmbeddingDimPerChannel."""
-    return AddEmbeddingDimPerChannel(builder, embeddingDimPerChannel)
-def StartEmbeddingDimPerChannelVector(builder, numElems): return builder.StartVector(4, numElems, 4)
-def ConcatEmbeddingsOptionsStartEmbeddingDimPerChannelVector(builder, numElems):
-    """This method is deprecated. Please switch to Start."""
-    return StartEmbeddingDimPerChannelVector(builder, numElems)
-def End(builder): return builder.EndObject()
-def ConcatEmbeddingsOptionsEnd(builder):
-    """This method is deprecated. Please switch to End."""
-    return End(builder)
+def ConcatEmbeddingsOptionsStart(builder): builder.StartObject(3)
+def Start(builder):
+    return ConcatEmbeddingsOptionsStart(builder)
+def ConcatEmbeddingsOptionsAddNumChannels(builder, numChannels): builder.PrependInt32Slot(0, numChannels, 0)
+def AddNumChannels(builder, numChannels):
+    return ConcatEmbeddingsOptionsAddNumChannels(builder, numChannels)
+def ConcatEmbeddingsOptionsAddNumColumnsPerChannel(builder, numColumnsPerChannel): builder.PrependUOffsetTRelativeSlot(1, flatbuffers.number_types.UOffsetTFlags.py_type(numColumnsPerChannel), 0)
+def AddNumColumnsPerChannel(builder, numColumnsPerChannel):
+    return ConcatEmbeddingsOptionsAddNumColumnsPerChannel(builder, numColumnsPerChannel)
+def ConcatEmbeddingsOptionsStartNumColumnsPerChannelVector(builder, numElems): return builder.StartVector(4, numElems, 4)
+def StartNumColumnsPerChannelVector(builder, numElems):
+    return ConcatEmbeddingsOptionsStartNumColumnsPerChannelVector(builder, numElems)
+def ConcatEmbeddingsOptionsAddEmbeddingDimPerChannel(builder, embeddingDimPerChannel): builder.PrependUOffsetTRelativeSlot(2, flatbuffers.number_types.UOffsetTFlags.py_type(embeddingDimPerChannel), 0)
+def AddEmbeddingDimPerChannel(builder, embeddingDimPerChannel):
+    return ConcatEmbeddingsOptionsAddEmbeddingDimPerChannel(builder, embeddingDimPerChannel)
+def ConcatEmbeddingsOptionsStartEmbeddingDimPerChannelVector(builder, numElems): return builder.StartVector(4, numElems, 4)
+def StartEmbeddingDimPerChannelVector(builder, numElems):
+    return ConcatEmbeddingsOptionsStartEmbeddingDimPerChannelVector(builder, numElems)
+def ConcatEmbeddingsOptionsEnd(builder): return builder.EndObject()
+def End(builder):
+    return ConcatEmbeddingsOptionsEnd(builder)
 try:
     from typing import List
 except:
@@ -135,6 +128,11 @@ class ConcatEmbeddingsOptionsT(object):
         concatEmbeddingsOptions = ConcatEmbeddingsOptions()
         concatEmbeddingsOptions.Init(buf, pos)
         return cls.InitFromObj(concatEmbeddingsOptions)
+
+    @classmethod
+    def InitFromPackedBuf(cls, buf, pos=0):
+        n = flatbuffers.encode.Get(flatbuffers.packer.uoffset, buf, pos)
+        return cls.InitFromBuf(buf, pos+n)
 
     @classmethod
     def InitFromObj(cls, concatEmbeddingsOptions):
@@ -168,7 +166,7 @@ class ConcatEmbeddingsOptionsT(object):
             if np is not None and type(self.numColumnsPerChannel) is np.ndarray:
                 numColumnsPerChannel = builder.CreateNumpyVector(self.numColumnsPerChannel)
             else:
-                StartNumColumnsPerChannelVector(builder, len(self.numColumnsPerChannel))
+                ConcatEmbeddingsOptionsStartNumColumnsPerChannelVector(builder, len(self.numColumnsPerChannel))
                 for i in reversed(range(len(self.numColumnsPerChannel))):
                     builder.PrependInt32(self.numColumnsPerChannel[i])
                 numColumnsPerChannel = builder.EndVector()
@@ -176,15 +174,15 @@ class ConcatEmbeddingsOptionsT(object):
             if np is not None and type(self.embeddingDimPerChannel) is np.ndarray:
                 embeddingDimPerChannel = builder.CreateNumpyVector(self.embeddingDimPerChannel)
             else:
-                StartEmbeddingDimPerChannelVector(builder, len(self.embeddingDimPerChannel))
+                ConcatEmbeddingsOptionsStartEmbeddingDimPerChannelVector(builder, len(self.embeddingDimPerChannel))
                 for i in reversed(range(len(self.embeddingDimPerChannel))):
                     builder.PrependInt32(self.embeddingDimPerChannel[i])
                 embeddingDimPerChannel = builder.EndVector()
-        Start(builder)
-        AddNumChannels(builder, self.numChannels)
+        ConcatEmbeddingsOptionsStart(builder)
+        ConcatEmbeddingsOptionsAddNumChannels(builder, self.numChannels)
         if self.numColumnsPerChannel is not None:
-            AddNumColumnsPerChannel(builder, numColumnsPerChannel)
+            ConcatEmbeddingsOptionsAddNumColumnsPerChannel(builder, numColumnsPerChannel)
         if self.embeddingDimPerChannel is not None:
-            AddEmbeddingDimPerChannel(builder, embeddingDimPerChannel)
-        concatEmbeddingsOptions = End(builder)
+            ConcatEmbeddingsOptionsAddEmbeddingDimPerChannel(builder, embeddingDimPerChannel)
+        concatEmbeddingsOptions = ConcatEmbeddingsOptionsEnd(builder)
         return concatEmbeddingsOptions

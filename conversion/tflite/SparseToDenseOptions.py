@@ -35,18 +35,15 @@ class SparseToDenseOptions(object):
             return bool(self._tab.Get(flatbuffers.number_types.BoolFlags, o + self._tab.Pos))
         return False
 
-def Start(builder): builder.StartObject(1)
-def SparseToDenseOptionsStart(builder):
-    """This method is deprecated. Please switch to Start."""
-    return Start(builder)
-def AddValidateIndices(builder, validateIndices): builder.PrependBoolSlot(0, validateIndices, 0)
-def SparseToDenseOptionsAddValidateIndices(builder, validateIndices):
-    """This method is deprecated. Please switch to AddValidateIndices."""
-    return AddValidateIndices(builder, validateIndices)
-def End(builder): return builder.EndObject()
-def SparseToDenseOptionsEnd(builder):
-    """This method is deprecated. Please switch to End."""
-    return End(builder)
+def SparseToDenseOptionsStart(builder): builder.StartObject(1)
+def Start(builder):
+    return SparseToDenseOptionsStart(builder)
+def SparseToDenseOptionsAddValidateIndices(builder, validateIndices): builder.PrependBoolSlot(0, validateIndices, 0)
+def AddValidateIndices(builder, validateIndices):
+    return SparseToDenseOptionsAddValidateIndices(builder, validateIndices)
+def SparseToDenseOptionsEnd(builder): return builder.EndObject()
+def End(builder):
+    return SparseToDenseOptionsEnd(builder)
 
 class SparseToDenseOptionsT(object):
 
@@ -59,6 +56,11 @@ class SparseToDenseOptionsT(object):
         sparseToDenseOptions = SparseToDenseOptions()
         sparseToDenseOptions.Init(buf, pos)
         return cls.InitFromObj(sparseToDenseOptions)
+
+    @classmethod
+    def InitFromPackedBuf(cls, buf, pos=0):
+        n = flatbuffers.encode.Get(flatbuffers.packer.uoffset, buf, pos)
+        return cls.InitFromBuf(buf, pos+n)
 
     @classmethod
     def InitFromObj(cls, sparseToDenseOptions):
@@ -74,7 +76,7 @@ class SparseToDenseOptionsT(object):
 
     # SparseToDenseOptionsT
     def Pack(self, builder):
-        Start(builder)
-        AddValidateIndices(builder, self.validateIndices)
-        sparseToDenseOptions = End(builder)
+        SparseToDenseOptionsStart(builder)
+        SparseToDenseOptionsAddValidateIndices(builder, self.validateIndices)
+        sparseToDenseOptions = SparseToDenseOptionsEnd(builder)
         return sparseToDenseOptions

@@ -28,14 +28,12 @@ class LogicalNotOptions(object):
     def Init(self, buf, pos):
         self._tab = flatbuffers.table.Table(buf, pos)
 
-def Start(builder): builder.StartObject(0)
-def LogicalNotOptionsStart(builder):
-    """This method is deprecated. Please switch to Start."""
-    return Start(builder)
-def End(builder): return builder.EndObject()
-def LogicalNotOptionsEnd(builder):
-    """This method is deprecated. Please switch to End."""
-    return End(builder)
+def LogicalNotOptionsStart(builder): builder.StartObject(0)
+def Start(builder):
+    return LogicalNotOptionsStart(builder)
+def LogicalNotOptionsEnd(builder): return builder.EndObject()
+def End(builder):
+    return LogicalNotOptionsEnd(builder)
 
 class LogicalNotOptionsT(object):
 
@@ -50,6 +48,11 @@ class LogicalNotOptionsT(object):
         return cls.InitFromObj(logicalNotOptions)
 
     @classmethod
+    def InitFromPackedBuf(cls, buf, pos=0):
+        n = flatbuffers.encode.Get(flatbuffers.packer.uoffset, buf, pos)
+        return cls.InitFromBuf(buf, pos+n)
+
+    @classmethod
     def InitFromObj(cls, logicalNotOptions):
         x = LogicalNotOptionsT()
         x._UnPack(logicalNotOptions)
@@ -62,6 +65,6 @@ class LogicalNotOptionsT(object):
 
     # LogicalNotOptionsT
     def Pack(self, builder):
-        Start(builder)
-        logicalNotOptions = End(builder)
+        LogicalNotOptionsStart(builder)
+        logicalNotOptions = LogicalNotOptionsEnd(builder)
         return logicalNotOptions

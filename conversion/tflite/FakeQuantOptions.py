@@ -56,30 +56,24 @@ class FakeQuantOptions(object):
             return bool(self._tab.Get(flatbuffers.number_types.BoolFlags, o + self._tab.Pos))
         return False
 
-def Start(builder): builder.StartObject(4)
-def FakeQuantOptionsStart(builder):
-    """This method is deprecated. Please switch to Start."""
-    return Start(builder)
-def AddMin(builder, min): builder.PrependFloat32Slot(0, min, 0.0)
-def FakeQuantOptionsAddMin(builder, min):
-    """This method is deprecated. Please switch to AddMin."""
-    return AddMin(builder, min)
-def AddMax(builder, max): builder.PrependFloat32Slot(1, max, 0.0)
-def FakeQuantOptionsAddMax(builder, max):
-    """This method is deprecated. Please switch to AddMax."""
-    return AddMax(builder, max)
-def AddNumBits(builder, numBits): builder.PrependInt32Slot(2, numBits, 0)
-def FakeQuantOptionsAddNumBits(builder, numBits):
-    """This method is deprecated. Please switch to AddNumBits."""
-    return AddNumBits(builder, numBits)
-def AddNarrowRange(builder, narrowRange): builder.PrependBoolSlot(3, narrowRange, 0)
-def FakeQuantOptionsAddNarrowRange(builder, narrowRange):
-    """This method is deprecated. Please switch to AddNarrowRange."""
-    return AddNarrowRange(builder, narrowRange)
-def End(builder): return builder.EndObject()
-def FakeQuantOptionsEnd(builder):
-    """This method is deprecated. Please switch to End."""
-    return End(builder)
+def FakeQuantOptionsStart(builder): builder.StartObject(4)
+def Start(builder):
+    return FakeQuantOptionsStart(builder)
+def FakeQuantOptionsAddMin(builder, min): builder.PrependFloat32Slot(0, min, 0.0)
+def AddMin(builder, min):
+    return FakeQuantOptionsAddMin(builder, min)
+def FakeQuantOptionsAddMax(builder, max): builder.PrependFloat32Slot(1, max, 0.0)
+def AddMax(builder, max):
+    return FakeQuantOptionsAddMax(builder, max)
+def FakeQuantOptionsAddNumBits(builder, numBits): builder.PrependInt32Slot(2, numBits, 0)
+def AddNumBits(builder, numBits):
+    return FakeQuantOptionsAddNumBits(builder, numBits)
+def FakeQuantOptionsAddNarrowRange(builder, narrowRange): builder.PrependBoolSlot(3, narrowRange, 0)
+def AddNarrowRange(builder, narrowRange):
+    return FakeQuantOptionsAddNarrowRange(builder, narrowRange)
+def FakeQuantOptionsEnd(builder): return builder.EndObject()
+def End(builder):
+    return FakeQuantOptionsEnd(builder)
 
 class FakeQuantOptionsT(object):
 
@@ -95,6 +89,11 @@ class FakeQuantOptionsT(object):
         fakeQuantOptions = FakeQuantOptions()
         fakeQuantOptions.Init(buf, pos)
         return cls.InitFromObj(fakeQuantOptions)
+
+    @classmethod
+    def InitFromPackedBuf(cls, buf, pos=0):
+        n = flatbuffers.encode.Get(flatbuffers.packer.uoffset, buf, pos)
+        return cls.InitFromBuf(buf, pos+n)
 
     @classmethod
     def InitFromObj(cls, fakeQuantOptions):
@@ -113,10 +112,10 @@ class FakeQuantOptionsT(object):
 
     # FakeQuantOptionsT
     def Pack(self, builder):
-        Start(builder)
-        AddMin(builder, self.min)
-        AddMax(builder, self.max)
-        AddNumBits(builder, self.numBits)
-        AddNarrowRange(builder, self.narrowRange)
-        fakeQuantOptions = End(builder)
+        FakeQuantOptionsStart(builder)
+        FakeQuantOptionsAddMin(builder, self.min)
+        FakeQuantOptionsAddMax(builder, self.max)
+        FakeQuantOptionsAddNumBits(builder, self.numBits)
+        FakeQuantOptionsAddNarrowRange(builder, self.narrowRange)
+        fakeQuantOptions = FakeQuantOptionsEnd(builder)
         return fakeQuantOptions

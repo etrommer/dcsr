@@ -111,7 +111,6 @@ class BuiltinOptions(object):
     Rfft2dOptions = 105
     Conv3DOptions = 106
 
-
 def BuiltinOptionsCreator(unionType, table):
     from flatbuffers.table import Table
     if not isinstance(table, Table):

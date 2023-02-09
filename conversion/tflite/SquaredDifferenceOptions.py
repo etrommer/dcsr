@@ -28,14 +28,12 @@ class SquaredDifferenceOptions(object):
     def Init(self, buf, pos):
         self._tab = flatbuffers.table.Table(buf, pos)
 
-def Start(builder): builder.StartObject(0)
-def SquaredDifferenceOptionsStart(builder):
-    """This method is deprecated. Please switch to Start."""
-    return Start(builder)
-def End(builder): return builder.EndObject()
-def SquaredDifferenceOptionsEnd(builder):
-    """This method is deprecated. Please switch to End."""
-    return End(builder)
+def SquaredDifferenceOptionsStart(builder): builder.StartObject(0)
+def Start(builder):
+    return SquaredDifferenceOptionsStart(builder)
+def SquaredDifferenceOptionsEnd(builder): return builder.EndObject()
+def End(builder):
+    return SquaredDifferenceOptionsEnd(builder)
 
 class SquaredDifferenceOptionsT(object):
 
@@ -50,6 +48,11 @@ class SquaredDifferenceOptionsT(object):
         return cls.InitFromObj(squaredDifferenceOptions)
 
     @classmethod
+    def InitFromPackedBuf(cls, buf, pos=0):
+        n = flatbuffers.encode.Get(flatbuffers.packer.uoffset, buf, pos)
+        return cls.InitFromBuf(buf, pos+n)
+
+    @classmethod
     def InitFromObj(cls, squaredDifferenceOptions):
         x = SquaredDifferenceOptionsT()
         x._UnPack(squaredDifferenceOptions)
@@ -62,6 +65,6 @@ class SquaredDifferenceOptionsT(object):
 
     # SquaredDifferenceOptionsT
     def Pack(self, builder):
-        Start(builder)
-        squaredDifferenceOptions = End(builder)
+        SquaredDifferenceOptionsStart(builder)
+        squaredDifferenceOptions = SquaredDifferenceOptionsEnd(builder)
         return squaredDifferenceOptions

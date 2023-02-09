@@ -28,14 +28,12 @@ class LogicalOrOptions(object):
     def Init(self, buf, pos):
         self._tab = flatbuffers.table.Table(buf, pos)
 
-def Start(builder): builder.StartObject(0)
-def LogicalOrOptionsStart(builder):
-    """This method is deprecated. Please switch to Start."""
-    return Start(builder)
-def End(builder): return builder.EndObject()
-def LogicalOrOptionsEnd(builder):
-    """This method is deprecated. Please switch to End."""
-    return End(builder)
+def LogicalOrOptionsStart(builder): builder.StartObject(0)
+def Start(builder):
+    return LogicalOrOptionsStart(builder)
+def LogicalOrOptionsEnd(builder): return builder.EndObject()
+def End(builder):
+    return LogicalOrOptionsEnd(builder)
 
 class LogicalOrOptionsT(object):
 
@@ -50,6 +48,11 @@ class LogicalOrOptionsT(object):
         return cls.InitFromObj(logicalOrOptions)
 
     @classmethod
+    def InitFromPackedBuf(cls, buf, pos=0):
+        n = flatbuffers.encode.Get(flatbuffers.packer.uoffset, buf, pos)
+        return cls.InitFromBuf(buf, pos+n)
+
+    @classmethod
     def InitFromObj(cls, logicalOrOptions):
         x = LogicalOrOptionsT()
         x._UnPack(logicalOrOptions)
@@ -62,6 +65,6 @@ class LogicalOrOptionsT(object):
 
     # LogicalOrOptionsT
     def Pack(self, builder):
-        Start(builder)
-        logicalOrOptions = End(builder)
+        LogicalOrOptionsStart(builder)
+        logicalOrOptions = LogicalOrOptionsEnd(builder)
         return logicalOrOptions

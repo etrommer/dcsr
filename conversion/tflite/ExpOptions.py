@@ -28,14 +28,12 @@ class ExpOptions(object):
     def Init(self, buf, pos):
         self._tab = flatbuffers.table.Table(buf, pos)
 
-def Start(builder): builder.StartObject(0)
-def ExpOptionsStart(builder):
-    """This method is deprecated. Please switch to Start."""
-    return Start(builder)
-def End(builder): return builder.EndObject()
-def ExpOptionsEnd(builder):
-    """This method is deprecated. Please switch to End."""
-    return End(builder)
+def ExpOptionsStart(builder): builder.StartObject(0)
+def Start(builder):
+    return ExpOptionsStart(builder)
+def ExpOptionsEnd(builder): return builder.EndObject()
+def End(builder):
+    return ExpOptionsEnd(builder)
 
 class ExpOptionsT(object):
 
@@ -50,6 +48,11 @@ class ExpOptionsT(object):
         return cls.InitFromObj(expOptions)
 
     @classmethod
+    def InitFromPackedBuf(cls, buf, pos=0):
+        n = flatbuffers.encode.Get(flatbuffers.packer.uoffset, buf, pos)
+        return cls.InitFromBuf(buf, pos+n)
+
+    @classmethod
     def InitFromObj(cls, expOptions):
         x = ExpOptionsT()
         x._UnPack(expOptions)
@@ -62,6 +65,6 @@ class ExpOptionsT(object):
 
     # ExpOptionsT
     def Pack(self, builder):
-        Start(builder)
-        expOptions = End(builder)
+        ExpOptionsStart(builder)
+        expOptions = ExpOptionsEnd(builder)
         return expOptions

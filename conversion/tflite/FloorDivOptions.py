@@ -28,14 +28,12 @@ class FloorDivOptions(object):
     def Init(self, buf, pos):
         self._tab = flatbuffers.table.Table(buf, pos)
 
-def Start(builder): builder.StartObject(0)
-def FloorDivOptionsStart(builder):
-    """This method is deprecated. Please switch to Start."""
-    return Start(builder)
-def End(builder): return builder.EndObject()
-def FloorDivOptionsEnd(builder):
-    """This method is deprecated. Please switch to End."""
-    return End(builder)
+def FloorDivOptionsStart(builder): builder.StartObject(0)
+def Start(builder):
+    return FloorDivOptionsStart(builder)
+def FloorDivOptionsEnd(builder): return builder.EndObject()
+def End(builder):
+    return FloorDivOptionsEnd(builder)
 
 class FloorDivOptionsT(object):
 
@@ -50,6 +48,11 @@ class FloorDivOptionsT(object):
         return cls.InitFromObj(floorDivOptions)
 
     @classmethod
+    def InitFromPackedBuf(cls, buf, pos=0):
+        n = flatbuffers.encode.Get(flatbuffers.packer.uoffset, buf, pos)
+        return cls.InitFromBuf(buf, pos+n)
+
+    @classmethod
     def InitFromObj(cls, floorDivOptions):
         x = FloorDivOptionsT()
         x._UnPack(floorDivOptions)
@@ -62,6 +65,6 @@ class FloorDivOptionsT(object):
 
     # FloorDivOptionsT
     def Pack(self, builder):
-        Start(builder)
-        floorDivOptions = End(builder)
+        FloorDivOptionsStart(builder)
+        floorDivOptions = FloorDivOptionsEnd(builder)
         return floorDivOptions

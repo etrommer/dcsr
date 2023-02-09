@@ -35,18 +35,15 @@ class MirrorPadOptions(object):
             return self._tab.Get(flatbuffers.number_types.Int8Flags, o + self._tab.Pos)
         return 0
 
-def Start(builder): builder.StartObject(1)
-def MirrorPadOptionsStart(builder):
-    """This method is deprecated. Please switch to Start."""
-    return Start(builder)
-def AddMode(builder, mode): builder.PrependInt8Slot(0, mode, 0)
-def MirrorPadOptionsAddMode(builder, mode):
-    """This method is deprecated. Please switch to AddMode."""
-    return AddMode(builder, mode)
-def End(builder): return builder.EndObject()
-def MirrorPadOptionsEnd(builder):
-    """This method is deprecated. Please switch to End."""
-    return End(builder)
+def MirrorPadOptionsStart(builder): builder.StartObject(1)
+def Start(builder):
+    return MirrorPadOptionsStart(builder)
+def MirrorPadOptionsAddMode(builder, mode): builder.PrependInt8Slot(0, mode, 0)
+def AddMode(builder, mode):
+    return MirrorPadOptionsAddMode(builder, mode)
+def MirrorPadOptionsEnd(builder): return builder.EndObject()
+def End(builder):
+    return MirrorPadOptionsEnd(builder)
 
 class MirrorPadOptionsT(object):
 
@@ -59,6 +56,11 @@ class MirrorPadOptionsT(object):
         mirrorPadOptions = MirrorPadOptions()
         mirrorPadOptions.Init(buf, pos)
         return cls.InitFromObj(mirrorPadOptions)
+
+    @classmethod
+    def InitFromPackedBuf(cls, buf, pos=0):
+        n = flatbuffers.encode.Get(flatbuffers.packer.uoffset, buf, pos)
+        return cls.InitFromBuf(buf, pos+n)
 
     @classmethod
     def InitFromObj(cls, mirrorPadOptions):
@@ -74,7 +76,7 @@ class MirrorPadOptionsT(object):
 
     # MirrorPadOptionsT
     def Pack(self, builder):
-        Start(builder)
-        AddMode(builder, self.mode)
-        mirrorPadOptions = End(builder)
+        MirrorPadOptionsStart(builder)
+        MirrorPadOptionsAddMode(builder, self.mode)
+        mirrorPadOptions = MirrorPadOptionsEnd(builder)
         return mirrorPadOptions
