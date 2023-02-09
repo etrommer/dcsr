@@ -34,7 +34,7 @@ def build_model(model):
 
 # Save to TFlite file
 def save_model(model, fh):
-    fh.write(b)
+    fh.write(model)
 
 # Export weight matrix as numpy array
 def save_tensor_weights(tensor_weights, base_path, name):
