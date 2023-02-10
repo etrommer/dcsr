@@ -5,7 +5,7 @@
    Use, modification and redistribution of this file is subject to your possession of a
    valid End User License Agreement for the Arm Product of which these examples are part of
    and your compliance with all applicable terms and conditions of such licence agreement.
-   */
+*/
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -19,9 +19,9 @@
 
 #include "uart.h"
 
-#define ANSI_COLOR_RED     "\x1b[31m"
-#define ANSI_COLOR_GREEN   "\x1b[32m"
-#define ANSI_COLOR_RESET   "\x1b[0m"
+#define ANSI_COLOR_RED "\x1b[31m"
+#define ANSI_COLOR_GREEN "\x1b[32m"
+#define ANSI_COLOR_RESET "\x1b[0m"
 
 int main(void)
 {
@@ -33,14 +33,26 @@ int main(void)
         .delta_indices = delta_indices,
         .row_offsets = row_offsets,
         .group_minimums = minimums,
-        .nnze = nnze
-    };
+        .nnze = nnze};
 
     const uint32_t avg_row_len = nnze / matrix_rows;
 
     uint32_t values_idx = 0;
     uint32_t bitmasks_idx = 0;
     uint32_t groups_idx = 0;
+
+    cmsis_nn_conv_params dummy_conv_params = {
+        .activation.min = INT32_MIN,
+        .activation.max = INT32_MAX,
+    };
+
+    int32_t multiplier = 1;
+    int32_t shift = 0;
+    cmsis_nn_per_channel_quant_params dummy_quant_params = {
+        .multiplier = &multiplier,
+        .shift = &shift,
+    };
+    int32_t bias = 0;
 
     for (size_t row = 0; row < matrix_rows; row++)
     {
@@ -61,7 +73,10 @@ int main(void)
             matrix_cols,
             dummy_input,
             &reference[row * matrix_cols],
-            &sum_col,
+            1,
+            &dummy_conv_params,
+            &dummy_quant_params,
+            &bias,
             results);
         printf("Result CMSIS: %8d ", (int)results[0]);
         reference_result = results[0];
@@ -108,7 +123,7 @@ int main(void)
 
         // Value Buffering
         bitmasks_idx_temp = bitmasks_idx;
-        int8_t *value_buffer = (int8_t *) idx_buffer;
+        int8_t *value_buffer = (int8_t *)idx_buffer;
         memset(value_buffer, 0, matrix_cols);
         (void)sparse_extract_row_values(
             &comp_sp,
@@ -124,9 +139,13 @@ int main(void)
 
         arm_nn_mat_mul_core_1x_s8(
             matrix_cols,
+            0,
             dummy_input,
             value_buffer,
-            &sum_col,
+            1,
+            &dummy_conv_params,
+            &dummy_quant_params,
+            &bias,
             results);
         printf("Result Value Buffering: %8d ", (int)results[0]);
         pass = pass && (reference_result == results[0]);
@@ -147,15 +166,17 @@ int main(void)
         printf("Result MatVec: %8d -- ", (int)acc);
         pass = pass && (reference_result == acc);
 
-        if (pass == true) {
+        if (pass == true)
+        {
             printf(ANSI_COLOR_GREEN "PASS" ANSI_COLOR_RESET "\r\n");
-        } else {
+        }
+        else
+        {
             printf(ANSI_COLOR_RED "FAIL" ANSI_COLOR_RESET "\r\n");
         }
 
         values_idx += row_len;
         groups_idx += num_groups;
-
     }
     exit(1);
 }
