@@ -44,10 +44,14 @@ endif
 
 DEFS += -DARMCM55 -DCPU_M55=1 -DCORTEX_M_GENERIC
 # DEFS += -DINTERMEDIATE_RESULTS
-# DEFS += -DASM_KERNEL
-DEFS += -DVALUE_BUFFERING
+# DEFS += -DVALUE_BUFFERING
 MCUFLAGS = -mcpu=cortex-m55 -mfloat-abi=hard -mthumb -funsigned-char -mlittle-endian
+
+ifdef RELEASE
 OPTIMIZE = -O3 -flto
+else
+OPTIMIZE = -O0 -g
+endif
 
 WFLAGS = -Wall -Wextra
 ASMFLAGS = $(MCUFLAGS) $(DEFS) $(OPTIMIZE) -fmessage-length=0 -c
@@ -55,11 +59,7 @@ CFLAGS = -c $(MCUFLAGS) $(DEFS) $(OPTIMIZE) $(WFLAGS) $(addprefix -I,$(INCLUDE_D
 CXXFLAGS = -c $(MCUFLAGS) $(DEFS) $(OPTIMIZE) $(WFLAGS) $(addprefix -I,$(INCLUDE_DIRS)) -std=c++11 -ffunction-sections -fdata-sections
 LIBS = -L$(CMSIS_NN_DIR)/build -lcmsis-nn -lnosys
 
-ifdef FPGA
 LSCRIPT = ./platform.ld
-else
-LSCRIPT = ./gcc_arm.ld
-endif
 
 LDFLAGS += $(MCUFLAGS) \
 		--entry=Reset_Handler \
@@ -69,7 +69,6 @@ LDFLAGS += $(MCUFLAGS) \
 		-Wl,-gc-sections \
 		$(OPTIMIZE) \
 		--specs=nosys.specs \
-		--specs=nano.specs \
 
 OBJECTS = $(addsuffix .o,$(addprefix $(OBJ_DIR)/,$(basename $(ASOURCES))))
 OBJECTS += $(addsuffix .o,$(addprefix $(OBJ_DIR)/,$(basename $(CSOURCES))))
@@ -112,4 +111,4 @@ clean:
 	$(RM) -rf $(OBJ_DIR)/*
 
 sim: $(TARGET).elf
-	FVP_Corstone_SSE-300_Ethos-U55 -a $< -f config.txt
+	qemu-system-arm --machine mps3-an547 -serial mon:stdio -kernel $< -echr 2
