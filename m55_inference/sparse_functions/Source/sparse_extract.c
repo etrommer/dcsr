@@ -3,11 +3,11 @@
 
 inline int32_t sparse_row_sum_s8(
     const uint32_t row_elements,
-    const int8_t *sparse_values
-)
+    const int8_t *sparse_values)
 {
     int32_t sum = 0;
-    for (size_t idx = 0; idx < row_elements; idx += 16) {
+    for (size_t idx = 0; idx < row_elements; idx += 16)
+    {
         const mve_pred16_t p = vctp8q(row_elements - idx);
         const int8x16_t a = vldrbq_z_s8(sparse_values + idx, p);
         sum = vaddvaq_s8(sum, a);
@@ -18,7 +18,7 @@ inline int32_t sparse_row_sum_s8(
 static inline uint8x16_t base_index(const uint8_t slope)
 {
     uint8x16_t slope_vec = vdupq_n_u8(slope);
-    uint8x16_t idx_base = vidupq_u8(0,1);
+    uint8x16_t idx_base = vidupq_u8(0, 1);
     /* uint8x16_t idx_base = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};*/
     return vmulq_u8(idx_base, slope_vec);
 }
@@ -74,7 +74,7 @@ static inline uint8_t load_extension_map(const size_t group_idx, const uint8_t *
 
 // Generate 8-Bit Group indices from 4-Bit base values and
 // Extension bitmaps
-arm_status sparse_extract_row_indices(
+arm_cmsis_nn_status sparse_extract_row_indices(
     const compressed_sparsity *comp_sp,
     const uint32_t row_elements,
     const uint32_t row_groups,
@@ -101,12 +101,12 @@ arm_status sparse_extract_row_indices(
         vst1q_p(indices_buffer + (group - groups_idx) * SIMD_GROUP_SIZE, uidx, p);
     }
 
-    return ARM_MATH_SUCCESS;
+    return ARM_CMSIS_NN_SUCCESS;
 }
 
 // Generate 8-Bit Group indices from 4-Bit base values and
 // Extension bitmaps
-arm_status sparse_extract_row_values(
+arm_cmsis_nn_status sparse_extract_row_values(
     const compressed_sparsity *comp_sp,
     const uint32_t row_elements,
     const uint32_t row_groups,
@@ -135,17 +135,17 @@ arm_status sparse_extract_row_values(
         const int8x16_t a = vldrbq_z_s8(sparse_values + (group - groups_idx) * 16, p);
 
         /* Adjust base pointers */
-        group_offset += (int32_t) comp_sp->group_minimums[group];
+        group_offset += (int32_t)comp_sp->group_minimums[group];
         ip_row += group_offset;
         group_offset = slope * SIMD_GROUP_SIZE;
 
         /* MAC Operations*/
         vstrbq_scatter_offset_p_s8(ip_row, uidx, a, p);
     }
-    return ARM_MATH_SUCCESS;
+    return ARM_CMSIS_NN_SUCCESS;
 }
 
-arm_status sparse_eval_row(
+arm_cmsis_nn_status sparse_eval_row(
     const compressed_sparsity *comp_sp,
     const uint32_t row_elements,
     const uint32_t row_groups,
@@ -192,10 +192,10 @@ arm_status sparse_eval_row(
     *result = acc;
     *rhs_sum = sum_tmp;
 
-    return ARM_MATH_SUCCESS;
+    return ARM_CMSIS_NN_SUCCESS;
 }
 
-arm_status group_offsets(
+arm_cmsis_nn_status group_offsets(
     const int8_t *offsets,
     const uint8_t slope,
     int16_t *buffer,
@@ -208,6 +208,5 @@ arm_status group_offsets(
         buffer[group] = group_offset;
         group_offset = slope * SIMD_GROUP_SIZE;
     }
-    return ARM_MATH_SUCCESS;
+    return ARM_CMSIS_NN_SUCCESS;
 }
-

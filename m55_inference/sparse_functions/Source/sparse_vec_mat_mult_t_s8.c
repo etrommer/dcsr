@@ -3,12 +3,12 @@
 
 #include "arm_nnsupportfunctions.h"
 
-arm_status sparse_vec_mat_mult_t_s8(
+arm_cmsis_nn_status sparse_vec_mat_mult_t_s8(
     const compressed_sparsity *comp_sp,
-    const q7_t *lhs,
-    const q7_t *rhs,
-    const q31_t *bias,
-    q7_t *dst,
+    const int8_t *lhs,
+    const int8_t *rhs,
+    const int32_t *bias,
+    int8_t *dst,
     const int32_t lhs_offset,
     const int32_t rhs_offset,
     const int32_t dst_offset,
@@ -87,5 +87,5 @@ arm_status sparse_vec_mat_mult_t_s8(
         groups_idx += num_row_groups;
         values_idx += num_row_elems;
     }
-    return ARM_MATH_SUCCESS;
+    return ARM_CMSIS_NN_SUCCESS;
 }

@@ -1,7 +1,7 @@
 #ifndef _SPARSE_NNSUPPORTFUNCTIONS_H
 #define _SPARSE_NNSUPPORTFUNCTIONS_H
 
-#include "arm_math_types.h"
+#include "arm_nn_math_types.h"
 #include "arm_nn_types.h"
 
 #include "sparse_nnfunctions.h"
@@ -13,7 +13,7 @@ extern "C"
 {
 #endif
 
-    arm_status sparse_mat_mul_core_1x_s8(
+    arm_cmsis_nn_status sparse_mat_mul_core_1x_s8(
         const int8_t *row_base,
 
         const uint32_t num_elements,
@@ -23,7 +23,7 @@ extern "C"
 
         int32_t *output);
 
-    arm_status sparse_mat_mul_core_4x_s8(
+    arm_cmsis_nn_status sparse_mat_mul_core_4x_s8(
         const int32_t offset,
         const int8_t *row_base,
 
@@ -34,12 +34,12 @@ extern "C"
 
         int32_t *output);
 
-    arm_status sparse_vec_mat_mult_t_s8(
+    arm_cmsis_nn_status sparse_vec_mat_mult_t_s8(
         const compressed_sparsity *comp_sp,
-        const q7_t *lhs,
-        const q7_t *rhs,
-        const q31_t *bias,
-        q7_t *dst,
+        const int8_t *lhs,
+        const int8_t *rhs,
+        const int32_t *bias,
+        int8_t *dst,
         const int32_t lhs_offset,
         const int32_t rhs_offset,
         const int32_t dst_offset,

@@ -1,6 +1,6 @@
 #include "sparse_nnsupportfunctions.h"
 
-arm_status sparse_mat_mul_core_4x_s8(
+arm_cmsis_nn_status sparse_mat_mul_core_4x_s8(
     const int32_t offset,
     const int8_t *row_base,
 
@@ -100,5 +100,5 @@ arm_status sparse_mat_mul_core_4x_s8(
     output[2] = acc_n2;
     output[3] = acc_n3;
 
-    return ARM_MATH_SUCCESS;
+    return ARM_CMSIS_NN_SUCCESS;
 }

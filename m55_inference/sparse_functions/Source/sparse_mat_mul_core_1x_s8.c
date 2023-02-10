@@ -1,13 +1,11 @@
 #include "sparse_nnsupportfunctions.h"
 
-arm_status sparse_mat_mul_core_1x_s8(
+arm_cmsis_nn_status sparse_mat_mul_core_1x_s8(
     const int8_t *row_base,
-
     const uint32_t num_elements,
     const int8_t *sparse_values,
     const uint8_t *sparse_indices,
     const int16_t *sparse_offsets,
-
     int32_t *output)
 {
 
@@ -35,7 +33,7 @@ arm_status sparse_mat_mul_core_1x_s8(
         acc = vmladavaq_s8(acc, a, v);
     }
 #else
-    __ASM volatile(
+    __asm__ volatile(
         "   vldrb.8         q0, [%[col]], 16     \n"
         "   wlstp.8         lr, %[cnt], 1f       \n"
         "2:                                      \n"
@@ -59,5 +57,5 @@ arm_status sparse_mat_mul_core_1x_s8(
 #endif
     output[0] = acc;
 
-    return ARM_MATH_SUCCESS;
+    return ARM_CMSIS_NN_SUCCESS;
 }

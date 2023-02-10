@@ -1,17 +1,17 @@
 #include "sparse_nnfunctions.h"
 
-arm_status sparse_convolve_wrapper_s8(const cmsis_nn_context *ctx,
-                                      const compressed_sparsity *comp_sp,
-                                      const cmsis_nn_conv_params *conv_params,
-                                      const cmsis_nn_per_channel_quant_params *quant_params,
-                                      const cmsis_nn_dims *input_dims,
-                                      const q7_t *input_data,
-                                      const cmsis_nn_dims *filter_dims,
-                                      const q7_t *filter_data,
-                                      const cmsis_nn_dims *bias_dims,
-                                      const int32_t *bias_data,
-                                      const cmsis_nn_dims *output_dims,
-                                      q7_t *output_data)
+arm_cmsis_nn_status sparse_convolve_wrapper_s8(const cmsis_nn_context *ctx,
+                                               const compressed_sparsity *comp_sp,
+                                               const cmsis_nn_conv_params *conv_params,
+                                               const cmsis_nn_per_channel_quant_params *quant_params,
+                                               const cmsis_nn_dims *input_dims,
+                                               const int8_t *input_data,
+                                               const cmsis_nn_dims *filter_dims,
+                                               const int8_t *filter_data,
+                                               const cmsis_nn_dims *bias_dims,
+                                               const int32_t *bias_data,
+                                               const cmsis_nn_dims *output_dims,
+                                               int8_t *output_data)
 {
     if ((conv_params->padding.w == 0) && (conv_params->padding.h == 0) && (input_dims->c % 4 == 0) &&
         (conv_params->stride.w == 1) && (conv_params->stride.h == 1) && (filter_dims->w == 1) && (filter_dims->h == 1))

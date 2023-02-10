@@ -1,8 +1,9 @@
 #ifndef _SPARSE_NNFUNCTIONS_H
 #define _SPARSE_NNFUNCTIONS_H
 
-#include "arm_math_types.h"
+#include "arm_nn_math_types.h"
 #include "arm_nn_types.h"
+#include "arm_mve.h"
 
 #define USE_INTRINSIC
 
@@ -25,19 +26,19 @@ extern "C"
         const uint32_t nnze;
     } compressed_sparsity;
 
-    arm_status sparse_convolve_wrapper_s8(
+    arm_cmsis_nn_status sparse_convolve_wrapper_s8(
         const cmsis_nn_context *ctx,
         const compressed_sparsity *comp_sp,
         const cmsis_nn_conv_params *conv_params,
         const cmsis_nn_per_channel_quant_params *quant_params,
         const cmsis_nn_dims *input_dims,
-        const q7_t *input_data,
+        const int8_t *input_data,
         const cmsis_nn_dims *filter_dims,
-        const q7_t *filter_data,
+        const int8_t *filter_data,
         const cmsis_nn_dims *bias_dims,
         const int32_t *bias_data,
         const cmsis_nn_dims *output_dims,
-        q7_t *output_data);
+        int8_t *output_data);
 
     int32_t sparse_convolve_wrapper_s8_get_buffer_size(
         const cmsis_nn_conv_params *conv_params,
@@ -45,41 +46,41 @@ extern "C"
         const cmsis_nn_dims *filter_dims,
         const cmsis_nn_dims *output_dims);
 
-    arm_status sparse_convolve_1x1_s8_fast(
+    arm_cmsis_nn_status sparse_convolve_1x1_s8_fast(
         const cmsis_nn_context *ctx,
         const compressed_sparsity *comp_sp,
         const cmsis_nn_conv_params *conv_params,
         const cmsis_nn_per_channel_quant_params *quant_params,
         const cmsis_nn_dims *input_dims,
-        const q7_t *input_data,
+        const int8_t *input_data,
         const cmsis_nn_dims *filter_dims,
-        const q7_t *filter_data,
+        const int8_t *filter_data,
         const cmsis_nn_dims *bias_dims,
         const int32_t *bias_data,
         const cmsis_nn_dims *output_dims,
-        q7_t *output_data);
+        int8_t *output_data);
 
     int32_t sparse_convolve_1x1_s8_fast_get_buffer_size(
         const cmsis_nn_dims *input_dims);
 
-    arm_status sparsely_connected_s8(
+    arm_cmsis_nn_status sparsely_connected_s8(
         const cmsis_nn_context *ctx,
         const compressed_sparsity *comp_sp,
         const cmsis_nn_fc_params *fc_params,
         const cmsis_nn_per_tensor_quant_params *quant_params,
         const cmsis_nn_dims *input_dims,
-        const q7_t *input,
+        const int8_t *input,
         const cmsis_nn_dims *filter_dims,
-        const q7_t *kernel,
+        const int8_t *kernel,
         const cmsis_nn_dims *bias_dims,
         const int32_t *bias,
         const cmsis_nn_dims *output_dims,
-        q7_t *output);
+        int8_t *output);
 
     int32_t sparsely_connected_s8_get_buffer_size(
         const cmsis_nn_dims *filter_dims);
 
-    arm_status sparse_extract_row_indices(
+    arm_cmsis_nn_status sparse_extract_row_indices(
         const compressed_sparsity *comp_sp,
         const uint32_t row_elements,
         const uint32_t row_groups,
@@ -90,7 +91,7 @@ extern "C"
 
         uint8_t *indices_buffer);
 
-    arm_status sparse_extract_row_values(
+    arm_cmsis_nn_status sparse_extract_row_values(
         const compressed_sparsity *comp_sp,
         const uint32_t row_elements,
         const uint32_t row_groups,
@@ -102,7 +103,7 @@ extern "C"
 
         const int8_t *values_buffer);
 
-    arm_status sparse_eval_row(
+    arm_cmsis_nn_status sparse_eval_row(
         const compressed_sparsity *comp_sp,
         const uint32_t row_elements,
         const uint32_t row_groups,
@@ -117,7 +118,7 @@ extern "C"
         int32_t *result,
         int32_t *rhs_sum);
 
-    arm_status group_offsets(
+    arm_cmsis_nn_status group_offsets(
         const int8_t *offsets,
         const uint8_t slope,
         int16_t *buffer,
