@@ -53,7 +53,7 @@ WFLAGS = -Wall -Wextra
 ASMFLAGS = $(MCUFLAGS) $(DEFS) $(OPTIMIZE) -fmessage-length=0 -c
 CFLAGS = -c $(MCUFLAGS) $(DEFS) $(OPTIMIZE) $(WFLAGS) $(addprefix -I,$(INCLUDE_DIRS)) -std=c11 -ffunction-sections -fdata-sections
 CXXFLAGS = -c $(MCUFLAGS) $(DEFS) $(OPTIMIZE) $(WFLAGS) $(addprefix -I,$(INCLUDE_DIRS)) -std=c++11 -ffunction-sections -fdata-sections
-LIBS = -lnosys
+LIBS = -L$(CMSIS_NN_DIR)/build -lcmsis-nn -lnosys
 
 ifdef FPGA
 LSCRIPT = ./platform.ld
