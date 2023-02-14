@@ -112,3 +112,6 @@ clean:
 
 sim: $(TARGET).elf
 	qemu-system-arm --machine mps3-an547 -serial mon:stdio -kernel $< -echr 2
+
+debug: $(TARGET).elf
+	qemu-system-arm --machine mps3-an547 -serial mon:stdio -kernel $< -echr 2 -gdb tcp::1234 -S
