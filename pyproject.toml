@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "dcsr"
+version = "0.1.0"
+description = "Compress sparse Neural Network weights using the delta-compressed Storage Row format"
+authors = ["Elias Trommer <elias_trommer@posteo.de>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+numpy = "^1.24.3"
+
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.3.1"
+black = "^23.3.0"
+mypy = "^1.2.0"
+pre-commit = "^3.3.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
