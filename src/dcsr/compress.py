@@ -1,7 +1,10 @@
 from collections.abc import Iterable
+from typing import Any, Dict, List, Tuple
 
 import numpy as np
+import numpy.typing as npt
 from dcsr import estimate_references
+from dcsr.structs import DCSRExport, DCSRRow
 from scipy.stats import entropy
 
 
@@ -203,23 +206,23 @@ def compensate_padding(groups, active_elements):
 
 
 # Calculate some metrics from compressed matrix
-def get_metrics(flat_rows, matrix):
+def get_metrics(flat_rows: DCSRExport, matrix: npt.NDArray):
     nnze = np.sum(matrix != 0)
     rows, cols = matrix.shape
     dense_size = np.prod(matrix.shape)
     metrics = {
-        "padding_elements": len(flat_rows["values"]) - nnze,
-        "groups": sum(flat_rows["groups_count"]),
-        "bitmaps": len(flat_rows["bitmaps"]),
-        "bitmasks": len(flat_rows["bitmasks"]),
+        "padding_elements": len(flat_rows.values) - nnze,
+        "groups": len(flat_rows.minimums),
+        "bitmaps": len(flat_rows.bitmaps),
+        "bitmasks": len(flat_rows.bitmasks),
         "payload": nnze,
     }
 
-    metrics["bitmap_bytes"] = flat_rows["bitmaps"].nbytes
-    metrics["bitmask_bytes"] = flat_rows["bitmasks"].nbytes
-    metrics["delta_index_bytes"] = flat_rows["delta_indices"].nbytes
-    metrics["group_minimums_bytes"] = flat_rows["minimums"].nbytes
-    metrics["row_offset_bytes"] = flat_rows["row_offsets"].nbytes
+    metrics["bitmap_bytes"] = flat_rows.bitmaps.nbytes
+    metrics["bitmask_bytes"] = flat_rows.bitmasks.nbytes
+    metrics["delta_index_bytes"] = flat_rows.delta_indices.nbytes
+    metrics["group_minimums_bytes"] = flat_rows.delta_indices.nbytes
+    metrics["row_offset_bytes"] = flat_rows.delta_indices.nbytes
 
     metrics["total_index"] = (
         metrics["bitmap_bytes"]
@@ -232,7 +235,7 @@ def get_metrics(flat_rows, matrix):
 
     metrics["size_dense"] = dense_size
     metrics["index_overhead"] = (metrics["total_index"] / nnze) * 8
-    metrics["size_sparse_dCSR"] = metrics["total_index"] + flat_rows["values"].nbytes
+    metrics["size_sparse_dCSR"] = metrics["total_index"] + flat_rows.values.nbytes
 
     metrics["size_sparse_CSR"] = estimate_references.estimate_csr(matrix)
     metrics["size_sparse_BCSR"] = estimate_references.estimate_bcsr(matrix)
@@ -263,45 +266,13 @@ def checked_conversion(matrix, dtype):
         return matrix.astype(dtype)
 
 
-# Merge list of dicts with data for each row into one dict for the entire matrix
-def flatten_row_data(row_data):
-    flat_dict = {}
-    for key in [
-        "values",
-        "delta_indices",
-        "minimums",
-        "bitmaps",
-        "bitmasks",
-        "bitwidths",
-    ]:
-        flat_dict[key] = np.concatenate([row[key] for row in row_data])
-    for key in ["groups_count", "slope", "num_elements"]:
-        flat_dict[key] = [row[key] for row in row_data]
-
-    # Packing and checked typecasting for the elements that get written out to the flatbuffer
-    # flat_dict['values'] = checked_conversion(flat_dict['values'], np.int8)
-    flat_dict["values"] = flat_dict["values"].astype(np.int8)
-    flat_dict["delta_indices"] = checked_conversion(pack_nibbles(flat_dict["delta_indices"]).flatten(), np.uint8)
-    # flat_dict['minimums'] = checked_conversion(flat_dict['minimums'], np.int8)
-    flat_dict["minimums"] = flat_dict["minimums"].astype(np.int8)
-
-    # Some reshaping wizardry so that the pack_nibbles() function can be used for the bitmaps as well...
-    flat_dict["bitmaps"] = checked_conversion(
-        pack_nibbles(flat_dict["bitmaps"].reshape(len(flat_dict["bitmaps"]), 1)).flatten(),
-        np.uint8,
-    )
-    flat_dict["bitmasks"] = checked_conversion(convert_mask(flat_dict["bitmasks"]), np.uint16)
-
-    return flat_dict
-
-
 def get_row_offsets(nnze_per_row):
     avg_nnze_per_row = np.floor(np.mean(nnze_per_row))
     row_offsets = nnze_per_row - avg_nnze_per_row
     return row_offsets
 
 
-def compress_row(row, slope=None, group_size=16, pad_to_groupsize=True):
+def compress_row(row, slope=None, group_size=16, pad_to_groupsize=True) -> DCSRRow:
     (indices, values) = remove_zeros(row)
 
     # Padding insertion to ensure base types don't overflow
@@ -330,31 +301,54 @@ def compress_row(row, slope=None, group_size=16, pad_to_groupsize=True):
     (bitmaps, bitmasks) = get_merged_bitmaps(delta_indices, [5, 6, 7, 8])
     delta_indices = np.bitwise_and(delta_indices, 0xF)
 
-    row_data = {
-        "values": values,
-        "delta_indices": delta_indices,
-        "minimums": mins,
-        "bitmaps": bitmaps,
-        "bitmasks": bitmasks,
-        "slope": slope,
-        "bitwidths": bitwidths,
-        "groups_count": len(delta_indices),
-        "num_elements": len(values),
-    }
+    row_data = DCSRRow(
+        values,
+        delta_indices,
+        mins,
+        bitmaps,
+        bitmasks,
+        slope,
+        bitwidths,
+        len(delta_indices),
+        len(values),
+    )
     return row_data
 
 
-def compress_matrix(sparse_matrix, group_size=16):
-    row_data = []
+def compress_matrix(sparse_matrix: npt.NDArray, group_size=16) -> Tuple[DCSRExport, Dict[str, Any]]:
+    # Compress individual rows
+    row_data: List[DCSRRow] = []
     for row in sparse_matrix:
         row_data.append(compress_row(row, pad_to_groupsize=False, group_size=group_size))
 
-    flat_rows = flatten_row_data(row_data)
-    flat_rows["row_offsets"] = checked_conversion(get_row_offsets(flat_rows["num_elements"]), np.int16)
-    flat_rows["nnze"] = np.sum([e for e in flat_rows["num_elements"]])
+    # Merge Results
+    delta_indices = np.concatenate([r.delta_indices for r in row_data])
+    delta_indices = checked_conversion(pack_nibbles(delta_indices).flatten(), np.uint8)
 
-    metrics = get_metrics(flat_rows, sparse_matrix)
-    return flat_rows, metrics
+    # Some reshaping wizardry so that the pack_nibbles() function can be used for the bitmaps as well...
+    bitmaps = np.concatenate([r.bitmaps for r in row_data])
+    bitmaps = checked_conversion(
+        pack_nibbles(bitmaps.reshape(len(bitmaps), 1)).flatten(),
+        np.uint8,
+    )
+
+    bitmasks = np.concatenate([r.bitmasks for r in row_data])
+    bitmasks = checked_conversion(convert_mask(bitmasks), np.uint16)
+
+    export = DCSRExport(
+        np.concatenate([r.values for r in row_data]).astype(sparse_matrix.dtype),
+        delta_indices,
+        np.concatenate([r.minimums for r in row_data]).astype(np.int8),
+        bitmaps,
+        bitmasks,
+        get_row_offsets([r.num_elements for r in row_data]).astype(np.int16),
+        [r.slope for r in row_data],
+        [r.num_elements for r in row_data],
+        sum(r.num_elements for r in row_data),
+    )
+    metrics = get_metrics(export, sparse_matrix)
+
+    return export, metrics
 
 
 if __name__ == "__main__":
