@@ -6,8 +6,10 @@ authors = ["Elias Trommer <elias_trommer@posteo.de>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = ">=3.8,<3.12"
 numpy = "^1.24.3"
+scipy = "^1.10.1"
+more-itertools = "^9.1.0"
 
 
 [tool.poetry.group.dev.dependencies]
@@ -15,6 +17,13 @@ pytest = "^7.3.1"
 black = "^23.3.0"
 mypy = "^1.2.0"
 pre-commit = "^3.3.1"
+ipykernel = "^6.23.0"
+
+[tool.black]
+line-length = 120
+
+[tool.ruff]
+line-length = 120
 
 [build-system]
 requires = ["poetry-core"]
