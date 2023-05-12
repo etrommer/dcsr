@@ -3,13 +3,14 @@ from typing import Any, Dict, List
 
 import numpy as np
 import numpy.typing as npt
-from dcsr import estimate_references
+from dcsr import metrics
 from dcsr.structs import DCSRExport, DCSRRow
-from scipy.stats import entropy
 
 
 class DCSRMatrix:
     def __init__(self, matrix: npt.NDArray, group_size: int = 16) -> None:
+        if len(matrix.shape) != 2:
+            raise ValueError("Only 2D matrices are supported.")
         # Compress individual rows
         self.shape = matrix.shape
         self.base_matrix = matrix
@@ -45,7 +46,7 @@ class DCSRMatrix:
     @property
     def metrics(self) -> Dict[str, Any]:
         # Merge Results
-        return get_metrics(self.export(), self.base_matrix)
+        return metrics.get_metrics(self.export(), self.base_matrix)
 
     # Turn a sparse row into a list of column indices
     # and a list of values
@@ -291,56 +292,6 @@ class DCSRMatrix:
             len(values),
         )
         return row_data
-
-
-# Calculate some metrics from compressed matrix
-def get_metrics(flat_rows: DCSRExport, matrix: npt.NDArray):
-    nnze = np.sum(matrix != 0)
-    rows, cols = matrix.shape
-    dense_size = np.prod(matrix.shape)
-    metrics = {
-        "padding_elements": len(flat_rows.values) - nnze,
-        "groups": len(flat_rows.minimums),
-        "bitmaps": len(flat_rows.bitmaps),
-        "bitmasks": len(flat_rows.bitmasks),
-        "payload": nnze,
-    }
-
-    metrics["bitmap_bytes"] = flat_rows.bitmaps.nbytes
-    metrics["bitmask_bytes"] = flat_rows.bitmasks.nbytes
-    metrics["delta_index_bytes"] = flat_rows.delta_indices.nbytes
-    metrics["group_minimums_bytes"] = flat_rows.delta_indices.nbytes
-    metrics["row_offset_bytes"] = flat_rows.delta_indices.nbytes
-
-    metrics["total_index"] = (
-        metrics["bitmap_bytes"]
-        + metrics["bitmask_bytes"]
-        + metrics["delta_index_bytes"]
-        + metrics["group_minimums_bytes"]
-        + metrics["row_offset_bytes"]
-        + nnze.astype(np.uint32).nbytes
-    )
-
-    metrics["size_dense"] = dense_size
-    metrics["index_overhead"] = (metrics["total_index"] / nnze) * 8
-    metrics["size_sparse_dCSR"] = metrics["total_index"] + flat_rows.values.nbytes
-
-    metrics["size_sparse_CSR"] = estimate_references.estimate_csr(matrix)
-    metrics["size_sparse_BCSR"] = estimate_references.estimate_bcsr(matrix)
-    (
-        metrics["size_sparse_ri"],
-        metrics["size_padding_ri"],
-    ) = estimate_references.estimate_relative_indexing(matrix, 4)
-
-    metrics["size_zlib_6"] = estimate_references.estimate_zlib(matrix, 6)
-    metrics["size_zlib_9"] = estimate_references.estimate_zlib(matrix, 9)
-
-    return metrics
-
-
-def entropy_compression(sparse_matrix):
-    _, counts = np.unique(sparse_matrix.flatten(), return_counts=True)
-    return entropy(counts)
 
 
 def checked_conversion(matrix, dtype):
