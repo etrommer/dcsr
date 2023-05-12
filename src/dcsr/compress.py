@@ -1,5 +1,5 @@
 from collections.abc import Iterable
-from typing import Any, Dict, List
+from typing import List
 
 import numpy as np
 import numpy.typing as npt
@@ -44,7 +44,7 @@ class DCSRMatrix:
         return export
 
     @property
-    def metrics(self) -> Dict[str, Any]:
+    def metrics(self) -> metrics.SparseMetrics:
         # Merge Results
         return metrics.get_metrics(self.export(), self.base_matrix)
 

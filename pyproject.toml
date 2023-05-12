@@ -5,11 +5,15 @@ description = "Compress sparse Neural Network weights using the delta-compressed
 authors = ["Elias Trommer <elias_trommer@posteo.de>"]
 readme = "README.md"
 
+[tool.poetry.scripts]
+compress_tflite = 'dcsr.cli.tflite:cli'
+
 [tool.poetry.dependencies]
 python = ">=3.8,<3.12"
 numpy = "^1.24.3"
 scipy = "^1.10.1"
 more-itertools = "^9.1.0"
+flatbuffers = "^23.5.9"
 
 
 [tool.poetry.group.dev.dependencies]
@@ -24,6 +28,7 @@ line-length = 120
 
 [tool.ruff]
 line-length = 120
+exclude = ['src/dcsr/tflite_schema.py']
 
 [build-system]
 requires = ["poetry-core"]
