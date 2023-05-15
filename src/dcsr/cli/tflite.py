@@ -8,10 +8,9 @@ import flatbuffers
 import numpy as np
 import numpy.typing as npt
 from dcsr import tflite_schema
-
-# from compression.relative_indexing import compress_matrix_relative
 from dcsr.compress import DCSRMatrix
 from dcsr.metrics import DCSRMetrics
+from dcsr.rle import rle
 
 """
 Helper script that parses a Tensorflow lite model, generates a list of candidate tensors and 
@@ -101,22 +100,21 @@ class TFLiteModel:
             with open(path, "wb") as f:
                 np.save(f, weights)
 
-    # Convert single tensor to relative indexing
+    # Convert single tensor to Run-Length Encoding (RLE)
     @staticmethod
-    def compress_rle(weigths: npt.NDArray):
-        pass
-        # result = compress_matrix_relative(weight_matrix)
+    def compress_rle(weigths: npt.NDArray) -> Tuple[tflite_schema.SparsityParametersT, npt.NDArray[np.int8]]:
+        result = rle(weigths)
 
-        # sparsity = tflite_schema.SparsityParameters.SparsityParametersT()
-        # compressed_sparsity = tflite_schema.CompressedSparsity.CompressedSparsityT()
+        sparsity = tflite_schema.SparsityParameters.SparsityParametersT()
+        compressed_sparsity = tflite_schema.CompressedSparsity.CompressedSparsityT()
 
-        # compressed_sparsity.deltaIndices = result["delta_indices"]
-        # compressed_sparsity.rowOffsets = result["row_offsets"]
-        # compressed_sparsity.bitmaps = np.array([0xDE, 0xAD, 0xDE, 0xAD]).astype(np.uint8)
+        compressed_sparsity.deltaIndices = result["delta_indices"]
+        compressed_sparsity.rowOffsets = result["row_offsets"]
+        compressed_sparsity.bitmaps = np.array([0xDE, 0xAD, 0xDE, 0xAD]).astype(np.uint8)
 
-        # compressed_sparsity.nnze = result["nnze"]
-        # sparsity.compSparsity = compressed_sparsity
-        # return sparsity, result["values"]
+        compressed_sparsity.nnze = result["nnze"]
+        sparsity.compSparsity = compressed_sparsity
+        return sparsity, result["values"]
 
     # Convert single tensor to deltaCSR
     @staticmethod
@@ -244,9 +242,9 @@ def cli():
     )
     parser.add_argument("--compress", action="store_true", help="Apply deltaCSR packing to model")
     parser.add_argument(
-        "--relative",
+        "--rle",
         action="store_true",
-        help="Apply Relative Indexing instead of deltaCSR",
+        help="Apply Relative Indexing/Run-Length Encoding instead of deltaCSR",
     )
     parser.add_argument(
         "-d",
@@ -281,7 +279,7 @@ def cli():
         m.export_numpy(args.numpy)
 
     if args.compress is True:
-        m.compress()
+        m.compress(args.rle)
 
     m.store(args.output, args.cppmodel)
 
