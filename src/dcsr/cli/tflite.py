@@ -2,13 +2,16 @@
 import argparse
 import logging
 import os
+from typing import BinaryIO, List, Optional, TextIO, Tuple
 
 import flatbuffers
 import numpy as np
+import numpy.typing as npt
 from dcsr import tflite_schema
 
 # from compression.relative_indexing import compress_matrix_relative
 from dcsr.compress import DCSRMatrix
+from dcsr.metrics import DCSRMetrics
 
 """
 Helper script that parses a Tensorflow lite model, generates a list of candidate tensors and 
@@ -17,224 +20,214 @@ converted to a C array
 """
 
 
-# Load TFlite file
-def load_model(fh):
-    buf = bytearray(fh.read())
-    model = tflite_schema.Model.GetRootAsModel(buf, 0)
-    return tflite_schema.ModelT.InitFromObj(model)
+class TFLiteModel:
+    def __init__(self, fh: BinaryIO, sparsity_threshold: float = 0.7) -> None:
+        buf = bytearray(fh.read())
+        model = tflite_schema.Model.GetRootAsModel(buf, 0)
+        self.model = tflite_schema.ModelT.InitFromObj(model)
+        self.sparsity_threshold = sparsity_threshold
 
+    def store(self, fh_tflite: Optional[BinaryIO], fh_array: Optional[TextIO]) -> None:
+        fb_builder = flatbuffers.Builder(1024)
+        fb_builder.Finish(self.model.Pack(fb_builder))
+        bin_model = fb_builder.Output()
+        if fh_tflite:
+            fh_tflite.write(bin_model)
+        if fh_array:
+            fh_array.write(self.to_csrc(bin_model))
 
-# Rebuild TFlite model
-def build_model(model):
-    b = flatbuffers.Builder(1024)
-    b.Finish(model.Pack(b))
-    return b.Output()
+    # Find weight tensors with format supported by packing
+    @property
+    def compressible_tensors(self) -> List[int]:
+        # Check if tensor type and shape are supported and that tensor has suffienct sparsity
+        def op_type_supported(op_type: tflite_schema.OperatorCodeT, shape: Tuple[int, ...]) -> bool:
+            if op_type.builtinCode == tflite_schema.BuiltinOperator.FULLY_CONNECTED:
+                return True
+            # Convolutions with Kernel size = 1 only
+            if op_type.builtinCode == tflite_schema.BuiltinOperator.CONV_2D and shape[1] == 1 and shape[2] == 1:
+                return True
+            return False
 
+        subgraph = self.model.subgraphs[0]
+        graph_ops = self.model.operatorCodes
 
-# Save to TFlite file
-def save_model(model, fh):
-    fh.write(model)
+        # Find compressible tensors
+        compressible_tensors = []
+        for op in subgraph.operators:
+            op_type = graph_ops[op.opcodeIndex]
 
+            try:
+                op_weight_tensor = op.inputs[1]
+                weights = self.get_tensor_array(op_weight_tensor)
+            except (IndexError, ValueError):
+                continue
 
-# Export weight matrix as numpy array
-def save_tensor_weights(tensor_weights, base_path, name):
-    path = os.path.join(base_path, name + ".npy")
-    with open(path, "wb") as f:
-        np.save(f, tensor_weights)
+            if not op_type_supported(op_type, weights.shape):
+                continue
 
+            sparsity = (weights.size - np.count_nonzero(weights)) / weights.size
+            if sparsity < self.sparsity_threshold:
+                tensor_name = self.get_tensor_name(op_weight_tensor)
+                logging.debug(
+                    "Tensor {} with sparsity {} is below threshold {} - Skipping".format(
+                        tensor_name, sparsity, self.sparsity_threshold
+                    )
+                )
+                continue
+            compressible_tensors.append(op_weight_tensor)
+        return compressible_tensors
 
-# Convert Model to C array for compiling into TFlite micro
-# This is a builtin replacement for xxd so that the additional
-# conversion step from .tflite to C source file can be omitted
-def save_c_array(model, fh):
-    file_contents = '#include "tensorflow/lite/micro/examples/hello_world/model.h"\r\n\r\n'
-    file_contents += "alignas(8) const unsigned char g_model[] = {\r\n"
-    line_length = 12
-    num_lines = int(np.floor(len(model) / line_length))
-    for line in range(num_lines):
-        line_content = "  " + ", ".join(
-            ["0x{:02x}".format(b) for b in model[line * line_length : (line + 1) * line_length]]
+    def get_tensor_name(self, tensor_idx: int) -> str:
+        return self.model.subgraphs[0].tensors[tensor_idx].name.decode()
+
+    def get_tensor_array(self, tensor_idx: int, reshape_2d: bool = False) -> npt.NDArray:
+        subgraph = self.model.subgraphs[0]
+        tensor_buff = subgraph.tensors[tensor_idx].buffer
+        tensor_array = self.model.buffers[tensor_buff].data
+        shape = subgraph.tensors[tensor_idx].shape
+        if reshape_2d:
+            major_dim = np.prod(shape[:-1])
+            minor_dim = shape[-1]
+            shape = (major_dim, minor_dim)
+        tensor_array = tensor_array.reshape(shape)
+        return tensor_array
+
+    def export_numpy(self, base_path: str) -> None:
+        for t in self.compressible_tensors:
+            weights = self.get_tensor_array(t, reshape_2d=True)
+            name = self.get_tensor_name(t)
+            path = os.path.join(base_path, name.split("/")[1] + ".npy")
+            logging.debug("Exporting {} to {}".format(name, path))
+            with open(path, "wb") as f:
+                np.save(f, weights)
+
+    # Convert single tensor to relative indexing
+    @staticmethod
+    def compress_rle(weigths: npt.NDArray):
+        pass
+        # result = compress_matrix_relative(weight_matrix)
+
+        # sparsity = tflite_schema.SparsityParameters.SparsityParametersT()
+        # compressed_sparsity = tflite_schema.CompressedSparsity.CompressedSparsityT()
+
+        # compressed_sparsity.deltaIndices = result["delta_indices"]
+        # compressed_sparsity.rowOffsets = result["row_offsets"]
+        # compressed_sparsity.bitmaps = np.array([0xDE, 0xAD, 0xDE, 0xAD]).astype(np.uint8)
+
+        # compressed_sparsity.nnze = result["nnze"]
+        # sparsity.compSparsity = compressed_sparsity
+        # return sparsity, result["values"]
+
+    # Convert single tensor to deltaCSR
+    @staticmethod
+    def compress_dcsr(weights: npt.NDArray) -> Tuple[tflite_schema.SparsityParametersT, npt.NDArray, DCSRMetrics]:
+        # result, metrics = compress_matrix(weight_matrix)
+        dcsr_matrix = DCSRMatrix(weights)
+        export = dcsr_matrix.export()
+
+        sparsity = tflite_schema.SparsityParametersT()
+        compressed_sparsity = tflite_schema.CompressedSparsityT()
+
+        compressed_sparsity.deltaIndices = export.delta_indices
+        compressed_sparsity.groupMinimums = export.minimums
+        compressed_sparsity.bitmaps = export.bitmaps
+        compressed_sparsity.bitmasks = export.bitmasks
+        compressed_sparsity.rowOffsets = export.row_offsets
+        compressed_sparsity.nnze = export.nnze
+
+        sparsity.compSparsity = compressed_sparsity
+        return sparsity, export.values, dcsr_matrix.metrics
+
+    def compress(self, relative_indexing=False) -> None:
+        subgraph = self.model.subgraphs[0]
+        for t in self.compressible_tensors:
+            name = self.get_tensor_name(t)
+            weights = self.get_tensor_array(t, reshape_2d=True)
+
+            if relative_indexing:
+                # Get Relative Indexing
+                logging.debug("Compressing {} to Relative Indexing".format(name))
+                sparsity_info, values = self.compress_rle(weights)
+            else:
+                # Get dCSR
+                sparsity_info, values, metrics = self.compress_dcsr(weights)
+                # Print a few results
+                logging.debug(
+                    "Compressed Tensor {}, Dims: {}*{}, Sparsity {:.2f}".format(
+                        name,
+                        weights.shape[0],
+                        weights.shape[1],
+                        (weights.size - np.count_nonzero(weights)) / weights.size,
+                    )
+                )
+                logging.debug(
+                    "Size before: {:.2f}KiB, Size after: {:.2f}KiB, Compression Ratio: {}".format(
+                        metrics.bytes_dense / 2**10,
+                        metrics.dcsr / 2**10,
+                        metrics.bytes_dense / metrics.dcsr,
+                    )
+                )
+
+            # TODO: We assume 8-Bit quantization here. Consider making this a runtime parameter
+            self.model.buffers[subgraph.tensors[t].buffer].data = values.astype(np.int8)
+            subgraph.tensors[t].sparsity = sparsity_info
+
+    # Convert Model to C array for compiling into TFlite micro
+    # This is a builtin replacement for xxd so that the additional
+    # conversion step from .tflite to C source file can be omitted
+    @staticmethod
+    def to_csrc(bin_model) -> str:
+        file_contents = '#include "tensorflow/lite/micro/examples/hello_world/model.h"\r\n\r\n'
+        file_contents += "alignas(8) const unsigned char g_model[] = {\r\n"
+        LINE_LENGTH = 12
+        num_lines = int(np.floor(len(bin_model) / LINE_LENGTH))
+        for line in range(num_lines):
+            line_content = "  " + ", ".join(
+                ["0x{:02x}".format(b) for b in bin_model[line * LINE_LENGTH : (line + 1) * LINE_LENGTH]]
+            )
+            line_content += ",\r\n"
+            file_contents += line_content
+        file_contents += (
+            "  " + ", ".join(["0x{:02x}".format(b) for b in bin_model[num_lines * LINE_LENGTH :]]) + "\r\n};\r\n"
         )
-        line_content += ",\r\n"
-        file_contents += line_content
-    file_contents += "  " + ", ".join(["0x{:02x}".format(b) for b in model[num_lines * line_length :]]) + "\r\n};\r\n"
-    file_contents += "const int g_model_len = {};".format(len(model))
+        file_contents += "const int g_model_len = {};".format(len(bin_model))
+        return file_contents
 
-    fh.write(file_contents)
+    # Iterate nodes to get the size of weights and biases in the model
+    def sizes(self) -> npt.NDArray:
+        out = []
 
+        # Calculate the size of a single tensor
+        def tensor_size(subgraph, tensor):
+            data = self.model.buffers[subgraph.tensors[tensor].buffer].data
+            return 0 if data is None else len(data)
 
-# Calculate the size of a single tensor
-def tensor_size(model, subgraph, tensor):
-    data = model.buffers[subgraph.tensors[tensor].buffer].data
-    if data is None:
-        return 0
-    return len(data)
-
-
-# Iterate nodes to get the size of weights and biases in the model
-def model_size(model):
-    weight_sizes = []
-    bias_sizes = []
-    opcodes = []
-
-    s = model.subgraphs[0]
-    for op in s.operators:
-        if len(op.inputs) > 3:
-            raise ValueError("Unsupported node type")
-
-        # node with weights only
-        if len(op.inputs) == 2:
-            ws = tensor_size(model, s, op.inputs[1])
-            weight_sizes.append(ws)
-            bias_sizes.append(0)
-        # node with weights and biases
-        elif len(op.inputs) == 3:
-            ws = tensor_size(model, s, op.inputs[1])
-            bs = tensor_size(model, s, op.inputs[2])
-            weight_sizes.append(ws)
-            bias_sizes.append(bs)
-        # operation node without parameters
-        else:
-            weight_sizes.append(0)
-            bias_sizes.append(0)
-        opcodes.append(op.opcodeIndex)
-    return np.array(weight_sizes), np.array(bias_sizes), np.array(opcodes)
-
-
-# Find weight tensors with format supported by packing
-def compressible_tensors(model):
-    weight_tensors = []
-    s = model.subgraphs[0]
-    graph_ops = model.operatorCodes
-
-    for op in s.operators:
-        op_type = graph_ops[op.opcodeIndex]
-        # FC layers
-        if op_type.deprecatedBuiltinCode == tflite_schema.BuiltinOperator.FULLY_CONNECTED:
-            t = op.inputs[1]
-            np.prod(s.tensors[t].shape[:-1])
-            s.tensors[t].shape[-1]
-            weight_tensors.append(op.inputs[1])
-
-        # Conv layers
-        elif op_type.deprecatedBuiltinCode == tflite_schema.BuiltinOperator.CONV_2D:
-            t = op.inputs[1]
-            np.prod(s.tensors[t].shape[:-1])
-            s.tensors[t].shape[-1]
-
-            # Ignore Conv layers that are not pointwise
-            dims = s.tensors[t].shape
-            if dims[1] == 1 and dims[2] == 1:
-                weight_tensors.append(t)
-    return weight_tensors
-
-
-# Convert single tensor to deltaCSR
-def compress_weight_matrix(weight_matrix):
-    # result, metrics = compress_matrix(weight_matrix)
-    dcsr_matrix = DCSRMatrix(weight_matrix)
-    export = dcsr_matrix.export()
-
-    sparsity = tflite_schema.SparsityParametersT()
-    compressed_sparsity = tflite_schema.CompressedSparsityT()
-
-    compressed_sparsity.deltaIndices = export.delta_indices
-    compressed_sparsity.groupMinimums = export.minimums
-    compressed_sparsity.bitmaps = export.bitmaps
-    compressed_sparsity.bitmasks = export.bitmasks
-    compressed_sparsity.rowOffsets = export.row_offsets
-    compressed_sparsity.nnze = export.nnze
-
-    sparsity.compSparsity = compressed_sparsity
-    return sparsity, export.values, dcsr_matrix.metrics
-
-
-# Convert single tensor to relative indexing
-# def compress_relative(weight_matrix):
-#     result = compress_matrix_relative(weight_matrix)
-
-#     sparsity = tflite_schema.SparsityParameters.SparsityParametersT()
-#     compressed_sparsity = tflite_schema.CompressedSparsity.CompressedSparsityT()
-
-#     compressed_sparsity.deltaIndices = result["delta_indices"]
-#     compressed_sparsity.rowOffsets = result["row_offsets"]
-#     compressed_sparsity.bitmaps = np.array([0xDE, 0xAD, 0xDE, 0xAD]).astype(np.uint8)
-
-#     compressed_sparsity.nnze = result["nnze"]
-#     sparsity.compSparsity = compressed_sparsity
-#     return sparsity, result["values"]
-
-
-# Takes a list of sparse weight tensors and replaces their contents
-# with their compressed representation
-def compress_tensor_list(
-    model,
-    tensor_list,
-    sparsity_threshold=0.7,
-    save_weights=False,
-    return_numpy=False,
-    relative_indexing=False,
-):
-    s = model.subgraphs[0]
-    ans = []
-    for t in tensor_list:
-        # Only the last dimension gets compressed. For reshaping, we simply squash all
-        # higher dimensions into one by multiplying them together to obtain a 2D matrix
-        major_dim = np.prod(s.tensors[t].shape[:-1])
-        minor_dim = s.tensors[t].shape[-1]
-        tensor_weights = model.buffers[s.tensors[t].buffer].data.reshape(major_dim, minor_dim).astype(np.int8)
-        sparsity = np.sum(tensor_weights == 0) / (minor_dim * major_dim)
-
-        tensor_name = s.tensors[t].name.decode()
-
-        # Check if tensor has noticeable sparsity
-        if sparsity < sparsity_threshold:
-            logging.debug(
-                "Tensor {} with sparsity {} is below threshold {} - Skipping".format(
-                    tensor_name, sparsity, sparsity_threshold
-                )
-            )
-            continue
-
-        # Extract weights as numpy array
-        if return_numpy is True:
-            ans.append(tensor_weights)
-            continue
-
-        # Extract weights as separate files
-        # Useful for generating test files
-        if save_weights is True:
-            logging.debug("Saving Tensor {} as .npy".format(tensor_name))
-            save_tensor_weights(tensor_weights, "../test_data", tensor_name.split("/")[1])
-            continue
-
-        if relative_indexing is True:
-            # Get Relative Indexing
-            logging.debug("Compressing {} to Relative Indexing".format(tensor_name))
-            # sparsity_info, values = compress_relative(tensor_weights)
-        else:
-            # Get dCSR
-            sparsity_info, values, metrics = compress_weight_matrix(tensor_weights)
-            # Print a few results
-            logging.debug(
-                "Compressed Tensor {}, Dims: {}*{}, Sparsity {:.2f}".format(tensor_name, major_dim, minor_dim, sparsity)
-            )
-            logging.debug(
-                "Size before: {:.2f}KiB, Size after: {:.2f}KiB, Compression Ratio: {}".format(
-                    metrics.bytes_dense / 2**10,
-                    metrics.dcsr / 2**10,
-                    metrics.bytes_dense / metrics.dcsr,
-                )
-            )
-
-        # TODO: We assume 8-Bit quantization here. Consider making this a runtime parameter
-        model.buffers[s.tensors[t].buffer].data = values.astype(np.int8)
-        s.tensors[t].sparsity = sparsity_info
-
-    return ans
+        subgraph = self.model.subgraphs[0]
+        for op in subgraph.operators:
+            weight_size = 0
+            bias_size = 0
+            if len(op.inputs) > 3:
+                raise ValueError("Unsupported node type")
+            # node with weights only
+            if len(op.inputs) == 2:
+                weight_size = tensor_size(subgraph, op.inputs[1])
+                bias_size = 0
+            # node with weights and biases
+            elif len(op.inputs) == 3:
+                weight_size = tensor_size(subgraph, op.inputs[1])
+                bias_size = tensor_size(subgraph, op.inputs[2])
+            # operation node without parameters
+            out.append((weight_size, bias_size, op.opcodeIndex))
+        return np.array(out)
 
 
 def cli():
+    def dir_path(string):
+        if os.path.isdir(string):
+            return string
+        else:
+            raise NotADirectoryError(string)
+
     parser = argparse.ArgumentParser(description="Repacking of Tensorflow lite models with sparse weight tensors")
     parser.add_argument("input", type=argparse.FileType("rb"), help="Tensorflow lite file to convert")
     parser.add_argument(
@@ -265,28 +258,32 @@ def cli():
         help="Print Debug Output",
     )
 
+    parser.add_argument(
+        "--numpy",
+        type=dir_path,
+        help="Export compressible tensors as .npy numpy arrays. This can be helpful to generate testing data.",
+    )
+
     args = parser.parse_args()
     logging.basicConfig(level=args.loglevel)
 
-    m = load_model(args.input)
-    weight_sizes, bias_sizes, _ = model_size(m)
+    m = TFLiteModel(args.input)
+    sizes = m.sizes()
     logging.debug(
         "Model size before compression - Weights: {:.2f} KiB, Biases: {:.2f} KiB".format(
-            np.sum(weight_sizes) / 2**10, np.sum(bias_sizes) / 2**10
+            np.sum(sizes[:, 0]) / 2**10, np.sum(sizes[:, 1]) / 2**10
         )
     )
 
-    # deltaCSR compression can be skipped in order to create a dense reference model.
-    # This is then simply a replacement for xxd that removes a few manual steps.
-    if args.compress is True:
-        ct = compressible_tensors(m)
-        compress_tensor_list(m, ct, relative_indexing=args.relative)
+    # # deltaCSR compression can be skipped in order to create a dense reference model.
+    # # This is then simply a replacement for xxd that removes a few manual steps.
+    if args.numpy is not None:
+        m.export_numpy(args.numpy)
 
-    finalized_model = build_model(m)
-    if args.cppmodel is not None:
-        save_c_array(finalized_model, args.cppmodel)
-    if args.output is not None:
-        save_model(finalized_model, args.output)
+    if args.compress is True:
+        m.compress()
+
+    m.store(args.output, args.cppmodel)
 
 
 if __name__ == "__main__":
