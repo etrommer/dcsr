@@ -12,27 +12,44 @@ class DCSRMatrix:
         if len(matrix.shape) != 2:
             raise ValueError("Only 2D matrices are supported.")
         # Compress individual rows
-        self.shape = matrix.shape
         self.base_matrix = matrix
         self.row_data: List[DCSRRow] = [self.compress_row(row) for row in matrix]
 
-    def export(self):
-        delta_indices = np.concatenate([r.delta_indices for r in self.row_data])
-        delta_indices = checked_conversion(self.pack_nibbles(delta_indices).flatten(), np.uint8)
+    def export(self) -> DCSRExport:
+        """
+        - Split Delta indices into
+            - 4-Bit Base Index
+            - 1 Extension Bitmap per group that marks which Bits need to be extended
+            - A varying number of extension masks, depending on the number of bits set in the bitmap
+        - Flatten everything to 1D arrays
+
+        Returns:
+            Dataclass with 1D arrays for each dCSR component
+        """
+        split_indices = []
+        for r in self.row_data:
+            # Get bitmaps and bitmasks for delta indices with >4-Bit
+            (bitmaps, bitmasks) = self.get_merged_bitmaps(r.delta_indices, [5, 6, 7, 8])
+            # Remove >4-Bit component from base_indices
+            base_indices = np.bitwise_and(r.delta_indices, 0xF)
+            split_indices.append((base_indices, bitmaps, bitmasks))
+
+        base_indices = np.concatenate([r[0] for r in split_indices])
+        base_indices = checked_conversion(self.pack_nibbles(base_indices).flatten(), np.uint8)
 
         # Some reshaping wizardry so that the pack_nibbles() function can be used for the bitmaps as well...
-        bitmaps = np.concatenate([r.bitmaps for r in self.row_data])
+        bitmaps = np.concatenate([r[1] for r in split_indices])
         bitmaps = checked_conversion(
             self.pack_nibbles(bitmaps.reshape(len(bitmaps), 1)).flatten(),
             np.uint8,
         )
 
-        bitmasks = np.concatenate([r.bitmasks for r in self.row_data])
+        bitmasks = np.concatenate([r[2] for r in split_indices])
         bitmasks = checked_conversion(self.convert_mask(bitmasks), np.uint16)
 
         export = DCSRExport(
             np.concatenate([r.values for r in self.row_data]).astype(self.base_matrix.dtype),
-            delta_indices,
+            base_indices,
             np.concatenate([r.minimums for r in self.row_data]).astype(np.int8),
             bitmaps,
             bitmasks,
@@ -277,15 +294,12 @@ class DCSRMatrix:
                 break
             (indices, values) = self.pad_largest_gap(indices, values, len(row))
 
-        (bitmaps, bitmasks) = self.get_merged_bitmaps(delta_indices, [5, 6, 7, 8])
-        delta_indices = np.bitwise_and(delta_indices, 0xF)
+        self.delta_indices = delta_indices
 
         row_data = DCSRRow(
             values,
             delta_indices,
             mins,
-            bitmaps,
-            bitmasks,
             slope,
             bitwidths,
             len(delta_indices),

@@ -17,8 +17,6 @@ class DCSRRow:
     values: npt.NDArray
     delta_indices: npt.NDArray[np.int16]
     minimums: npt.NDArray[np.int8]
-    bitmaps: npt.NDArray[np.int8]
-    bitmasks: npt.NDArray[np.int16]
     slope: int
     bitwidths: List[int]
     groups_count: int
