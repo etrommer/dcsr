@@ -652,7 +652,6 @@ except:
 
 
 class CustomQuantizationT(object):
-
     # CustomQuantizationT
     def __init__(self):
         self.custom = None  # type: List[int]
@@ -922,7 +921,6 @@ except:
 
 
 class QuantizationParametersT(object):
-
     # QuantizationParametersT
     def __init__(self):
         self.min = None  # type: List[float]
@@ -1110,7 +1108,6 @@ except:
 
 
 class Int32VectorT(object):
-
     # Int32VectorT
     def __init__(self):
         self.values = None  # type: List[int]
@@ -1232,7 +1229,6 @@ except:
 
 
 class Uint16VectorT(object):
-
     # Uint16VectorT
     def __init__(self):
         self.values = None  # type: List[int]
@@ -1354,7 +1350,6 @@ except:
 
 
 class Uint8VectorT(object):
-
     # Uint8VectorT
     def __init__(self):
         self.values = None  # type: List[int]
@@ -1513,7 +1508,6 @@ except:
 
 
 class DimensionMetadataT(object):
-
     # DimensionMetadataT
     def __init__(self):
         self.format = 0  # type: int
@@ -1800,7 +1794,6 @@ except:
 
 
 class CompressedSparsityT(object):
-
     # CompressedSparsityT
     def __init__(self):
         self.rowOffsets = None  # type: List[int]
@@ -2080,7 +2073,6 @@ except:
 
 
 class SparsityParametersT(object):
-
     # SparsityParametersT
     def __init__(self):
         self.traversalOrder = None  # type: List[int]
@@ -2355,7 +2347,6 @@ except:
 
 
 class TensorT(object):
-
     # TensorT
     def __init__(self):
         self.shape = None  # type: List[int]
@@ -2547,7 +2538,6 @@ def Conv2DOptionsEnd(builder):
 
 
 class Conv2DOptionsT(object):
-
     # Conv2DOptionsT
     def __init__(self):
         self.padding = 0  # type: int
@@ -2714,7 +2704,6 @@ def Conv3DOptionsEnd(builder):
 
 
 class Conv3DOptionsT(object):
-
     # Conv3DOptionsT
     def __init__(self):
         self.padding = 0  # type: int
@@ -2865,7 +2854,6 @@ def Pool2DOptionsEnd(builder):
 
 
 class Pool2DOptionsT(object):
-
     # Pool2DOptionsT
     def __init__(self):
         self.padding = 0  # type: int
@@ -3021,7 +3009,6 @@ def DepthwiseConv2DOptionsEnd(builder):
 
 
 class DepthwiseConv2DOptionsT(object):
-
     # DepthwiseConv2DOptionsT
     def __init__(self):
         self.padding = 0  # type: int
@@ -3194,7 +3181,6 @@ except:
 
 
 class ConcatEmbeddingsOptionsT(object):
-
     # ConcatEmbeddingsOptionsT
     def __init__(self):
         self.numChannels = 0  # type: int
@@ -3305,7 +3291,6 @@ def LSHProjectionOptionsEnd(builder):
 
 
 class LSHProjectionOptionsT(object):
-
     # LSHProjectionOptionsT
     def __init__(self):
         self.type = 0  # type: int
@@ -3402,7 +3387,6 @@ def SVDFOptionsEnd(builder):
 
 
 class SVDFOptionsT(object):
-
     # SVDFOptionsT
     def __init__(self):
         self.rank = 0  # type: int
@@ -3494,7 +3478,6 @@ def RNNOptionsEnd(builder):
 
 
 class RNNOptionsT(object):
-
     # RNNOptionsT
     def __init__(self):
         self.fusedActivationFunction = 0  # type: int
@@ -3594,7 +3577,6 @@ def SequenceRNNOptionsEnd(builder):
 
 
 class SequenceRNNOptionsT(object):
-
     # SequenceRNNOptionsT
     def __init__(self):
         self.timeMajor = False  # type: bool
@@ -3708,7 +3690,6 @@ def BidirectionalSequenceRNNOptionsEnd(builder):
 
 
 class BidirectionalSequenceRNNOptionsT(object):
-
     # BidirectionalSequenceRNNOptionsT
     def __init__(self):
         self.timeMajor = False  # type: bool
@@ -3825,7 +3806,6 @@ def FullyConnectedOptionsEnd(builder):
 
 
 class FullyConnectedOptionsT(object):
-
     # FullyConnectedOptionsT
     def __init__(self):
         self.fusedActivationFunction = 0  # type: int
@@ -3909,7 +3889,6 @@ def SoftmaxOptionsEnd(builder):
 
 
 class SoftmaxOptionsT(object):
-
     # SoftmaxOptionsT
     def __init__(self):
         self.beta = 0.0  # type: float
@@ -3995,7 +3974,6 @@ def ConcatenationOptionsEnd(builder):
 
 
 class ConcatenationOptionsT(object):
-
     # ConcatenationOptionsT
     def __init__(self):
         self.axis = 0  # type: int
@@ -4084,7 +4062,6 @@ def AddOptionsEnd(builder):
 
 
 class AddOptionsT(object):
-
     # AddOptionsT
     def __init__(self):
         self.fusedActivationFunction = 0  # type: int
@@ -4162,7 +4139,6 @@ def MulOptionsEnd(builder):
 
 
 class MulOptionsT(object):
-
     # MulOptionsT
     def __init__(self):
         self.fusedActivationFunction = 0  # type: int
@@ -4237,7 +4213,6 @@ def L2NormOptionsEnd(builder):
 
 
 class L2NormOptionsT(object):
-
     # L2NormOptionsT
     def __init__(self):
         self.fusedActivationFunction = 0  # type: int
@@ -4345,7 +4320,6 @@ def LocalResponseNormalizationOptionsEnd(builder):
 
 
 class LocalResponseNormalizationOptionsT(object):
-
     # LocalResponseNormalizationOptionsT
     def __init__(self):
         self.radius = 0  # type: int
@@ -4473,7 +4447,6 @@ def LSTMOptionsEnd(builder):
 
 
 class LSTMOptionsT(object):
-
     # LSTMOptionsT
     def __init__(self):
         self.fusedActivationFunction = 0  # type: int
@@ -4604,7 +4577,6 @@ def UnidirectionalSequenceLSTMOptionsEnd(builder):
 
 
 class UnidirectionalSequenceLSTMOptionsT(object):
-
     # UnidirectionalSequenceLSTMOptionsT
     def __init__(self):
         self.fusedActivationFunction = 0  # type: int
@@ -4746,7 +4718,6 @@ def BidirectionalSequenceLSTMOptionsEnd(builder):
 
 
 class BidirectionalSequenceLSTMOptionsT(object):
-
     # BidirectionalSequenceLSTMOptionsT
     def __init__(self):
         self.fusedActivationFunction = 0  # type: int
@@ -4847,7 +4818,6 @@ def ResizeBilinearOptionsEnd(builder):
 
 
 class ResizeBilinearOptionsT(object):
-
     # ResizeBilinearOptionsT
     def __init__(self):
         self.alignCorners = False  # type: bool
@@ -4936,7 +4906,6 @@ def ResizeNearestNeighborOptionsEnd(builder):
 
 
 class ResizeNearestNeighborOptionsT(object):
-
     # ResizeNearestNeighborOptionsT
     def __init__(self):
         self.alignCorners = False  # type: bool
@@ -5014,7 +4983,6 @@ def CallOptionsEnd(builder):
 
 
 class CallOptionsT(object):
-
     # CallOptionsT
     def __init__(self):
         self.subgraph = 0  # type: int
@@ -5078,7 +5046,6 @@ def PadOptionsEnd(builder):
 
 
 class PadOptionsT(object):
-
     # PadOptionsT
     def __init__(self):
         pass
@@ -5140,7 +5107,6 @@ def PadV2OptionsEnd(builder):
 
 
 class PadV2OptionsT(object):
-
     # PadV2OptionsT
     def __init__(self):
         pass
@@ -5245,7 +5211,6 @@ except:
 
 
 class ReshapeOptionsT(object):
-
     # ReshapeOptionsT
     def __init__(self):
         self.newShape = None  # type: List[int]
@@ -5324,7 +5289,6 @@ def SpaceToBatchNDOptionsEnd(builder):
 
 
 class SpaceToBatchNDOptionsT(object):
-
     # SpaceToBatchNDOptionsT
     def __init__(self):
         pass
@@ -5386,7 +5350,6 @@ def BatchToSpaceNDOptionsEnd(builder):
 
 
 class BatchToSpaceNDOptionsT(object):
-
     # BatchToSpaceNDOptionsT
     def __init__(self):
         pass
@@ -5481,7 +5444,6 @@ def SkipGramOptionsEnd(builder):
 
 
 class SkipGramOptionsT(object):
-
     # SkipGramOptionsT
     def __init__(self):
         self.ngramSize = 0  # type: int
@@ -5562,7 +5524,6 @@ def SpaceToDepthOptionsEnd(builder):
 
 
 class SpaceToDepthOptionsT(object):
-
     # SpaceToDepthOptionsT
     def __init__(self):
         self.blockSize = 0  # type: int
@@ -5637,7 +5598,6 @@ def DepthToSpaceOptionsEnd(builder):
 
 
 class DepthToSpaceOptionsT(object):
-
     # DepthToSpaceOptionsT
     def __init__(self):
         self.blockSize = 0  # type: int
@@ -5723,7 +5683,6 @@ def SubOptionsEnd(builder):
 
 
 class SubOptionsT(object):
-
     # SubOptionsT
     def __init__(self):
         self.fusedActivationFunction = 0  # type: int
@@ -5801,7 +5760,6 @@ def DivOptionsEnd(builder):
 
 
 class DivOptionsT(object):
-
     # DivOptionsT
     def __init__(self):
         self.fusedActivationFunction = 0  # type: int
@@ -5865,7 +5823,6 @@ def TopKV2OptionsEnd(builder):
 
 
 class TopKV2OptionsT(object):
-
     # TopKV2OptionsT
     def __init__(self):
         pass
@@ -5938,7 +5895,6 @@ def EmbeddingLookupSparseOptionsEnd(builder):
 
 
 class EmbeddingLookupSparseOptionsT(object):
-
     # EmbeddingLookupSparseOptionsT
     def __init__(self):
         self.combiner = 0  # type: int
@@ -6013,7 +5969,6 @@ def GatherOptionsEnd(builder):
 
 
 class GatherOptionsT(object):
-
     # GatherOptionsT
     def __init__(self):
         self.axis = 0  # type: int
@@ -6077,7 +6032,6 @@ def TransposeOptionsEnd(builder):
 
 
 class TransposeOptionsT(object):
-
     # TransposeOptionsT
     def __init__(self):
         pass
@@ -6139,7 +6093,6 @@ def ExpOptionsEnd(builder):
 
 
 class ExpOptionsT(object):
-
     # ExpOptionsT
     def __init__(self):
         pass
@@ -6201,7 +6154,6 @@ def CosOptionsEnd(builder):
 
 
 class CosOptionsT(object):
-
     # CosOptionsT
     def __init__(self):
         pass
@@ -6274,7 +6226,6 @@ def ReducerOptionsEnd(builder):
 
 
 class ReducerOptionsT(object):
-
     # ReducerOptionsT
     def __init__(self):
         self.keepDims = False  # type: bool
@@ -6381,7 +6332,6 @@ except:
 
 
 class SqueezeOptionsT(object):
-
     # SqueezeOptionsT
     def __init__(self):
         self.squeezeDims = None  # type: List[int]
@@ -6471,7 +6421,6 @@ def SplitOptionsEnd(builder):
 
 
 class SplitOptionsT(object):
-
     # SplitOptionsT
     def __init__(self):
         self.numSplits = 0  # type: int
@@ -6546,7 +6495,6 @@ def SplitVOptionsEnd(builder):
 
 
 class SplitVOptionsT(object):
-
     # SplitVOptionsT
     def __init__(self):
         self.numSplits = 0  # type: int
@@ -6665,7 +6613,6 @@ def StridedSliceOptionsEnd(builder):
 
 
 class StridedSliceOptionsT(object):
-
     # StridedSliceOptionsT
     def __init__(self):
         self.beginMask = 0  # type: int
@@ -6741,7 +6688,6 @@ def LogSoftmaxOptionsEnd(builder):
 
 
 class LogSoftmaxOptionsT(object):
-
     # LogSoftmaxOptionsT
     def __init__(self):
         pass
@@ -6825,7 +6771,6 @@ def CastOptionsEnd(builder):
 
 
 class CastOptionsT(object):
-
     # CastOptionsT
     def __init__(self):
         self.inDataType = 0  # type: int
@@ -6892,7 +6837,6 @@ def DequantizeOptionsEnd(builder):
 
 
 class DequantizeOptionsT(object):
-
     # DequantizeOptionsT
     def __init__(self):
         pass
@@ -6954,7 +6898,6 @@ def MaximumMinimumOptionsEnd(builder):
 
 
 class MaximumMinimumOptionsT(object):
-
     # MaximumMinimumOptionsT
     def __init__(self):
         pass
@@ -7016,7 +6959,6 @@ def TileOptionsEnd(builder):
 
 
 class TileOptionsT(object):
-
     # TileOptionsT
     def __init__(self):
         pass
@@ -7089,7 +7031,6 @@ def ArgMaxOptionsEnd(builder):
 
 
 class ArgMaxOptionsT(object):
-
     # ArgMaxOptionsT
     def __init__(self):
         self.outputType = 0  # type: int
@@ -7164,7 +7105,6 @@ def ArgMinOptionsEnd(builder):
 
 
 class ArgMinOptionsT(object):
-
     # ArgMinOptionsT
     def __init__(self):
         self.outputType = 0  # type: int
@@ -7228,7 +7168,6 @@ def GreaterOptionsEnd(builder):
 
 
 class GreaterOptionsT(object):
-
     # GreaterOptionsT
     def __init__(self):
         pass
@@ -7290,7 +7229,6 @@ def GreaterEqualOptionsEnd(builder):
 
 
 class GreaterEqualOptionsT(object):
-
     # GreaterEqualOptionsT
     def __init__(self):
         pass
@@ -7352,7 +7290,6 @@ def LessOptionsEnd(builder):
 
 
 class LessOptionsT(object):
-
     # LessOptionsT
     def __init__(self):
         pass
@@ -7414,7 +7351,6 @@ def LessEqualOptionsEnd(builder):
 
 
 class LessEqualOptionsT(object):
-
     # LessEqualOptionsT
     def __init__(self):
         pass
@@ -7476,7 +7412,6 @@ def NegOptionsEnd(builder):
 
 
 class NegOptionsT(object):
-
     # NegOptionsT
     def __init__(self):
         pass
@@ -7538,7 +7473,6 @@ def SelectOptionsEnd(builder):
 
 
 class SelectOptionsT(object):
-
     # SelectOptionsT
     def __init__(self):
         pass
@@ -7600,7 +7534,6 @@ def SliceOptionsEnd(builder):
 
 
 class SliceOptionsT(object):
-
     # SliceOptionsT
     def __init__(self):
         pass
@@ -7695,7 +7628,6 @@ def TransposeConvOptionsEnd(builder):
 
 
 class TransposeConvOptionsT(object):
-
     # TransposeConvOptionsT
     def __init__(self):
         self.padding = 0  # type: int
@@ -7765,7 +7697,6 @@ def ExpandDimsOptionsEnd(builder):
 
 
 class ExpandDimsOptionsT(object):
-
     # ExpandDimsOptionsT
     def __init__(self):
         pass
@@ -7838,7 +7769,6 @@ def SparseToDenseOptionsEnd(builder):
 
 
 class SparseToDenseOptionsT(object):
-
     # SparseToDenseOptionsT
     def __init__(self):
         self.validateIndices = False  # type: bool
@@ -7902,7 +7832,6 @@ def EqualOptionsEnd(builder):
 
 
 class EqualOptionsT(object):
-
     # EqualOptionsT
     def __init__(self):
         pass
@@ -7964,7 +7893,6 @@ def NotEqualOptionsEnd(builder):
 
 
 class NotEqualOptionsT(object):
-
     # NotEqualOptionsT
     def __init__(self):
         pass
@@ -8037,7 +7965,6 @@ def ShapeOptionsEnd(builder):
 
 
 class ShapeOptionsT(object):
-
     # ShapeOptionsT
     def __init__(self):
         self.outType = 0  # type: int
@@ -8101,7 +8028,6 @@ def RankOptionsEnd(builder):
 
 
 class RankOptionsT(object):
-
     # RankOptionsT
     def __init__(self):
         pass
@@ -8163,7 +8089,6 @@ def PowOptionsEnd(builder):
 
 
 class PowOptionsT(object):
-
     # PowOptionsT
     def __init__(self):
         pass
@@ -8269,7 +8194,6 @@ def FakeQuantOptionsEnd(builder):
 
 
 class FakeQuantOptionsT(object):
-
     # FakeQuantOptionsT
     def __init__(self):
         self.min = 0.0  # type: float
@@ -8364,7 +8288,6 @@ def PackOptionsEnd(builder):
 
 
 class PackOptionsT(object):
-
     # PackOptionsT
     def __init__(self):
         self.valuesCount = 0  # type: int
@@ -8431,7 +8354,6 @@ def LogicalOrOptionsEnd(builder):
 
 
 class LogicalOrOptionsT(object):
-
     # LogicalOrOptionsT
     def __init__(self):
         pass
@@ -8504,7 +8426,6 @@ def OneHotOptionsEnd(builder):
 
 
 class OneHotOptionsT(object):
-
     # OneHotOptionsT
     def __init__(self):
         self.axis = 0  # type: int
@@ -8568,7 +8489,6 @@ def AbsOptionsEnd(builder):
 
 
 class AbsOptionsT(object):
-
     # AbsOptionsT
     def __init__(self):
         pass
@@ -8630,7 +8550,6 @@ def HardSwishOptionsEnd(builder):
 
 
 class HardSwishOptionsT(object):
-
     # HardSwishOptionsT
     def __init__(self):
         pass
@@ -8692,7 +8611,6 @@ def LogicalAndOptionsEnd(builder):
 
 
 class LogicalAndOptionsT(object):
-
     # LogicalAndOptionsT
     def __init__(self):
         pass
@@ -8754,7 +8672,6 @@ def LogicalNotOptionsEnd(builder):
 
 
 class LogicalNotOptionsT(object):
-
     # LogicalNotOptionsT
     def __init__(self):
         pass
@@ -8838,7 +8755,6 @@ def UnpackOptionsEnd(builder):
 
 
 class UnpackOptionsT(object):
-
     # UnpackOptionsT
     def __init__(self):
         self.num = 0  # type: int
@@ -8905,7 +8821,6 @@ def FloorDivOptionsEnd(builder):
 
 
 class FloorDivOptionsT(object):
-
     # FloorDivOptionsT
     def __init__(self):
         pass
@@ -8967,7 +8882,6 @@ def SquareOptionsEnd(builder):
 
 
 class SquareOptionsT(object):
-
     # SquareOptionsT
     def __init__(self):
         pass
@@ -9029,7 +8943,6 @@ def ZerosLikeOptionsEnd(builder):
 
 
 class ZerosLikeOptionsT(object):
-
     # ZerosLikeOptionsT
     def __init__(self):
         pass
@@ -9091,7 +9004,6 @@ def FillOptionsEnd(builder):
 
 
 class FillOptionsT(object):
-
     # FillOptionsT
     def __init__(self):
         pass
@@ -9153,7 +9065,6 @@ def FloorModOptionsEnd(builder):
 
 
 class FloorModOptionsT(object):
-
     # FloorModOptionsT
     def __init__(self):
         pass
@@ -9215,7 +9126,6 @@ def RangeOptionsEnd(builder):
 
 
 class RangeOptionsT(object):
-
     # RangeOptionsT
     def __init__(self):
         pass
@@ -9288,7 +9198,6 @@ def LeakyReluOptionsEnd(builder):
 
 
 class LeakyReluOptionsT(object):
-
     # LeakyReluOptionsT
     def __init__(self):
         self.alpha = 0.0  # type: float
@@ -9352,7 +9261,6 @@ def SquaredDifferenceOptionsEnd(builder):
 
 
 class SquaredDifferenceOptionsT(object):
-
     # SquaredDifferenceOptionsT
     def __init__(self):
         pass
@@ -9425,7 +9333,6 @@ def MirrorPadOptionsEnd(builder):
 
 
 class MirrorPadOptionsT(object):
-
     # MirrorPadOptionsT
     def __init__(self):
         self.mode = 0  # type: int
@@ -9500,7 +9407,6 @@ def UniqueOptionsEnd(builder):
 
 
 class UniqueOptionsT(object):
-
     # UniqueOptionsT
     def __init__(self):
         self.idxOutType = 2  # type: int
@@ -9564,7 +9470,6 @@ def ReverseV2OptionsEnd(builder):
 
 
 class ReverseV2OptionsT(object):
-
     # ReverseV2OptionsT
     def __init__(self):
         pass
@@ -9626,7 +9531,6 @@ def AddNOptionsEnd(builder):
 
 
 class AddNOptionsT(object):
-
     # AddNOptionsT
     def __init__(self):
         pass
@@ -9688,7 +9592,6 @@ def GatherNdOptionsEnd(builder):
 
 
 class GatherNdOptionsT(object):
-
     # GatherNdOptionsT
     def __init__(self):
         pass
@@ -9750,7 +9653,6 @@ def WhereOptionsEnd(builder):
 
 
 class WhereOptionsT(object):
-
     # WhereOptionsT
     def __init__(self):
         pass
@@ -9834,7 +9736,6 @@ def ReverseSequenceOptionsEnd(builder):
 
 
 class ReverseSequenceOptionsT(object):
-
     # ReverseSequenceOptionsT
     def __init__(self):
         self.seqDim = 0  # type: int
@@ -9901,7 +9802,6 @@ def MatrixDiagOptionsEnd(builder):
 
 
 class MatrixDiagOptionsT(object):
-
     # MatrixDiagOptionsT
     def __init__(self):
         pass
@@ -9963,7 +9863,6 @@ def QuantizeOptionsEnd(builder):
 
 
 class QuantizeOptionsT(object):
-
     # QuantizeOptionsT
     def __init__(self):
         pass
@@ -10025,7 +9924,6 @@ def MatrixSetDiagOptionsEnd(builder):
 
 
 class MatrixSetDiagOptionsT(object):
-
     # MatrixSetDiagOptionsT
     def __init__(self):
         pass
@@ -10109,7 +10007,6 @@ def IfOptionsEnd(builder):
 
 
 class IfOptionsT(object):
-
     # IfOptionsT
     def __init__(self):
         self.thenSubgraphIndex = 0  # type: int
@@ -10187,7 +10084,6 @@ def CallOnceOptionsEnd(builder):
 
 
 class CallOnceOptionsT(object):
-
     # CallOnceOptionsT
     def __init__(self):
         self.initSubgraphIndex = 0  # type: int
@@ -10273,7 +10169,6 @@ def WhileOptionsEnd(builder):
 
 
 class WhileOptionsT(object):
-
     # WhileOptionsT
     def __init__(self):
         self.condSubgraphIndex = 0  # type: int
@@ -10340,7 +10235,6 @@ def NonMaxSuppressionV4OptionsEnd(builder):
 
 
 class NonMaxSuppressionV4OptionsT(object):
-
     # NonMaxSuppressionV4OptionsT
     def __init__(self):
         pass
@@ -10402,7 +10296,6 @@ def NonMaxSuppressionV5OptionsEnd(builder):
 
 
 class NonMaxSuppressionV5OptionsT(object):
-
     # NonMaxSuppressionV5OptionsT
     def __init__(self):
         pass
@@ -10464,7 +10357,6 @@ def ScatterNdOptionsEnd(builder):
 
 
 class ScatterNdOptionsT(object):
-
     # ScatterNdOptionsT
     def __init__(self):
         pass
@@ -10526,7 +10418,6 @@ def SelectV2OptionsEnd(builder):
 
 
 class SelectV2OptionsT(object):
-
     # SelectV2OptionsT
     def __init__(self):
         pass
@@ -10588,7 +10479,6 @@ def DensifyOptionsEnd(builder):
 
 
 class DensifyOptionsT(object):
-
     # DensifyOptionsT
     def __init__(self):
         pass
@@ -10650,7 +10540,6 @@ def SegmentSumOptionsEnd(builder):
 
 
 class SegmentSumOptionsT(object):
-
     # SegmentSumOptionsT
     def __init__(self):
         pass
@@ -10745,7 +10634,6 @@ def BatchMatMulOptionsEnd(builder):
 
 
 class BatchMatMulOptionsT(object):
-
     # BatchMatMulOptionsT
     def __init__(self):
         self.adjX = False  # type: bool
@@ -10837,7 +10725,6 @@ def CumsumOptionsEnd(builder):
 
 
 class CumsumOptionsT(object):
-
     # CumsumOptionsT
     def __init__(self):
         self.exclusive = False  # type: bool
@@ -10904,7 +10791,6 @@ def BroadcastToOptionsEnd(builder):
 
 
 class BroadcastToOptionsT(object):
-
     # BroadcastToOptionsT
     def __init__(self):
         pass
@@ -10966,7 +10852,6 @@ def Rfft2dOptionsEnd(builder):
 
 
 class Rfft2dOptionsT(object):
-
     # Rfft2dOptionsT
     def __init__(self):
         pass
@@ -11072,7 +10957,6 @@ def OperatorCodeEnd(builder):
 
 
 class OperatorCodeT(object):
-
     # OperatorCodeT
     def __init__(self):
         self.deprecatedBuiltinCode = 0  # type: int
@@ -11387,7 +11271,6 @@ except:
 
 
 class OperatorT(object):
-
     # OperatorT
     def __init__(self):
         self.opcodeIndex = 0  # type: int
@@ -11710,7 +11593,6 @@ except:
 
 
 class SubGraphT(object):
-
     # SubGraphT
     def __init__(self):
         self.tensors = None  # type: List[TensorT]
@@ -11894,7 +11776,6 @@ except:
 
 
 class BufferT(object):
-
     # BufferT
     def __init__(self):
         self.data = None  # type: List[int]
@@ -11995,7 +11876,6 @@ def MetadataEnd(builder):
 
 
 class MetadataT(object):
-
     # MetadataT
     def __init__(self):
         self.name = None  # type: str
@@ -12087,7 +11967,6 @@ def TensorMapEnd(builder):
 
 
 class TensorMapT(object):
-
     # TensorMapT
     def __init__(self):
         self.name = None  # type: str
@@ -12249,7 +12128,6 @@ except:
 
 
 class SignatureDefT(object):
-
     # SignatureDefT
     def __init__(self):
         self.inputs = None  # type: List[TensorMapT]
@@ -12585,7 +12463,6 @@ except:
 
 
 class ModelT(object):
-
     # ModelT
     def __init__(self):
         self.version = 0  # type: int

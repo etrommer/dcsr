@@ -2,7 +2,7 @@ from typing import Any, Dict
 
 import numpy as np
 import numpy.typing as npt
-from dcsr import checked_conversion
+from dcsr.compress import checked_conversion
 
 
 def rle(matrix: npt.NDArray) -> Dict[str, Any]:
@@ -41,7 +41,7 @@ def rle(matrix: npt.NDArray) -> Dict[str, Any]:
         indices.append(0)
 
     # Check that indices don't exceed a nibble
-    indices_np: npt.NDArray[np.int] = np.array(indices).astype(np.int)
+    indices_np: npt.NDArray = np.array(indices).astype(np.uint8)
     assert np.all(indices_np < 16)
 
     # Interleaving

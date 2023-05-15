@@ -9,7 +9,6 @@ import numpy as np
 import numpy.typing as npt
 from dcsr import tflite_schema
 from dcsr.compress import DCSRMatrix
-from dcsr.metrics import DCSRMetrics
 from dcsr.rle import rle
 
 """
@@ -100,13 +99,32 @@ class TFLiteModel:
             with open(path, "wb") as f:
                 np.save(f, weights)
 
+    @staticmethod
+    def report(weights: npt.NDArray, name: str, method: str, size_before: int, size_after: int) -> None:
+        logging.debug(
+            "Compressed Tensor {} using {} method, Dims: {}*{}, Sparsity {:.2f}".format(
+                name,
+                method,
+                weights.shape[0],
+                weights.shape[1],
+                (weights.size - np.count_nonzero(weights)) / weights.size,
+            )
+        )
+        logging.debug(
+            "Size before: {:.2f}KiB, Size after: {:.2f}KiB, Compression Ratio: {}".format(
+                size_before / 2**10,
+                size_after / 2**10,
+                size_before / size_after,
+            )
+        )
+
     # Convert single tensor to Run-Length Encoding (RLE)
     @staticmethod
-    def compress_rle(weigths: npt.NDArray) -> Tuple[tflite_schema.SparsityParametersT, npt.NDArray[np.int8]]:
-        result = rle(weigths)
+    def compress_rle(weights: npt.NDArray, name: str) -> Tuple[tflite_schema.SparsityParametersT, npt.NDArray[np.int8]]:
+        result = rle(weights)
 
-        sparsity = tflite_schema.SparsityParameters.SparsityParametersT()
-        compressed_sparsity = tflite_schema.CompressedSparsity.CompressedSparsityT()
+        sparsity = tflite_schema.SparsityParametersT()
+        compressed_sparsity = tflite_schema.CompressedSparsityT()
 
         compressed_sparsity.deltaIndices = result["delta_indices"]
         compressed_sparsity.rowOffsets = result["row_offsets"]
@@ -114,11 +132,15 @@ class TFLiteModel:
 
         compressed_sparsity.nnze = result["nnze"]
         sparsity.compSparsity = compressed_sparsity
+
+        total_storage = result["delta_indices"].nbytes + result["row_offsets"].nbytes + result["values"].nbytes
+
+        TFLiteModel.report(weights, name, "RLE", weights.nbytes, total_storage)
         return sparsity, result["values"]
 
     # Convert single tensor to deltaCSR
     @staticmethod
-    def compress_dcsr(weights: npt.NDArray) -> Tuple[tflite_schema.SparsityParametersT, npt.NDArray, DCSRMetrics]:
+    def compress_dcsr(weights: npt.NDArray, name: str) -> Tuple[tflite_schema.SparsityParametersT, npt.NDArray]:
         # result, metrics = compress_matrix(weight_matrix)
         dcsr_matrix = DCSRMatrix(weights)
         export = dcsr_matrix.export()
@@ -134,37 +156,26 @@ class TFLiteModel:
         compressed_sparsity.nnze = export.nnze
 
         sparsity.compSparsity = compressed_sparsity
-        return sparsity, export.values, dcsr_matrix.metrics
 
-    def compress(self, relative_indexing=False) -> None:
+        metrics = dcsr_matrix.metrics
+        TFLiteModel.report(weights, name, "dCSR", metrics.bytes_dense, metrics.dcsr)
+
+        return sparsity, export.values
+
+    def compress(self, method: str) -> None:
         subgraph = self.model.subgraphs[0]
         for t in self.compressible_tensors:
             name = self.get_tensor_name(t)
             weights = self.get_tensor_array(t, reshape_2d=True)
 
-            if relative_indexing:
+            if method == "rle":
                 # Get Relative Indexing
-                logging.debug("Compressing {} to Relative Indexing".format(name))
-                sparsity_info, values = self.compress_rle(weights)
-            else:
+                sparsity_info, values = self.compress_rle(weights, name)
+            elif method == "dcsr":
                 # Get dCSR
-                sparsity_info, values, metrics = self.compress_dcsr(weights)
-                # Print a few results
-                logging.debug(
-                    "Compressed Tensor {}, Dims: {}*{}, Sparsity {:.2f}".format(
-                        name,
-                        weights.shape[0],
-                        weights.shape[1],
-                        (weights.size - np.count_nonzero(weights)) / weights.size,
-                    )
-                )
-                logging.debug(
-                    "Size before: {:.2f}KiB, Size after: {:.2f}KiB, Compression Ratio: {}".format(
-                        metrics.bytes_dense / 2**10,
-                        metrics.dcsr / 2**10,
-                        metrics.bytes_dense / metrics.dcsr,
-                    )
-                )
+                sparsity_info, values = self.compress_dcsr(weights, name)
+            else:
+                return
 
             # TODO: We assume 8-Bit quantization here. Consider making this a runtime parameter
             self.model.buffers[subgraph.tensors[t].buffer].data = values.astype(np.int8)
@@ -240,11 +251,12 @@ def cli():
         type=argparse.FileType("w+"),
         help="C++ Source file to write array representation of result to",
     )
-    parser.add_argument("--compress", action="store_true", help="Apply deltaCSR packing to model")
     parser.add_argument(
-        "--rle",
-        action="store_true",
-        help="Apply Relative Indexing/Run-Length Encoding instead of deltaCSR",
+        "-m" "--method",
+        dest="method",
+        choices=["dcsr", "rle", "none"],
+        default=["dcsr"],
+        help="Choice of compression method",
     )
     parser.add_argument(
         "-d",
@@ -278,9 +290,7 @@ def cli():
     if args.numpy is not None:
         m.export_numpy(args.numpy)
 
-    if args.compress is True:
-        m.compress(args.rle)
-
+    m.compress(args.method)
     m.store(args.output, args.cppmodel)
 
 
