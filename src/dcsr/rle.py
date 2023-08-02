@@ -1,60 +1,65 @@
-from typing import Any, Dict
+from dataclasses import dataclass
+from typing import List
 
 import numpy as np
 import numpy.typing as npt
-from dcsr.compress import checked_conversion
+from dcsr.compress import pack_nibbles
 
 
-def rle(matrix: npt.NDArray) -> Dict[str, Any]:
-    indices = []
-    values = []
-    row_lens = []
+@dataclass
+class RLEExport:
+    values: npt.NDArray
+    indices: npt.NDArray[np.uint8]
+    row_lengths: List[int]
 
-    # Convert a single matrix row to Relative Indexing
-    def compress_row_rle(row):
-        (indices, values) = (np.flatnonzero(row != 0), row[row != 0])
-        last_idx = 0
+    @property
+    def size(self) -> int:
+        return self.values.nbytes + self.indices.nbytes + len(self.row_lengths) * 4
 
-        relative_indices = []
-        relative_values = []
 
-        for i, v in zip(indices, values):
-            while i - last_idx > 15:
-                last_idx += 15
-                relative_indices.append(15)
-                relative_values.append(0)
-            relative_indices.append(i - last_idx)
-            relative_values.append(v)
-            last_idx = i
-        return relative_indices, relative_values
+@dataclass
+class RLERow:
+    values: npt.NDArray
+    indices: npt.NDArray[np.uint8]
 
-    # Row-wise compression to relative indexing
-    for row in matrix:
-        i, v = compress_row_rle(row)
-        row_lens.append(len(v))
-        indices.extend(i)
-        values.extend(v)
 
-    # We pack two four-bit indices into a byte
-    # so we make sure there's an even number of indices
-    if len(indices) % 2 == 1:
-        indices.append(0)
+class RLEMatrix:
+    def __init__(self, matrix: npt.NDArray, index_width: int = 4):
+        self.index_width = index_width
+        self.rows = self.compress(matrix)
 
-    # Check that indices don't exceed a nibble
-    indices_np: npt.NDArray = np.array(indices).astype(np.uint8)
-    assert np.all(indices_np < 16)
+    def export(self) -> RLEExport:
+        values = np.concatenate([r.values for r in self.rows])
+        indices = np.concatenate([r.indices for r in self.rows])
+        if self.index_width <= 4:
+            indices = pack_nibbles(indices)
+        row_lengths = [len(r.values) for r in self.rows]
+        return RLEExport(values, indices, row_lengths)
 
-    # Interleaving
-    upper = indices_np[::2]
-    lower = indices_np[1::2]
-    indices_np = np.left_shift(upper, 4) + lower
+    @property
+    def padding(self) -> int:
+        return sum([np.sum(r.values == 0) for r in self.rows])
 
-    row_lens_np = np.array(row_lens)
+    @property
+    def size(self) -> int:
+        return self.export().size
 
-    ans = {
-        "values": np.array(values).astype(np.int8),
-        "delta_indices": checked_conversion(indices_np, np.uint8),
-        "row_offsets": checked_conversion(row_lens_np, np.int16),
-        "nnze": np.sum(row_lens),
-    }
-    return ans
+    @staticmethod
+    def compress(matrix: npt.NDArray) -> List[RLERow]:
+        # Convert a single matrix row to Relative Indexing
+        def compress_row(row) -> RLERow:
+            idxs = np.where(row != 0)[0]
+            last_idx = 0
+            vals = []
+            rel_idxs = []
+            for idx, v in zip(idxs, row[idxs]):
+                difference = idx - last_idx
+                overflows = difference // 15
+                vals.extend([0] * overflows)
+                rel_idxs.extend([15] * overflows)
+                rel_idxs.append(difference % 15)
+                vals.append(v)
+                last_idx = idx
+            return RLERow(np.array(vals, dtype=row.dtype), np.array(rel_idxs, dtype=np.uint8))
+
+        return [compress_row(r) for r in matrix]

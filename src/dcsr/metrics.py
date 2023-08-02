@@ -3,6 +3,8 @@ from dataclasses import dataclass
 
 import numpy as np
 import numpy.typing as npt
+from dcsr.psr import PSRMatrix
+from dcsr.rle import RLEMatrix
 from dcsr.structs import DCSRExport
 from scipy.stats import entropy
 
@@ -74,15 +76,16 @@ def get_metrics(export: DCSRExport, matrix: npt.NDArray) -> SparseMetrics:
     )
 
     # Gather metrics for reference formats
-    rle_info, rle_padding = rle(matrix, 4)
+    rle = RLEMatrix(matrix)
+    psr = PSRMatrix(matrix)
     metrics = SparseMetrics(
         bytes_dense=matrix.nbytes,
         nnze=nnze,
         csr=csr(matrix),
         bcsr=bcsr(matrix),
-        psr=psr(matrix),
-        rle=rle_info,
-        rle_padding=rle_padding,
+        psr=psr.size,
+        rle=rle.size,
+        rle_padding=rle.padding,
         zlib6=zlib_compression(matrix, 6),
         zlib9=zlib_compression(matrix, 9),
         dcsr=dcsr_info.total_index + dcsr_info.bytes_values,
@@ -125,17 +128,6 @@ def rle(matrix, encoding_bits=4, row_ptr_bytes=2, value_bytes=1):
         total_size += (len(idxs) + padding_elems) * (value_bytes + encoding_bits / 8) + row_ptr_bytes
         padding_sum += padding_elems
     return total_size, padding_sum
-
-
-def psr(matrix, value_bytes=1, index_bytes=1):
-    # Compress a 1D array as described in "Memory-Side Acceleration and Sparse Compression
-    # for Quantized Packed Convolutions"
-    # https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=9981021
-    # Assume partition size of 256, i.e. 8-Bit offset encoding
-    vals = np.count_nonzero(matrix) * value_bytes
-    offset = np.count_nonzero(matrix) * index_bytes
-    nnze_array = np.ceil(np.prod(matrix.shape) / 2 ** (8 * index_bytes))
-    return vals + offset + nnze_array
 
 
 def zlib_compression(matrix, level=6):
