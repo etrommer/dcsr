@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "dcsr"
-version = "0.1.0"
+version = "0.1.1"
 description = "Compress sparse Neural Network weights using the delta-compressed Storage Row format"
 authors = ["Elias Trommer <elias_trommer@posteo.de>"]
 readme = "README.md"
