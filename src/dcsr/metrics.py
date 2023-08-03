@@ -95,7 +95,9 @@ def get_metrics(export: DCSRExport, matrix: npt.NDArray) -> SparseMetrics:
     return metrics
 
 
-def bcsr(matrix, block_size=2, row_ptr_bytes=2, col_idx_bytes=2, value_bytes=1):
+def bcsr(
+    matrix: npt.NDArray, block_size: int = 2, row_ptr_bytes: int = 2, col_idx_bytes: int = 2, value_bytes: int = 1
+) -> int:
     nz_blocks = 0
     for i in range(0, matrix.shape[0], block_size):
         for j in range(0, matrix.shape[1], block_size):
@@ -105,35 +107,15 @@ def bcsr(matrix, block_size=2, row_ptr_bytes=2, col_idx_bytes=2, value_bytes=1):
     return nz_blocks * block_size**2 * value_bytes + nz_blocks * col_idx_bytes + matrix.shape[0] * row_ptr_bytes
 
 
-def csr(matrix, row_ptr_bytes=2, col_idx_bytes=2, value_bytes=1):
+def csr(matrix: npt.NDArray, row_ptr_bytes: int = 2, col_idx_bytes: int = 2, value_bytes: int = 1) -> int:
     nzes = np.sum(matrix != 0)
     return nzes * value_bytes + nzes * col_idx_bytes + matrix.shape[0] * row_ptr_bytes
 
 
-def rle(matrix, encoding_bits=4, row_ptr_bytes=2, value_bytes=1):
-    total_size = 0
-    padding_sum = 0
-    for row in matrix:
-        idxs = np.flatnonzero(row != 0)
-        if len(idxs) == 0:
-            continue
-        # Calculate inter-element gaps
-        shifted = np.roll(idxs, 1)
-        shifted[0] = 0
-        relative_idxs = idxs - shifted
-        # Number of gaps that need padding elements
-        padding_elems = np.sum(np.floor(relative_idxs / 2**encoding_bits))
-
-        # Size of values array after padding + n bits of index per element + row_ptr
-        total_size += (len(idxs) + padding_elems) * (value_bytes + encoding_bits / 8) + row_ptr_bytes
-        padding_sum += padding_elems
-    return total_size, padding_sum
-
-
-def zlib_compression(matrix, level=6):
+def zlib_compression(matrix: npt.NDArray, level: int = 6) -> int:
     return len(zlib.compress(matrix.tobytes(), level=level))
 
 
-def entropy_compression(sparse_matrix):
-    _, counts = np.unique(sparse_matrix.flatten(), return_counts=True)
+def entropy_compression(matrix: npt.NDArray) -> int:
+    _, counts = np.unique(matrix.flatten(), return_counts=True)
     return entropy(counts)

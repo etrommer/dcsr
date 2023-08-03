@@ -4,13 +4,6 @@ from typing import List
 import numpy as np
 import numpy.typing as npt
 
-# @dataclass
-# class DCSRMatrix:
-#     shape: Tuple[int, int]
-#     minimums: npt.NDArray[np.int8]
-#     bitwidths: npt.NDArray[np.int_]
-#     pass
-
 
 @dataclass
 class DCSRRow:
