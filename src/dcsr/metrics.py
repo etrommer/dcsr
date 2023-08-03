@@ -5,7 +5,7 @@ import numpy as np
 import numpy.typing as npt
 from scipy.stats import entropy
 
-from dcsr.compress import DCSRExport
+from dcsr.export import DCSRExport
 from dcsr.psr import PSRMatrix
 from dcsr.rle import RLEMatrix
 

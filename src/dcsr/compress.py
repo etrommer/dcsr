@@ -7,6 +7,7 @@ import numpy.typing as npt
 
 import dcsr.utils
 from dcsr import metrics
+from dcsr.export import DCSRExport
 
 
 @dataclass
@@ -18,21 +19,6 @@ class DCSRRow:
     bitwidths: List[int]
     groups_count: int
     num_elements: int
-
-
-@dataclass
-class DCSRExport:
-    values: npt.NDArray
-
-    delta_indices: npt.NDArray[np.uint8]
-    minimums: npt.NDArray[np.int8]
-    bitmaps: npt.NDArray[np.uint8]
-    bitmasks: npt.NDArray[np.uint16]
-
-    row_offsets: npt.NDArray[np.int16]
-    slope: List[int]
-    num_row_elements: List[int]
-    nnze: int
 
 
 class DCSRMatrix:
