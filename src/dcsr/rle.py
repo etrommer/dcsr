@@ -3,7 +3,8 @@ from typing import List
 
 import numpy as np
 import numpy.typing as npt
-from dcsr.compress import pack_nibbles
+
+from dcsr.utils import pack_nibbles
 
 
 @dataclass

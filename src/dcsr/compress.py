@@ -3,6 +3,8 @@ from typing import List
 
 import numpy as np
 import numpy.typing as npt
+
+import dcsr.utils
 from dcsr import metrics
 from dcsr.structs import DCSRExport, DCSRRow
 
@@ -35,17 +37,17 @@ class DCSRMatrix:
             split_indices.append((base_indices, bitmaps, bitmasks))
 
         base_indices = np.concatenate([r[0] for r in split_indices])
-        base_indices = checked_conversion(pack_nibbles(base_indices).flatten(), np.uint8)
+        base_indices = dcsr.utils.checked_conversion(dcsr.utils.pack_nibbles(base_indices).flatten(), np.uint8)
 
         # Some reshaping wizardry so that the pack_nibbles() function can be used for the bitmaps as well...
         bitmaps = np.concatenate([r[1] for r in split_indices])
-        bitmaps = checked_conversion(
-            pack_nibbles(bitmaps.reshape(len(bitmaps), 1)).flatten(),
+        bitmaps = dcsr.utils.checked_conversion(
+            dcsr.utils.pack_nibbles(bitmaps.reshape(len(bitmaps), 1)).flatten(),
             np.uint8,
         )
 
         bitmasks = np.concatenate([r[2] for r in split_indices])
-        bitmasks = checked_conversion(self.convert_mask(bitmasks), np.uint16)
+        bitmasks = dcsr.utils.checked_conversion(self.convert_mask(bitmasks), np.uint16)
 
         export = DCSRExport(
             np.concatenate([r.values for r in self.row_data]).astype(self.base_matrix.dtype),
@@ -295,28 +297,6 @@ class DCSRMatrix:
             len(values),
         )
         return row_data
-
-
-# Pack Matrix of 4-bit delta groups to 8-bit values by storing even rows
-# in upper nibble and odd rows in lower nibble
-def pack_nibbles(array: npt.NDArray[np.uint8]) -> npt.NDArray[np.uint8]:
-    assert np.all(array <= 0xF)
-    upper = np.left_shift(array[::2].astype(np.int32), 4)
-    lower = array[1::2]
-    if lower.shape != upper.shape:
-        lower = np.append(lower, np.zeros((1, lower.shape[1])), axis=0)
-    return (upper + lower).astype(np.uint8)
-
-
-def checked_conversion(matrix, dtype):
-    try:
-        min_val = np.min(matrix)
-        max_val = np.max(matrix)
-        if min_val < np.iinfo(dtype).min or max_val > np.iinfo(dtype).max:
-            raise TypeError("Overflow in Conversion - min: {} - max {}".format(min_val, max_val))
-        return matrix.astype(dtype)
-    except ValueError:
-        return matrix.astype(dtype)
 
 
 if __name__ == "__main__":
