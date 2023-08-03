@@ -1,6 +1,15 @@
 import numpy as np
 from dcsr.compress import DCSRMatrix
 from dcsr.decompress import decompress
+from dcsr.utils import pack_nibbles
+
+
+def test_pack_nibbles():
+    array = np.array([0xA, 0xB, 0xC, 0xD, 0xE], dtype=np.uint8)
+    assert np.array_equal(pack_nibbles(array), np.array([0xAB, 0xCD, 0xE0], dtype=np.uint8))
+
+    array = np.array([[0xA, 0xB, 0xC, 0xD], [0x1, 0x2, 0x3, 0x4]], dtype=np.uint8)
+    assert np.array_equal(pack_nibbles(array), np.array([[0xA1, 0xB2, 0xC3, 0xD4]], dtype=np.uint8))
 
 
 def test_single_group():
