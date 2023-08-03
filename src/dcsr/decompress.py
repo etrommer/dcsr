@@ -2,8 +2,9 @@ from typing import Tuple
 
 import numpy as np
 import numpy.typing as npt
-from dcsr.structs import DCSRExport
 from more_itertools import chunked
+
+from dcsr.compress import DCSRExport
 
 
 def decompress(compressed_data: DCSRExport, shape: Tuple[int, int]) -> npt.NDArray:

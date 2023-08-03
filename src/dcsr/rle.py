@@ -77,11 +77,18 @@ class RLEMatrix:
             max_elem = 2**self.index_width - 1
             for idx, v in zip(idxs, row[idxs]):
                 difference = idx - last_idx
+
+                # Count the number of index overflows
                 overflows = difference // max_elem
+
+                # Add padding if required
                 vals.extend([0] * overflows)
                 rel_idxs.extend([max_elem] * overflows)
+
+                # Add element and (possibly truncated) index
                 rel_idxs.append(difference % max_elem)
                 vals.append(v)
+
                 last_idx = idx
             return RLERow(np.array(vals, dtype=row.dtype), np.array(rel_idxs, dtype=np.uint8))
 

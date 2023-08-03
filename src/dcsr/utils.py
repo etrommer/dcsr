@@ -98,7 +98,20 @@ def pack_nibbles(array: npt.NDArray[np.uint8]) -> npt.NDArray[np.uint8]:
     return (upper + lower).astype(np.uint8)
 
 
-def checked_conversion(matrix, dtype):
+def checked_conversion(matrix: npt.NDArray, dtype: np.dtype):
+    """
+    Convert a numpy array to a given data type with overflow checking
+
+    Args:
+        matrix: The numpy array to convert
+        dtype: Target data type
+
+    Raises:
+        TypeError: Conversion would lead to overflow
+
+    Returns:
+        Array with new data type
+    """
     try:
         min_val = np.min(matrix)
         max_val = np.max(matrix)

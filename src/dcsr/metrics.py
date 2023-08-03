@@ -3,10 +3,11 @@ from dataclasses import dataclass
 
 import numpy as np
 import numpy.typing as npt
+from scipy.stats import entropy
+
+from dcsr.compress import DCSRExport
 from dcsr.psr import PSRMatrix
 from dcsr.rle import RLEMatrix
-from dcsr.structs import DCSRExport
-from scipy.stats import entropy
 
 
 @dataclass
