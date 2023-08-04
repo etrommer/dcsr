@@ -83,7 +83,7 @@ optional arguments:
                         Pre-trained dense base model to prune
   -d, --debug           Print Debug Output
 ```
-For the Depthwise-Separable CNN on the Google Speech commands dataset, use `poetry run train`:
+For the Depthwise-Separable CNN on the Google Speech commands dataset, use `poetry run train_kws`:
 ```bash
 > poetry run train_kws --help
 
@@ -127,12 +127,10 @@ After converting a model, it can be run in one of two ways (enter the firmware d
 
 - Run on Corstone-300 simulator:
   ```bash
-  cd m55_inference
   make sim
   ```
 
 - Build for MPS3
   ```bash
-  cd m55_inference
   make all FPGA=1
   ```
