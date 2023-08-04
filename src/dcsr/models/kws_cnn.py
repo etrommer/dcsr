@@ -1,8 +1,4 @@
-from tensorflow.keras import layers
-from tensorflow.keras import models
-from tensorflow.keras import optimizers
-from tensorflow.keras import callbacks
-from tensorflow.keras import losses
+from tensorflow.keras import callbacks, layers, losses, models, optimizers
 
 """
 Definitions of DS-CNN architectures for Keyword Spotting application

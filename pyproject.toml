@@ -7,13 +7,14 @@ readme = "README.md"
 
 [tool.poetry.scripts]
 compress_tflite = 'dcsr.cli.tflite:cli'
+train_kws = 'dcsr.cli.train_kws:cli'
+train_mnetv2 = 'dcsr.cli.train_mnetv2:cli'
 
 [tool.poetry.dependencies]
 python = ">=3.8,<3.12"
 numpy = ">=1.22"
 scipy = "^1.10.1"
 more-itertools = "^9.1.0"
-flatbuffers = "*"
 
 [tool.poetry.group.dev]
 optional = true
@@ -24,6 +25,16 @@ black = "^23.3.0"
 mypy = "^1.2.0"
 pre-commit = "^3.3.1"
 ipykernel = "^6.23.0"
+
+[tool.poetry.group.training]
+optional = true
+
+[tool.poetry.group.training.dependencies]
+tensorflow = "^2.13.0"
+tensorflow-datasets = "^4.9.2"
+tensorflow-model-optimization = "^0.7.5"
+mlflow = "^2.5.0"
+pydub = "^0.25.1"
 
 [tool.black]
 line-length = 120
