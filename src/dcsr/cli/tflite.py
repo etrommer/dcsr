@@ -34,18 +34,25 @@ class TFLiteModel:
         if fh_array:
             fh_array.write(self.to_csrc(bin_model))
 
-    # Find weight tensors with format supported by packing
-    @property
-    def compressible_tensors(self) -> List[int]:
-        # Check if tensor type and shape are supported and that tensor has suffienct sparsity
-        def op_type_supported(op_type: tflite_schema.OperatorCodeT, shape: Tuple[int, ...]) -> bool:
-            if op_type.builtinCode == tflite_schema.BuiltinOperator.FULLY_CONNECTED:
-                return True
-            # Convolutions with Kernel size = 1 only
-            if op_type.builtinCode == tflite_schema.BuiltinOperator.CONV_2D and shape[1] == 1 and shape[2] == 1:
-                return True
-            return False
+    def is_tensor_compressible(self, op_type: tflite_schema.OperatorCodeT, w_tensor: npt.NDArray) -> bool:
+        shape = w_tensor.shape
+        compressible = False
+        if op_type.builtinCode == tflite_schema.BuiltinOperator.FULLY_CONNECTED:
+            compressible = True
+        # Convolutions with Kernel size 1x1 only
+        if op_type.builtinCode == tflite_schema.BuiltinOperator.CONV_2D and shape[1] == 1 and shape[2] == 1:
+            compressible = True
 
+        sparsity = (w_tensor.size - np.count_nonzero(w_tensor)) / w_tensor.size
+        if sparsity < self.sparsity_threshold:
+            logging.debug(
+                f"Tensor with dims {shape} sparsity {sparsity} is below threshold {self.sparsity_threshold} - Skipping"
+            )
+            compressible = False
+        return compressible
+
+    # Find weight tensors with format supported by packing
+    def compressible_tensors(self) -> List[int]:
         subgraph = self.model.subgraphs[0]
         graph_ops = self.model.operatorCodes
 
@@ -59,18 +66,9 @@ class TFLiteModel:
                 weights = self.get_tensor_array(op_weight_tensor)
             except (IndexError, ValueError):
                 continue
-
-            if not op_type_supported(op_type, weights.shape):
+            if weights is None:
                 continue
-
-            sparsity = (weights.size - np.count_nonzero(weights)) / weights.size
-            if sparsity < self.sparsity_threshold:
-                tensor_name = self.get_tensor_name(op_weight_tensor)
-                logging.debug(
-                    "Tensor {} with sparsity {} is below threshold {} - Skipping".format(
-                        tensor_name, sparsity, self.sparsity_threshold
-                    )
-                )
+            if not self.is_tensor_compressible(op_type, weights):
                 continue
             compressible_tensors.append(op_weight_tensor)
         return compressible_tensors
@@ -78,7 +76,7 @@ class TFLiteModel:
     def get_tensor_name(self, tensor_idx: int) -> str:
         return self.model.subgraphs[0].tensors[tensor_idx].name.decode()
 
-    def get_tensor_array(self, tensor_idx: int, reshape_2d: bool = False) -> npt.NDArray:
+    def get_tensor_array(self, tensor_idx: int, reshape_2d: bool = False) -> Optional[npt.NDArray]:
         subgraph = self.model.subgraphs[0]
         tensor_buff = subgraph.tensors[tensor_idx].buffer
         tensor_array = self.model.buffers[tensor_buff].data
@@ -87,11 +85,12 @@ class TFLiteModel:
             major_dim = np.prod(shape[:-1])
             minor_dim = shape[-1]
             shape = (major_dim, minor_dim)
-        tensor_array = tensor_array.reshape(shape)
+        if tensor_array is not None:
+            tensor_array = tensor_array.reshape(shape)
         return tensor_array
 
     def export_numpy(self, base_path: str) -> None:
-        for t in self.compressible_tensors:
+        for t in self.compressible_tensors():
             weights = self.get_tensor_array(t, reshape_2d=True)
             name = self.get_tensor_name(t)
             path = os.path.join(base_path, name.split("/")[1] + ".npy")
@@ -164,7 +163,7 @@ class TFLiteModel:
 
     def compress(self, method: str) -> None:
         subgraph = self.model.subgraphs[0]
-        for t in self.compressible_tensors:
+        for t in self.compressible_tensors():
             name = self.get_tensor_name(t)
             weights = self.get_tensor_array(t, reshape_2d=True)
 
