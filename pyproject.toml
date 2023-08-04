@@ -6,6 +6,7 @@ authors = ["Elias Trommer <elias_trommer@posteo.de>"]
 readme = "README.md"
 
 [tool.poetry.scripts]
+numpy_test = 'dcsr.cli.numpy_to_dcsr:cli'
 compress_tflite = 'dcsr.cli.tflite:cli'
 train_kws = 'dcsr.cli.train_kws:cli'
 train_mnetv2 = 'dcsr.cli.train_mnetv2:cli'
