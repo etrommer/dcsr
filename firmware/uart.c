@@ -142,4 +142,3 @@ unsigned int uart_getline(char *lp, unsigned int len) {
     *lp = 0;                            /* mark end of string             */
     return 1;
 }
-

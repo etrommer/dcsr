@@ -14,4 +14,3 @@ limitations under the License.
 ==============================================================================*/
 
 #include "tensorflow/lite/micro/examples/hello_world/constants.h"
-

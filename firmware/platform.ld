@@ -341,4 +341,3 @@ SECTIONS
   /* Check if data + heap + stack exceeds SRAM limit */
   ASSERT(__StackLimit >= __HeapLimit, "region SRAM overflowed with stack")
 }
-

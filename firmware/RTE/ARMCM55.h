@@ -134,4 +134,3 @@ typedef enum IRQn
 #endif
 
 #endif  /* ARMCM55_H */
-
