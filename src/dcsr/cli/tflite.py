@@ -9,7 +9,7 @@ import numpy as np
 import numpy.typing as npt
 from dcsr import tflite_schema
 from dcsr.compress import DCSRMatrix
-from dcsr.rle import rle
+from dcsr.rle import RLEMatrix
 
 """
 Helper script that parses a Tensorflow lite model, generates a list of candidate tensors and 
@@ -120,22 +120,20 @@ class TFLiteModel:
     # Convert single tensor to Run-Length Encoding (RLE)
     @staticmethod
     def compress_rle(weights: npt.NDArray, name: str) -> Tuple[tflite_schema.SparsityParametersT, npt.NDArray[np.int8]]:
-        result = rle(weights)
+        rle_export = RLEMatrix(weights).export()
 
         sparsity = tflite_schema.SparsityParametersT()
         compressed_sparsity = tflite_schema.CompressedSparsityT()
 
-        compressed_sparsity.deltaIndices = result["delta_indices"]
-        compressed_sparsity.rowOffsets = result["row_offsets"]
+        # Reuse dCSR data structure
+        compressed_sparsity.deltaIndices = rle_export.indices
+        compressed_sparsity.rowOffsets = rle_export.row_lengths
         compressed_sparsity.bitmaps = np.array([0xDE, 0xAD, 0xDE, 0xAD]).astype(np.uint8)
 
-        compressed_sparsity.nnze = result["nnze"]
         sparsity.compSparsity = compressed_sparsity
 
-        total_storage = result["delta_indices"].nbytes + result["row_offsets"].nbytes + result["values"].nbytes
-
-        TFLiteModel.report(weights, name, "RLE", weights.nbytes, total_storage)
-        return sparsity, result["values"]
+        TFLiteModel.report(weights, name, "RLE", weights.nbytes, rle_export.size)
+        return sparsity, rle_export.values
 
     # Convert single tensor to deltaCSR
     @staticmethod
@@ -157,7 +155,7 @@ class TFLiteModel:
         sparsity.compSparsity = compressed_sparsity
 
         metrics = dcsr_matrix.metrics
-        TFLiteModel.report(weights, name, "dCSR", metrics.bytes_dense, metrics.dcsr)
+        TFLiteModel.report(weights, name, "dCSR", weights.nbytes, metrics.dcsr)
 
         return sparsity, export.values
 
